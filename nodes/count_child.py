@@ -23,9 +23,7 @@ class CounterNode(udi_interface.Node):
             {'driver': 'GV1', 'value': 0, 'uom': 56},
             {'driver': 'GV2', 'value': 1, 'uom': 2}
             ]
-    commands = {
-        "SET_INCREMENT": cmd_set_increment,
-    }
+
     def __init__(self, polyglot, parent, address, name):
         super(CounterNode, self).__init__(polyglot, parent, address, name)
 
@@ -75,7 +73,11 @@ class CounterNode(udi_interface.Node):
         LOGGER.debug(f'{self.address} val={val}')
         self.setDriver('GV2',val)
 
-    def cmd_set_incrment(self,command):
+    def cmd_set_increment(self,command):
         val = int(command.get('value'))
         LOGGER.debug(f'{self.address} val={val}')
         self.set_increment(val)
+
+    commands = {
+        "SET_INCREMENT": cmd_set_increment,
+    }
