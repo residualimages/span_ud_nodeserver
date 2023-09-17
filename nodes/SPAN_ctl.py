@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-Polyglot v3 node server Example 3
-Copyright (C) 2021 Robert Paauwe
+Polyglot v3 node server SPAN Smart Panels
+Copyright (C) 2023 Matt Burke
 
 MIT License
 """
 import udi_interface
 import sys
 import time
-from nodes import count_child
+from nodes import SPAN_child
 
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
