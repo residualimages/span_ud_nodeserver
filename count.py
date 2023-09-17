@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Polyglot v3 node server Example 2
-Copyright (C) 2021 Robert Paauwe
+Polyglot v3 node server SPAN Smart Panels
+Copyright (C) 2023 Matt Burke
 
 MIT License
 """
@@ -17,7 +17,7 @@ if __name__ == "__main__":
         polyglot.start()
 
         # Create the controller node
-        count_ctl.Controller(polyglot, 'controller', 'controller', 'Counter')
+        count_ctl.Controller(polyglot, 'controller', 'controller', 'SPAN Smart Panels')
 
         # Just sit and wait for events
         polyglot.runForever()
