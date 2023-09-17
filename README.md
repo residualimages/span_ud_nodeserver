@@ -1,10 +1,9 @@
+# Integration for SPAN Smart Panels - Polyglot v3 NodeServer for Universal Devices Controllers
+#             (c) 2023 Matt Burke
+# Copied from Example 3 Node Server (c) 2021 Robert Paauwe
 
-# Example 3 Node Server (c) 2021 Robert Paauwe
-
-A simple node server that demonstrates how to create a node server that
-has a control node and child device nodes.  This node server simply increments
-a couple of counters and updates GV0 and GV1 with the updated
-count at every poll() interval.
+A simple node server that polls SPAN Smart Panels for circuit loads.  
+This node server simply updates the values at every poll() interval.
 
 ## Installation
 
@@ -13,15 +12,15 @@ count at every poll() interval.
 The settings for this node are:
 
 #### Short Poll
-   * How often to increment the count
+   * How often to begin the SPAN circuit value query.
 #### Long Poll
    * Not used
 
-#### nodes
-   * How many child nodes to create
+#### IP Address(es)
+   * ;-delimited list of IP address(es) of the SPAN Panel(s)
 
-#### multiplier
-   * Apply the multiplier to count and save in GV1
+#### Access Token(s)
+   * ;-delimited list of Access Token(s) for the corresonding SPAN Panel IP Address(es) 
 
 
 ## Requirements
@@ -31,5 +30,5 @@ The settings for this node are:
 
 # Release Notes
 
-- 1.0.0 08/11/2021
-   - Initial version published to github
+- 1.0.0 09/16/2023
+   - Initial version copied from Example 3 Node Server (https://github.com/UniversalDevicesInc/udi-example3-poly)
