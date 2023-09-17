@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Polyglot v3 node server Example 3
-Copyright (C) 2021 Robert Paauwe
+Polyglot v3 node server SPAN Smart Panels
+Copyright (C) 2023 Matt Burke
 
 MIT License
 """
