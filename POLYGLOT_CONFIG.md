@@ -1,12 +1,11 @@
 ## Configuration
 
-shortPoll = the interval used to increment the count
+shortPoll = how often to begin the SPAN circuit value query.
 
 Custom Parameters:
 
-Key = nodes
-Value = number of child nodes to create
+Key = IP_Addresses
+Value = ;-delimited list of IP address(es) of the SPAN Panel(s)
 
-Key = multiplier
-Value = multiply count by multiplier and report in GV1
-
+Key = Access_Tokens
+Value = ;-delimited list of Access Token(s) for the corresonding SPAN Panel IP Address(es)
