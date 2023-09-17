@@ -1,31 +1,31 @@
 {
-    "name": "Example-3",
-    "docs": "https://github.com/UniversalDevicesInc/udi-example3-poly/README.md",
+    "name": "SPAN Smart Panels",
+    "docs": "https://github.com/residualimages/span_ud_nodeserver/README.md",
     "type": "python3",
-    "executable": "count.py",
+    "executable": "SPAN_PG3_Controller.py",
     "install": "install.sh",
-    "description": "Example node server that creates a user specified number of counter child nodes.",
+    "description": "Integration for SPAN Smart Panels - Polyglot v3 NodeServer for Universal Devices Controllers",
     "notice": "",
     "shortPoll": "60",
     "longPoll": "600",
 	"logLevel": "WARNING",
     "profile_version": "1.0.1",
 	"customParams": {
-		"nodes": 0,
-		"multiplier": 1
+		"IP_Addresses": "",
+		"Access_Tokens": ""
 	},
     "credits": [
     	{
-    		"title": "Example Node Server for ISY/Polyglot",
-    		"author": "Bob Paauwe",
+    		"title": "Integration for SPAN Smart Panels",
+    		"author": "Matt Burke",
     		"version": "1.0.1",
-    		"date": "August 11, 2021",
-    		"source": "https://github.com/UniversalDevicesInc/udi-example3-poly",
-			"license": "https://github.com/UniversalDevicesInc/udi-example3-poly/LICENSE"
+    		"date": "September 16, 2023",
+    		"source": "https://github.com/residualimages/span_ud_nodeserver/",
+			"license": "https://github.com/residualimages/span_ud_nodeserver/LICENSE"
 		}
 	],
 	"store" : {
-		"developer": "bpaauwe@bobsplace.com",
+		"developer": "Matt_Burke@alumni.baylor.edu",
 		"price": 0.00,
 		"recurring": 0,
 		"recurring_interval": "month",
