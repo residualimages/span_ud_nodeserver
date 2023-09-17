@@ -1,13 +1,12 @@
-ND-ctl-NAME = Example - Counter Ctl
+ND-ctl-NAME = SPAN Smart Panels
 ND-ctl-ICON = Output
 ST-ctl-ST-NAME = NodeServer Online
-ST-ctl-GV0-NAME = Number of childeren
+ST-ctl-GV0-NAME = Number of SPAN Panels
 CMD-ctl-DISCOVER-NAME = Re-Discover
 
-ND-child-NAME = Example - Counter Child
+ND-child-NAME = SPAN Panel
 ND-child-ICON = Output
-ST-str-ST-NAME = Counter Active
+ST-str-ST-NAME = Monitoring Active
 ST-str-GV0-NAME = raw data 0
 ST-str-GV1-NAME = raw data 1
-ST-str-GV2-NAME = Enable Increment
-CMD-SET_INCREMENT-NAME = Set Enable Increment
+ST-str-GV2-NAME = Enable Monitoring
