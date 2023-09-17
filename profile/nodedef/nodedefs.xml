@@ -23,7 +23,7 @@
     <cmds>
       <sends />
 	    <accepts>
-        <cmd id="SET_INCREMENT">
+        <cmd id="TOGGLE_MONITORING">
           <p id="" editor="bool" init="GV2" />
         </cmd>
       </accepts>
