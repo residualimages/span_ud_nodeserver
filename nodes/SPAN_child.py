@@ -12,11 +12,10 @@ LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
 
 '''
-This is our Counter device node.  All it does is update the count at the
-poll interval.
+This is our Panel device node. 
 '''
-class CounterNode(udi_interface.Node):
-    id = 'child'
+class PanelNode(udi_interface.Node):
+    id = 'panel'
     drivers = [
             {'driver': 'ST', 'value': 1, 'uom': 2},
             {'driver': 'GV0', 'value': 0, 'uom': 56},
@@ -25,7 +24,7 @@ class CounterNode(udi_interface.Node):
             ]
 
     def __init__(self, polyglot, parent, address, name):
-        super(CounterNode, self).__init__(polyglot, parent, address, name)
+        super(PanelNode, self).__init__(polyglot, parent, address, name)
 
         self.poly = polyglot
         self.count = 0
@@ -37,36 +36,30 @@ class CounterNode(udi_interface.Node):
         polyglot.subscribe(polyglot.POLL, self.poll)
 
     '''
-    Read the user entered custom parameters. In this case, it is just
-    the 'multiplier' value that we want.  
+    Read the user entered custom parameters.
     '''
     def parameterHandler(self, params):
         self.Parameters.load(params)
 
     '''
-    This is where the real work happens.  When we get a shortPoll, increment the
-    count, report the current count in GV0 and the current count multiplied by
-    the user defined value in GV1. Then display a notice on the dashboard.
+    This is where the real work happens.  When we get a shortPoll, do some work. 
+    Then display a notice on the dashboard.
     '''
     def poll(self, polltype):
 
         if 'shortPoll' in polltype:
             if int(self.getDriver('GV2')) == 1:
-                LOGGER.debug(f'{self.name} Incrementing...')
-                if self.Parameters['multiplier'] is not None:
-                    mult = int(self.Parameters['multiplier'])
-                else:
-                    mult = 1
-
+                LOGGER.debug(f'{self.name} Polling...')
+                
                 self.count += 1
 
                 self.setDriver('GV0', self.count, True, True)
                 self.setDriver('GV1', (self.count * mult), True, True)
 
                 # be fancy and display a notice on the polyglot dashboard
-                self.poly.Notices[self.name] = '{}: Current count is {}'.format(self.name, self.count)
+                self.poly.Notices[self.name] = '{}: Current polling count is {}'.format(self.name, self.count)
             else:
-                LOGGER.debug(f'{self.name} NOT Incrementing...')
+                LOGGER.debug(f'{self.name} NOT Incrementing poll count...')
 
     def set_increment(self,val=None):
         # On startup this will always go back to true which is the default, but how do we restort the previous user value?
