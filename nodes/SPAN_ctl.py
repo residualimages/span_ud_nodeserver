@@ -119,7 +119,7 @@ class Controller(udi_interface.Node):
             if node != 'controller':   # but not the controller node
                 self.poly.delNode(node)
 
-        listOfIPAddresses = split(self,";"))
+        listOfIPAddresses = split(self,";")
         how_many = len(listOfIPAddresses)
 
         LOGGER.info('Creating {} children nodes'.format(how_many))
