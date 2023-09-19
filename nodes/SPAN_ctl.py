@@ -128,7 +128,7 @@ class Controller(udi_interface.Node):
             address = 'SPAN_Panel_{}'.format(i)
             title = 'SPAN Panel {}'.format(current_IPAddress)
             try:
-                node = count_child.CounterNode(self.poly, self.address, address, title)
+                node = count_child.PanelNode(self.poly, self.address, address, title)
                 self.poly.addNode(node)
                 self.wait_for_node_done()
             except Exception as e:
