@@ -14,10 +14,7 @@ LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
 
 '''
-Controller is interfacing with both Polyglot and the device. In this
-case the device is just a count that has two values, the count and the count
-multiplied by a user defined multiplier. These get updated at every
-shortPoll interval.
+Controller is interfacing with both Polyglot and the device.
 '''
 class Controller(udi_interface.Node):
     id = 'ctl'
@@ -61,27 +58,37 @@ class Controller(udi_interface.Node):
 
     '''
     Read the user entered custom parameters.  Here is where the user will
-    configure the number of child nodes that they want created.
+    configure IP_Addresses and Access_Tokens for SPAN Panels.
     '''
     def parameterHandler(self, params):
         self.Parameters.load(params)
-        validChildren = False
+        validIP_Addresses = False
+        validAccess_Tokens = False
 
-        if self.Parameters['nodes'] is not None:
-            if int(self.Parameters['nodes']) > 0:
-                validChildren = True
+        if self.Parameters['IP_Addresses'] is not None:
+            if len(self.Parameters['IP_Addresses']) > 6:
+                validIP_Addresses = True
             else:
-                LOGGER.error('Invalid number of nodes {}'.format(self.Parameters['nodes']))
+                LOGGER.error('Invalid values for IP_Addresses parameter.')
         else:
-            LOGGER.error('Missing number of node parameter')
+            LOGGER.error('Missing IP_Addresses parameter.')
 
-
-        if validChildren:
-            self.createChildren(int(self.Parameters['nodes']))
+        if self.Parameters['Access_Tokens'] is not None:
+            if len(self.Parameters['Access_Tokens']) > 120:
+                validAccess_Tokens = True
+            else:
+                LOGGER.error('Invalid values for Access_Tokens parameter.')
+        else:
+            LOGGER.error('Missing Access_Tokens parameter.')
+        
+        if validIP_Addresses and validAccess_Tokens:
+            self.createChildren(self.Parameters['IP_Addresses'])
             self.poly.Notices.clear()
         else:
-            self.poly.Notices['nodes'] = 'Please configure the number of child nodes to create.'
-
+            if not(validIP_Addresses):
+                self.poly.Notices['IP_Addresses'] = 'Please populate the IP_Addresses parameter.'
+            if not(validAccess_Tokens):
+                self.poly.Notices['IP_Addresses'] = 'Please populate the Access_Tokens parameter.'
 
     '''
     This is called when the node is added to the interface module. It is
@@ -105,17 +112,21 @@ class Controller(udi_interface.Node):
     number of nodes.  Because this is just a simple example, we'll first
     delete any existing nodes then create the number requested.
     '''
-    def createChildren(self, how_many):
+    def createChildren(self):
         # delete any existing nodes
         nodes = self.poly.getNodes()
         for node in nodes:
             if node != 'controller':   # but not the controller node
                 self.poly.delNode(node)
 
-        LOGGER.info('Creating {} children counters'.format(how_many))
+        listOfIPAddresses = split(self,";"))
+        how_many = len(listOfIPAddresses)
+
+        LOGGER.info('Creating {} children nodes'.format(how_many))
         for i in range(0, how_many):
-            address = 'child_{}'.format(i)
-            title = 'Child Counter {}'.format(i)
+            current_IPaddress = listOfIPAddresses[i]
+            address = 'SPAN_Panel_{}'.format(i)
+            title = 'SPAN Panel {}'.format(current_IPAddress)
             try:
                 node = count_child.CounterNode(self.poly, self.address, address, title)
                 self.poly.addNode(node)
