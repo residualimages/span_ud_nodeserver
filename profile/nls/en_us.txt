@@ -9,4 +9,4 @@ ND-panel-ICON = Output
 ST-panel-ST-NAME = Online
 ST-panel-GV0-NAME = Polling Count
 ST-panel-GV1-NAME = Being Monitored?
-CMD-panel-TOGGLE_MONITORING-NAME = Toggle Monitoring
+CMD-TOGGLE_MONITORING-NAME = Toggle Monitoring
