@@ -30,6 +30,10 @@ class PanelNode(udi_interface.Node):
     def __init__(self, polyglot, parent, address, name, spanIPAddress, bearerToken):
         super(PanelNode, self).__init__(polyglot, parent, address, name)
 
+        # set a flag to short circuit setDriver() until the node has been fully
+        # setup in the Polyglot DB and the ISY (as indicated by START event)
+        self._initialized: bool = False
+        
         self.poly = polyglot
         self.count = 0
 
@@ -48,7 +52,7 @@ class PanelNode(udi_interface.Node):
         statusData = statusResponse.read()
         statusData = statusData.decode("utf-8")
 
-        LOGGER.info("Status Data: \n" + statusData + "\n")
+        LOGGER.info("Status Data: \n\t\t" + statusData + "\n")
 
         # subscribe to the events we want
         polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
