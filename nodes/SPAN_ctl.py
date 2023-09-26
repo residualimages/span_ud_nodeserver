@@ -82,7 +82,7 @@ class Controller(udi_interface.Node):
             LOGGER.error('Missing Access_Tokens parameter.')
         
         if validIP_Addresses and validAccess_Tokens:
-            self.createChildren(self.Parameters['IP_Addresses'])
+            self.createChildren(self,self.Parameters['IP_Addresses'],self.Parameters['Access_Tokens'])
             self.poly.Notices.clear()
         else:
             if not(validIP_Addresses):
@@ -112,23 +112,26 @@ class Controller(udi_interface.Node):
     number of nodes.  Because this is just a simple example, we'll first
     delete any existing nodes then create the number requested.
     '''
-    def createChildren(self):
+    def createChildren(self,ipAddresses,accessTokens):
         # delete any existing nodes
         nodes = self.poly.getNodes()
         for node in nodes:
             if node != 'controller':   # but not the controller node
                 self.poly.delNode(node)
 
-        listOfIPAddresses = split(self,";")
+        listOfIPAddresses = split(ipAddresses,";")
         how_many = len(listOfIPAddresses)
+
+        listOfBearerTokens = split(accessTokens,";")
 
         LOGGER.info('Creating {} children nodes'.format(how_many))
         for i in range(0, how_many):
             current_IPaddress = listOfIPAddresses[i]
+            current_BearerToken = listOfBearerTokens[i]
             address = 'SPAN_Panel_{}'.format(i)
             title = 'SPAN Panel {}'.format(current_IPAddress)
             try:
-                node = span_panel.PanelNode(self.poly, self.address, address, title)
+                node = span_panel.PanelNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken)
                 self.poly.addNode(node)
                 self.wait_for_node_done()
             except Exception as e:
