@@ -83,7 +83,7 @@ class Controller(udi_interface.Node):
             LOGGER.error('Missing Access_Tokens parameter.')
         
         if validIP_Addresses and validAccess_Tokens:
-            self.createChildren(self.Parameters['IP_Addresses'],self.Parameters['Access_Tokens'])
+            self.createChildren()
             self.poly.Notices.clear()
         else:
             if not(validIP_Addresses):
@@ -113,17 +113,19 @@ class Controller(udi_interface.Node):
     number of nodes.  Because this is just a simple example, we'll first
     delete any existing nodes then create the number requested.
     '''
-    def createChildren(self,ipAddresses,accessTokens):
+    def createChildren(self):
         # delete any existing nodes
         nodes = self.poly.getNodes()
         for node in nodes:
             if node != 'controller':   # but not the controller node
                 self.poly.delNode(node)
 
-        listOfIPAddresses = ipAddresses.split(";")
-        how_many = len(listOfIPAddresses)
+        ipAddresses = self.Parameters['IP_Addresses']
+        accessTokens = self.Parameters['Access_Tokens']
 
+        listOfIPAddresses = ipAddresses.split(";")
         listOfBearerTokens = accessTokens.split(";")
+        how_many = len(listOfIPAddresses)
 
         LOGGER.info('Creating {} children nodes'.format(how_many))
         for i in range(0, how_many):
