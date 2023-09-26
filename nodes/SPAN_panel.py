@@ -96,7 +96,7 @@ class PanelNode(udi_interface.Node):
         LOGGER.debug(f'{self.address} val={val}')
         self.setDriver('GV1',val)
 
-    def cmd_toggle_monitoring():
+    def cmd_toggle_monitoring(self,val):
         val = self.getDriver('GV2')
         LOGGER.debug(f'{self.address} val={val}')
         if val == 1:
