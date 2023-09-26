@@ -23,8 +23,7 @@ class PanelNode(udi_interface.Node):
     drivers = [
             {'driver': 'ST', 'value': 1, 'uom': 2},
             {'driver': 'GV0', 'value': 1, 'uom': 56},
-            {'driver': 'GV1', 'value': 0, 'uom': 56},
-            {'driver': 'GV2', 'value': 1, 'uom': 2}
+            {'driver': 'GV1', 'value': 1, 'uom': 2}
             ]
 
     def __init__(self, polyglot, parent, address, name, spanIPAddress, bearerToken):
@@ -52,7 +51,7 @@ class PanelNode(udi_interface.Node):
         statusData = statusResponse.read()
         statusData = statusData.decode("utf-8")
 
-        LOGGER.info("Status Data: \n\t\t" + statusData + "\n")
+        LOGGER.info("\nStatus Data: \n\t\t" + statusData + "\n")
 
         # subscribe to the events we want
         polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
@@ -87,15 +86,15 @@ class PanelNode(udi_interface.Node):
             
             self.count += 1
 
-            self.setDriver('GV1', (self.count), True, True)
+            self.setDriver('GV0', (self.count), True, True)
 
             # be fancy and display a notice on the polyglot dashboard
-            self.poly.Notices[self.name] = '{}: Current polling count is {}'.format(self.name, self.count)
+            # self.poly.Notices[self.name] = '{}: Current polling count is {}'.format(self.name, self.count)
 
     def toggle_monitoring(self,val=None):
         # On startup this will always go back to true which is the default, but how do we restore the previous user value?
         LOGGER.debug(f'{self.address} val={val}')
-        self.setDriver('GV2',val)
+        self.setDriver('GV1',val)
 
     def cmd_toggle_monitoring(self):
         val = self.getDriver('GV2')
