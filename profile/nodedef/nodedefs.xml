@@ -13,18 +13,17 @@
     </cmds>
   </nodeDef>
 
-  <nodeDef id="panel" nodeType="139" nls="str">
+  <nodeDef id="panel" nodeType="139" nls="panel">
     <sts>
       <st id="ST" editor="bool" />
       <st id="GV0" editor="raw" />
-      <st id="GV1" editor="raw" />
-      <st id="GV2" editor="bool" />
+      <st id="GV1" editor="bool" />
 	  </sts>
     <cmds>
       <sends />
 	    <accepts>
         <cmd id="TOGGLE_MONITORING">
-          <p id="" editor="bool" init="GV2" />
+          <p id="" editor="bool" init="GV1" />
         </cmd>
       </accepts>
     </cmds>
