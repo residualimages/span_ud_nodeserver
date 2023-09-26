@@ -6,7 +6,7 @@ CMD-ctl-DISCOVER-NAME = Re-Discover
 
 ND-child-NAME = SPAN Panel
 ND-child-ICON = Output
-ST-str-ST-NAME = Monitoring Active
+ST-str-ST-NAME = Online
 ST-str-GV0-NAME = raw data 0
-ST-str-GV1-NAME = raw data 1
-ST-str-GV2-NAME = Enable Monitoring
+ST-str-GV1-NAME = Polling Count
+ST-str-GV2-NAME = Being Monitored?
