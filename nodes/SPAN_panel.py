@@ -81,7 +81,7 @@ class PanelNode(udi_interface.Node):
     '''
     def poll(self, polltype):
 
-        if 'shortPoll' in polltype and self.getDriver('GV2') == 1:
+        if 'shortPoll' in polltype and self.getDriver('GV1') == 1:
             LOGGER.debug(f'{self.name} Polling...')
             
             self.count += 1
@@ -97,7 +97,7 @@ class PanelNode(udi_interface.Node):
         self.setDriver('GV1',val)
 
     def cmd_toggle_monitoring(self,val):
-        val = self.getDriver('GV2')
+        val = self.getDriver('GV1')
         LOGGER.debug(f'{self.address} val={val}')
         if val == 1:
             val = 0
