@@ -4,8 +4,8 @@ ST-ctl-ST-NAME = NodeServer Online
 ST-ctl-GV0-NAME = Number of SPAN Panels
 CMD-ctl-DISCOVER-NAME = Re-Discover
 
-ND-child-NAME = SPAN Panel
-ND-child-ICON = Output
-ST-str-ST-NAME = Online
-ST-str-GV0-NAME = Polling Count
-ST-str-GV1-NAME = Being Monitored?
+ND-panel-NAME = SPAN Panel
+ND-panel-ICON = Output
+ST-panel-ST-NAME = Online
+ST-panel-GV0-NAME = Polling Count
+ST-panel-GV1-NAME = Being Monitored?
