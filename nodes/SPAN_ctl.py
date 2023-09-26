@@ -113,7 +113,7 @@ class Controller(udi_interface.Node):
     number of nodes.  Because this is just a simple example, we'll first
     delete any existing nodes then create the number requested.
     '''
-    def createChildren(self,ipAddresses,accessTokens):
+    def createChildren(ipAddresses,accessTokens):
         # delete any existing nodes
         nodes = self.poly.getNodes()
         for node in nodes:
