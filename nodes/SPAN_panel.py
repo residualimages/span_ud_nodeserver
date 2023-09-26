@@ -65,9 +65,9 @@ class PanelNode(udi_interface.Node):
     
     # overload the setDriver() of the parent class to short circuit if 
     # node not initialized
-    def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None):
-        if self._initialized:
-            super().setDriver(driver, value, report, force, uom)
+    #def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None):
+    #    if self._initialized:
+    #        super().setDriver(driver, value, report, force, uom)
 
     '''
     Read the user entered custom parameters.
@@ -81,12 +81,12 @@ class PanelNode(udi_interface.Node):
     '''
     def poll(self, polltype):
 
-        if 'shortPoll' in polltype and self.getDriver('GV1') == 1:
-            LOGGER.debug(f'{self.name} Polling...')
+        if 'shortPoll' in polltype:
+            currentCount = self.get_Driver('GV0')
             
-            currentCount = self.getDriver('GV0')
+            LOGGER.info(f'{self.name} Polling...')
 
-            self.setDriver('GV0', (currentCount+1), True, True)
+            self.set_Driver('GV0', (currentCount+1), True, True)
 
             # be fancy and display a notice on the polyglot dashboard
             # self.poly.Notices[self.name] = '{}: Current polling count is {}'.format(self.name, self.count)
@@ -94,10 +94,10 @@ class PanelNode(udi_interface.Node):
     def toggle_monitoring(self,val):
         # On startup this will always go back to true which is the default, but how do we restore the previous user value?
         LOGGER.debug(f'{self.address} val={val}')
-        self.setDriver('GV1',val)
+        self.set_Driver('GV1',val)
 
     def cmd_toggle_monitoring(self,val):
-        val = self.getDriver('GV1')
+        val = self.get_Driver('GV1')
         LOGGER.debug(f'{self.address} val={val}')
         if val == 1:
             val = 0
