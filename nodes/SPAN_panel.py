@@ -7,6 +7,7 @@ MIT License
 """
 import udi_interface
 import sys
+import http.client
 
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
@@ -23,13 +24,28 @@ class PanelNode(udi_interface.Node):
             {'driver': 'GV2', 'value': 1, 'uom': 2}
             ]
 
-    def __init__(self, polyglot, parent, address, name):
+    def __init__(self, polyglot, parent, address, name, spanIPAddress, bearerToken):
         super(PanelNode, self).__init__(polyglot, parent, address, name)
 
         self.poly = polyglot
         self.count = 0
 
         self.Parameters = Custom(polyglot, 'customparams')
+        
+        LOGGER.debug("IP Address:" + spanIPAddress + "; Bearer Token: " + bearerToken)
+
+        spanConnection = http.client.HTTPConnection(spanIPAddress)
+        payload = ''
+        headers = {
+            "Authorization": "Bearer " + bearerToken
+        }
+        spanConnection.request("GET", "/api/v1/status", payload, headers)
+
+        statusResponse = spanConnection.getresponse()
+        statusData = statusResponse.read()
+        statusData = statusData.decode("utf-8")
+
+        LOGGER.debug("Status Data: \n" + statusData + "\n")
 
         # subscribe to the events we want
         polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
