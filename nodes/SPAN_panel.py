@@ -22,7 +22,7 @@ class PanelNode(udi_interface.Node):
     id = 'panel'
     drivers = [
             {'driver': 'ST', 'value': 1, 'uom': 2},
-            {'driver': 'GV0', 'value': 0, 'uom': 56},
+            {'driver': 'GV0', 'value': 1, 'uom': 56},
             {'driver': 'GV1', 'value': 0, 'uom': 56},
             {'driver': 'GV2', 'value': 1, 'uom': 2}
             ]
@@ -82,30 +82,30 @@ class PanelNode(udi_interface.Node):
     '''
     def poll(self, polltype):
 
-        if 'shortPoll' in polltype:
-            if int(self.getDriver('GV2')) == 1:
-                LOGGER.debug(f'{self.name} Polling...')
-                
-                self.count += 1
+        if 'shortPoll' in polltype and self.getDriver('GV2') == 1:
+            LOGGER.debug(f'{self.name} Polling...')
+            
+            self.count += 1
 
-                self.setDriver('GV0', self.count, True, True)
-                self.setDriver('GV1', (self.count * mult), True, True)
+            self.setDriver('GV1', (self.count), True, True)
 
-                # be fancy and display a notice on the polyglot dashboard
-                self.poly.Notices[self.name] = '{}: Current polling count is {}'.format(self.name, self.count)
-            else:
-                LOGGER.debug(f'{self.name} NOT Incrementing poll count...')
+            # be fancy and display a notice on the polyglot dashboard
+            self.poly.Notices[self.name] = '{}: Current polling count is {}'.format(self.name, self.count)
 
-    def set_increment(self,val=None):
-        # On startup this will always go back to true which is the default, but how do we restort the previous user value?
+    def toggle_monitoring(self,val=None):
+        # On startup this will always go back to true which is the default, but how do we restore the previous user value?
         LOGGER.debug(f'{self.address} val={val}')
         self.setDriver('GV2',val)
 
-    def cmd_set_increment(self,command):
-        val = int(command.get('value'))
+    def cmd_toggle_monitoring(self):
+        val = self.getDriver('GV2')
         LOGGER.debug(f'{self.address} val={val}')
-        self.set_increment(val)
+        if val == 1:
+            val = 0
+        else:
+            val = 1
+        self.toggle_monitoring(val)
 
     commands = {
-        "SET_INCREMENT": cmd_set_increment,
+        "TOGGLE_MONITORING": cmd_toggle_monitoring,
     }
