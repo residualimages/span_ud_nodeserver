@@ -13,7 +13,7 @@
     </cmds>
   </nodeDef>
 
-  <nodeDef id="child" nodeType="139" nls="str">
+  <nodeDef id="panel" nodeType="139" nls="str">
     <sts>
       <st id="ST" editor="bool" />
       <st id="GV0" editor="raw" />
