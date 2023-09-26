@@ -9,6 +9,9 @@ import udi_interface
 import sys
 import http.client
 
+# Standard Library
+from typing import Optional, Any, TYPE_CHECKING
+
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
 
