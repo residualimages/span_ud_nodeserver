@@ -91,12 +91,12 @@ class PanelNode(udi_interface.Node):
             # be fancy and display a notice on the polyglot dashboard
             # self.poly.Notices[self.name] = '{}: Current polling count is {}'.format(self.name, self.count)
 
-    def toggle_monitoring(self,val=None):
+    def toggle_monitoring(self,val):
         # On startup this will always go back to true which is the default, but how do we restore the previous user value?
         LOGGER.debug(f'{self.address} val={val}')
         self.setDriver('GV1',val)
 
-    def cmd_toggle_monitoring(self):
+    def cmd_toggle_monitoring():
         val = self.getDriver('GV2')
         LOGGER.debug(f'{self.address} val={val}')
         if val == 1:
