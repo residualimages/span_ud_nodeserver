@@ -83,13 +83,13 @@ class Controller(udi_interface.Node):
             LOGGER.error('Missing Access_Tokens parameter.')
         
         if validIP_Addresses and validAccess_Tokens:
-            self.createChildren(self.Parameters['IP_Addresses'],self.Parameters['Access_Tokens'])
+            self.createChildren(self,self.Parameters['IP_Addresses'],self.Parameters['Access_Tokens'])
             self.poly.Notices.clear()
         else:
             if not(validIP_Addresses):
                 self.poly.Notices['IP_Addresses'] = 'Please populate the IP_Addresses parameter.'
             if not(validAccess_Tokens):
-                self.poly.Notices['IP_Addresses'] = 'Please populate the Access_Tokens parameter.'
+                self.poly.Notices['Access_Tokens'] = 'Please populate the Access_Tokens parameter.'
 
     '''
     This is called when the node is added to the interface module. It is
