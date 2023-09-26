@@ -45,7 +45,7 @@ class PanelNode(udi_interface.Node):
         statusData = statusResponse.read()
         statusData = statusData.decode("utf-8")
 
-        LOGGER.debug("Status Data: \n" + statusData + "\n")
+        LOGGER.info("Status Data: \n" + statusData + "\n")
 
         # subscribe to the events we want
         polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
