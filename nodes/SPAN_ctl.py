@@ -9,10 +9,37 @@ import udi_interface
 import sys
 import time
 import string
+import re
 from nodes import SPAN_panel
 
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
+
+### Generic Nodeserver Helper Functions ###
+### copied from Goose66 ###
+
+# Removes invalid characters and converts to lowercase ISY Node address
+def getValidNodeAddress(s: str) -> str:
+
+    # NOTE: From docs: "A node address is made up of any combination of lowercase letters, numbers, and
+    # '_' character. The maximum node address length (including the [5 character] prefix) is 19 characters."
+
+    # remove any invalid URL characters since address may be in the path
+    addr = re.sub(r"[^A-Za-z0-9_]", "", s)
+
+    # convert to lowercase and trim to 14 characters
+    return addr[:14].lower()
+
+# Removes invalid charaters for ISY Node description
+def getValidNodeName(s: str) -> str:
+
+    # first convert unicode quotes to ascii quotes (single and double) and
+    # then drop all other non-ascii characters
+    # TODO: Test ".", "~", and other "special" characters to see if they cause problems
+    # TODO: Test Kanji and other international characters with and without ascii converstion
+    name = s.translate({ 0x2018:0x27, 0x2019:0x27, 0x201C:0x22, 0x201D:0x22 }).encode("ascii", "ignore").decode("ascii")
+
+    return name
 
 '''
 Controller is interfacing with both Polyglot and the device.
@@ -131,8 +158,10 @@ class Controller(udi_interface.Node):
         for i in range(0, how_many):
             current_IPaddress = listOfIPAddresses[i]
             current_BearerToken = listOfBearerTokens[i]
-            address = 'SPAN_Panel_{}'.format(i)
+            address = 'SP_{}'.format(i)
+            address = getValidNodeAddress(address)
             title = 'SPAN Panel {}'.format(current_IPaddress)
+            title = getValidNodeName(title)
             try:
                 node = SPAN_panel.PanelNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken)
                 self.poly.addNode(node)
