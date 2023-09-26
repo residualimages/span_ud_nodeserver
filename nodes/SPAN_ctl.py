@@ -8,6 +8,7 @@ MIT License
 import udi_interface
 import sys
 import time
+import string
 from nodes import SPAN_panel
 
 LOGGER = udi_interface.LOGGER
@@ -119,10 +120,10 @@ class Controller(udi_interface.Node):
             if node != 'controller':   # but not the controller node
                 self.poly.delNode(node)
 
-        listOfIPAddresses = split(ipAddresses,";")
+        listOfIPAddresses = ipAddresses.split(";")
         how_many = len(listOfIPAddresses)
 
-        listOfBearerTokens = split(accessTokens,";")
+        listOfBearerTokens = accessTokens.split(";")
 
         LOGGER.info('Creating {} children nodes'.format(how_many))
         for i in range(0, how_many):
