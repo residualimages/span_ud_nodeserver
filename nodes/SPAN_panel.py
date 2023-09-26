@@ -50,6 +50,18 @@ class PanelNode(udi_interface.Node):
         # subscribe to the events we want
         polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
         polyglot.subscribe(polyglot.POLL, self.poll)
+        
+    # called by the interface after the node data has been put in the Polyglot DB
+    # and the node created/updated in the ISY
+    def start(self):
+        # set the initlized flag to allow setDriver to work
+        self._initialized = True
+    
+    # overload the setDriver() of the parent class to short circuit if 
+    # node not initialized
+    def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None):
+        if self._initialized:
+            super().setDriver(driver, value, report, force, uom)
 
     '''
     Read the user entered custom parameters.
