@@ -132,7 +132,7 @@ class Controller(udi_interface.Node):
             current_IPaddress = listOfIPAddresses[i]
             current_BearerToken = listOfBearerTokens[i]
             address = 'SPAN_Panel_{}'.format(i)
-            title = 'SPAN Panel {}'.format(current_IPAddress)
+            title = 'SPAN Panel {}'.format(current_IPaddress)
             try:
                 node = SPAN_panel.PanelNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken)
                 self.poly.addNode(node)
