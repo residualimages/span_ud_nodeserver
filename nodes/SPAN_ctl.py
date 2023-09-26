@@ -83,7 +83,7 @@ class Controller(udi_interface.Node):
             LOGGER.error('Missing Access_Tokens parameter.')
         
         if validIP_Addresses and validAccess_Tokens:
-            self.createChildren(self,self.Parameters['IP_Addresses'],self.Parameters['Access_Tokens'])
+            self.createChildren(self.Parameters['IP_Addresses'],self.Parameters['Access_Tokens'])
             self.poly.Notices.clear()
         else:
             if not(validIP_Addresses):
