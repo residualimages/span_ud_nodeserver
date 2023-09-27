@@ -109,10 +109,15 @@ class PanelNode(udi_interface.Node):
                 panelData = panelResponse.read()
                 panelData = panelData.decode("utf-8")
                 LOGGER.info("\nPanel Data: \n\t\t" + panelData + "\n")
-                panelDataAsXml = ET.fromstring(panelData)
-                feedthroughPowerW = panelDataAsXml.find('feedthroughPowerW')
-                feedthroughPowerW = math.ceil(feedthroughPowerW*100)/100
-                self.setDriver('TPW', feedthroughPowerW, True, True)
+                #panelDataAsXml = ET.fromstring(panelData)
+                #feedthroughPowerW = panelDataAsXml.find('feedthroughPowerW')
+                feedthroughPowerW_tuple = panelData.partition("feedthroughPowerW")
+                feedthroughPowerW = feedthroughPowerW_tuple[2]
+                feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
+                feedthroughPowerW = feedthroughPowerW_tuple[2]
+                LOGGER.info("\nParsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
+                #feedthroughPowerW = math.ceil(feedthroughPowerW*100)/100
+                #self.setDriver('TPW', feedthroughPowerW, True, True)
             
     def toggle_monitoring(self,val):
         # On startup this will always go back to true which is the default, but how do we restore the previous user value?
