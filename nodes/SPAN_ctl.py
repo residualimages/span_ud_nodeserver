@@ -166,6 +166,7 @@ class Controller(udi_interface.Node):
                 node = SPAN_panel.PanelNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken)
                 self.poly.addNode(node)
                 self.wait_for_node_done()
+                node.setDriver('AWAKE', 1, True, True)
             except Exception as e:
                 LOGGER.error('Failed to create {}: {}'.format(title, e))
 
