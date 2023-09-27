@@ -137,6 +137,7 @@ class PanelNode(udi_interface.Node):
                     self.setDriver('ST', datetime.datetime.fromtimestamp(int(time.time())), True, True)
             else:
                 LOGGER.info('Skipping query of Panel node {}, using token {}'.format(self.ipAddress,self.token))
+                self.setDriver('ST', 'Not Actively Querying' , True, True)
             
     def toggle_monitoring(self,val):
         # On startup this will always go back to true which is the default, but how do we restore the previous user value?
