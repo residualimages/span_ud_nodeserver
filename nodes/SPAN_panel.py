@@ -176,8 +176,8 @@ class PanelNode(udi_interface.Node):
                 #instantGridPowerW = instantGridPowerW_tuple[2]
                 #LOGGER.debug("\n\t\t3rd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")                
                 instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
-                LOGGER.info("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
-                LOGGER.info("\n\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
+                LOGGER.debug("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
+                LOGGER.debug("\n\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
                 self.setDriver('TPW', (instantGridPowerW-abs(feedthroughPowerW)), True, True)
 
                 for i in range(1,33):
@@ -191,21 +191,21 @@ class PanelNode(udi_interface.Node):
                         currentCircuit_tuple = currentCircuitW.partition(',')
                         currentCircuitW = currentCircuit_tuple[0]
                         LOGGER.debug("\n\t\t3rd level Parsed for Circuit " + str(i) + ":\t" + currentCircuitW + "\n")
-                        currentCircuitW = math.ceil(float(currentCircuitW)*100)/100
+                        currentCircuitW = abs(math.ceil(float(currentCircuitW)*100)/100)
                         LOGGER.debug("\n\t\tFinal Level Parsed for Circuit " + str(i) + ":\t" + str(currentCircuitW) + "\n")
                         if i < 32:
                             self.setDriver('GV' + str(i-1), currentCircuitW, True, True)
                         else:
                             self.setDriver('GPV', currentCircuitW, True, True)
                     except:
-                        LOGGER.info("\n\t\tIssue getting data from Circuit " + str(i) + ".\n")
+                        LOGGER.warning("\n\t\tIssue getting data from Circuit " + str(i) + " on Panel " + format(self.ipAddress) + ".\n")
                 
                 if len(str(instantGridPowerW)) > 0:
                     self.setDriver('TIME', int(time.time()), True, True)
                     self.setDriver('ST', datetime.datetime.fromtimestamp(int(time.time())), True, True)
             else:
                 tokenLastTen = self.token[-10:]
-                LOGGER.info('\n\t\tSkipping query of Panel node {}, using token {}'.format(self.ipAddress,tkenLastToken))
+                LOGGER.debug('\n\t\tSkipping query of Panel node {}, using token {}'.format(self.ipAddress,tkenLastToken))
                 self.setDriver('ST', "Not Actively Querying" , True, True)
             
     def toggle_monitoring(self,val):
