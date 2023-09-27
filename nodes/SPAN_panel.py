@@ -117,8 +117,8 @@ class PanelNode(udi_interface.Node):
                 panelData = panelData.decode("utf-8")
                 LOGGER.info("\nPanel Data: \n\t\t" + panelData + "\n")
                
-                panelDataAsXml = ET.fromstring(panelData)
-                LOGGER.info('panelDataAsXml: {}'.format(panelDataAsXml))
+                #panelDataAsXml = ET.fromstring(panelData)
+                #LOGGER.info('panelDataAsXml: {}'.format(panelDataAsXml))
                 #feedthroughPowerW = panelDataAsXml.find('feedthroughPowerW')
                 
                 feedthroughPowerW_tuple = panelData.partition("feedthroughPowerW")
