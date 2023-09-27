@@ -15,4 +15,12 @@
 	<editor id="string">
 		<range uom="145" min="0" max="0" prec="0"/> 
 	</editor>
+	<editor id="panelgridstatus">
+		<range min="1" max="2" step="1" prec="0" uom="25">
+			<nls>
+			<e id="1">PANEL_ON_GRID</e>
+			<e id="2">UNKNOWN STATE</e>				
+			</nls>
+		</range>
+	</editor>
 </editors>
