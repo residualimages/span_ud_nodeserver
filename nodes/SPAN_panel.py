@@ -65,7 +65,7 @@ class PanelNode(udi_interface.Node):
         circuitsData = circuitsResponse.read()
         circuitsData = circuitsData.decode("utf-8")
         
-        LOGGER.info("\nCircuits Data: \n\t\t" + statusData + "\n\t\tCount of circuits: " + circuitsData.count('id:') + "\n")
+        LOGGER.info("\nCircuits Data: \n\t\t" + circuitsData + "\n\t\tCount of circuits: " + string(circuitsData.count('id:')) + "\n")
         self.setDriver('PULSCNT', circuitsData.count('id:'), True, True)
 
         # subscribe to the events we want
