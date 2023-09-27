@@ -17,6 +17,7 @@
     <sts>
       <st id="TPW" editor="watt" />
       <st id="PULSCNT" editor="raw" />
+      <st id="TIME" editor="timestamp" />
       <st id="AWAKE" editor="bool" />
 	  </sts>
     <cmds>
