@@ -95,6 +95,8 @@ class PanelNode(udi_interface.Node):
               
                 # be fancy and display a notice on the polyglot dashboard
                 # self.poly.Notices[self.name] = '{}: Current polling count is {}'.format(self.name, self.count)
+
+                LOGGER.info('About to query Panel node of {}, using token {}'.format(self.ipAddress,self.token))
         
                 spanConnection = http.client.HTTPConnection(self.ipAddress)
                 payload = ''
@@ -106,6 +108,7 @@ class PanelNode(udi_interface.Node):
                 panelResponse = spanConnection.getresponse()
                 panelData = panelResponse.read()
                 panelData = panelData.decode("utf-8")
+                LOGGER.info("\nPanel Data: \n\t\t" + panelData + "\n")
                 panelDataAsXml = ET.fromstring(panelData)
                 feedthroughPowerW = panelDataAsXml.find('feedthroughPowerW')
                 feedthroughPowerW = math.ceil(feedthroughPowerW*100)/100
