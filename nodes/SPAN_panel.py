@@ -44,7 +44,7 @@ class PanelNode(udi_interface.Node):
         self.ipAddress = spanIPAddress
         self.token = bearerToken
         
-        LOGGER.debug("IP Address:" + self.ipAddress + "; Bearer Token (last 10 characters): " + self.token[:-10])
+        LOGGER.debug("IP Address:" + self.ipAddress + "; Bearer Token (last 10 characters): " + self.token[-10:])
 
         spanConnection = http.client.HTTPConnection(self.ipAddress)
         payload = ''
@@ -93,7 +93,7 @@ class PanelNode(udi_interface.Node):
                 self.setDriver('PULSCNT', currentCount, True, True)
                 #LOGGER.info('Current PULSCNT for polling on {} is {}'.format(self.name,currentCount))
 
-                LOGGER.info('About to query Panel node of {}, using token ending in {}'.format(self.ipAddress,self.token[:-10]))
+                LOGGER.info('About to query Panel node of {}, using token ending in {}'.format(self.ipAddress,self.token[-10:]))
         
                 spanConnection = http.client.HTTPConnection(self.ipAddress)
                 payload = ''
