@@ -9,4 +9,7 @@
 	<editor id="watt">
 		<range uom="73" min="-24000" max="24000" prec="2" /> 
 	</editor>
+	<editor id="timestamp">
+		<range uom="151" min="0" max="2147483647" prec="0"/> 
+	</editor>
 </editors>
