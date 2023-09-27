@@ -6,7 +6,7 @@
     "install": "install.sh",
     "description": "Integration for SPAN Smart Panels - Polyglot v3 NodeServer for Universal Devices Controllers",
     "notice": "",
-    "shortPoll": "60",
+    "shortPoll": "10",
     "longPoll": "600",
 	"logLevel": "WARNING",
     "profile_version": "1.0.1",
