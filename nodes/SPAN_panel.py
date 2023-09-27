@@ -12,7 +12,7 @@ import http.client
 # Standard Library
 from typing import Optional, Any, TYPE_CHECKING
 
-import math
+import math,time
 import xml.etree.ElementTree as ET
 
 LOGGER = udi_interface.LOGGER
@@ -26,6 +26,7 @@ class PanelNode(udi_interface.Node):
     drivers = [
             {'driver': 'TPW', 'value': 0, 'uom': 73},
             {'driver': 'PULSCNT', 'value': 0, 'uom': 56},
+            {'driver': 'TIME', 'value': 0, 'uom': 151},
             {'driver': 'AWAKE', 'value': 1, 'uom': 2}
             ]
 
@@ -130,6 +131,7 @@ class PanelNode(udi_interface.Node):
                 LOGGER.info("\nFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
                 LOGGER.info("\nFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
                 self.setDriver('TPW', (instantGridPowerW-feedthroughPowerW), True, True)
+                self.setDriver('TIME', time.time(), True, True)
             else:
                 LOGGER.info('Skipping query of Panel node {}, using token {}'.format(self.ipAddress,self.token))
             
