@@ -39,17 +39,19 @@ class PanelNode(udi_interface.Node):
         self.count = 0
 
         self.Parameters = Custom(polyglot, 'customparams')
+        self.ipAddress = spanIPAddress
+        self.token = bearerToken
         
-        LOGGER.debug("IP Address:" + spanIPAddress + "; Bearer Token: " + bearerToken)
+        LOGGER.debug("IP Address:" + self.ipAddress + "; Bearer Token: " + self.token)
 
-        self.spanConnection = http.client.HTTPConnection(spanIPAddress)
-        self.payload = ''
-        self.headers = {
-            "Authorization": "Bearer " + bearerToken
+        spanConnection = http.client.HTTPConnection(self.ipAddress)
+        payload = ''
+        headers = {
+            "Authorization": "Bearer " + self.token
         }
-        self.spanConnection.request("GET", "/api/v1/status", self.payload, self.headers)
+        spanConnection.request("GET", "/api/v1/status", payload, headers)
 
-        statusResponse = self.spanConnection.getresponse()
+        statusResponse = spanConnection.getresponse()
         statusData = statusResponse.read()
         statusData = statusData.decode("utf-8")
 
@@ -94,9 +96,14 @@ class PanelNode(udi_interface.Node):
                 # be fancy and display a notice on the polyglot dashboard
                 # self.poly.Notices[self.name] = '{}: Current polling count is {}'.format(self.name, self.count)
         
-                self.spanConnection.request("GET", "/api/v1/panel", self.payload, self.headers)
+                spanConnection = http.client.HTTPConnection(self.ipAddress)
+                payload = ''
+                headers = {
+                    "Authorization": "Bearer " + self.token
+                }
+                spanConnection.request("GET", "/api/v1/panel", payload, headers)
         
-                panelResponse = self.spanConnection.getresponse()
+                panelResponse = spanConnection.getresponse()
                 panelData = panelResponse.read()
                 panelData = panelData.decode("utf-8")
                 panelDataAsXml = ET.fromstring(panelData)
