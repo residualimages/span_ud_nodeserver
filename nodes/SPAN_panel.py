@@ -121,23 +121,23 @@ class PanelNode(udi_interface.Node):
 
                 instantGridPowerW_tuple = panelData.partition("instantGridPowerW")
                 instantGridPowerW = instantGridPowerW_tuple[2]
-                LOGGER.debug("\n1st level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
+                LOGGER.debug("\n\t\t1st level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
                 instantGridPowerW_tuple = instantGridPowerW.partition(",")
                 instantGridPowerW = instantGridPowerW_tuple[0]
-                LOGGER.debug("\n2nd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
+                LOGGER.debug("\n\t\t2nd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
                 instantGridPowerW_tuple = instantGridPowerW.partition(":")
                 instantGridPowerW = instantGridPowerW_tuple[2]
-                LOGGER.debug("\n3rd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")                
+                LOGGER.debug("\n\t\t3rd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")                
                 instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
-                LOGGER.info("\nFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
-                LOGGER.info("\nFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
+                LOGGER.info("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
+                LOGGER.info("\n\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
                 self.setDriver('TPW', (instantGridPowerW-abs(feedthroughPowerW)), True, True)
                 if len(str(instantGridPowerW)) > 0:
                     self.setDriver('TIME', int(time.time()), True, True)
                     self.setDriver('ST', datetime.datetime.fromtimestamp(int(time.time())), True, True)
             else:
-                LOGGER.info('Skipping query of Panel node {}, using token {}'.format(self.ipAddress,self.token))
-                self.setDriver('ST', 'Not Actively Querying' , True, True)
+                LOGGER.info('\n\t\tSkipping query of Panel node {}, using token {}'.format(self.ipAddress,self.token))
+                self.setDriver('ST', "Not Actively Querying" , True, True)
             
     def toggle_monitoring(self,val):
         # On startup this will always go back to true which is the default, but how do we restore the previous user value?
