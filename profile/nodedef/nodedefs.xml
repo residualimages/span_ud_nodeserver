@@ -17,9 +17,42 @@
     <sts>
       <st id="TPW" editor="watt" />
       <st id="PULSCNT" editor="raw" />
+      <st id="CLIEMD" editor="panelgridstatus" />
       <st id="TIME" editor="timestamp" />
       <st id="ST" editor="string" />
       <st id="AWAKE" editor="bool" />
+      <st id="GV0" editor="watt" />
+      <st id="GV1" editor="watt" />
+      <st id="GV2" editor="watt" />
+      <st id="GV3" editor="watt" />
+      <st id="GV4" editor="watt" />
+      <st id="GV5" editor="watt" />
+      <st id="GV6" editor="watt" />
+      <st id="GV7" editor="watt" />
+      <st id="GV8" editor="watt" />
+      <st id="GV9" editor="watt" />
+      <st id="GV10" editor="watt" />
+      <st id="GV11" editor="watt" />
+      <st id="GV12" editor="watt" />
+      <st id="GV13" editor="watt" />
+      <st id="GV14" editor="watt" />
+      <st id="GV15" editor="watt" />
+      <st id="GV16" editor="watt" />
+      <st id="GV17" editor="watt" />
+      <st id="GV18" editor="watt" />
+      <st id="GV19" editor="watt" />
+      <st id="GV20" editor="watt" />
+      <st id="GV21" editor="watt" />
+      <st id="GV22" editor="watt" />
+      <st id="GV23" editor="watt" />
+      <st id="GV24" editor="watt" />
+      <st id="GV25" editor="watt" />
+      <st id="GV26" editor="watt" />
+      <st id="GV27" editor="watt" />
+      <st id="GV28" editor="watt" />
+      <st id="GV29" editor="watt" />
+      <st id="GV30" editor="watt" />
+      <st id="GPV" editor="watt" />
 	  </sts>
     <cmds>
       <sends />
