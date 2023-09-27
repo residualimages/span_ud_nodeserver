@@ -180,21 +180,21 @@ class PanelNode(udi_interface.Node):
                 LOGGER.info("\n\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
                 self.setDriver('TPW', (instantGridPowerW-abs(feedthroughPowerW)), True, True)
 
-                for i in range(1,33):
-                    try:
-                        currentCircuit_tuple = panelData.partition(chr(34) + 'id' + chr(34) + ': ' + str(i))
-                        currentCircuitW = currentCircuit_tuple[2]
-                        LOGGER.debug("\n\t\t1st level Parsed for Circuit " + str(i) + ":\t" + currentCircuitW + "\n")
-                        currentCircuit_tuple = currentCircuitW.partition(chr(34) + 'instantPowerW' + chr(34) + ': ')
-                        currentCircuitW = currentCircuit_tuple[2]
-                        LOGGER.debug("\n\t\t2nd level Parsed for Circuit " + str(i) + ":\t" + currentCircuitW + "\n")
-                        currentCircuit_tuple = currentCircuitW.partition(',')
-                        currentCircuitW = currentCircuit_tuple[0]
-                        LOGGER.debug("\n\t\t3rd level Parsed for Circuit " + str(i) + ":\t" + currentCircuitW + "\n")
-                        currentCircuitW = math.ceil(float(currentCircuitW)*100)/100
-                        LOGGER.info("\n\t\tFinal Level Parsed for Circuit " + str(i) + ":\t" + str(currentCircuitW) + "\n")
-                    except:
-                        LOGGER.info("\n\t\tIssue getting data from Circuit " + str(i) + ".\n")
+                #for i in range(1,33):
+                #    try:
+                #        currentCircuit_tuple = panelData.partition(chr(34) + 'id' + chr(34) + ': ' + str(i))
+                #        currentCircuitW = currentCircuit_tuple[2]
+                #        LOGGER.debug("\n\t\t1st level Parsed for Circuit " + str(i) + ":\t" + currentCircuitW + "\n")
+                #        currentCircuit_tuple = currentCircuitW.partition(chr(34) + 'instantPowerW' + chr(34) + ': ')
+                #        currentCircuitW = currentCircuit_tuple[2]
+                #        LOGGER.debug("\n\t\t2nd level Parsed for Circuit " + str(i) + ":\t" + currentCircuitW + "\n")
+                #        currentCircuit_tuple = currentCircuitW.partition(',')
+                #        currentCircuitW = currentCircuit_tuple[0]
+                #        LOGGER.debug("\n\t\t3rd level Parsed for Circuit " + str(i) + ":\t" + currentCircuitW + "\n")
+                #        currentCircuitW = math.ceil(float(currentCircuitW)*100)/100
+                #        LOGGER.info("\n\t\tFinal Level Parsed for Circuit " + str(i) + ":\t" + str(currentCircuitW) + "\n")
+                #    except:
+                #        LOGGER.info("\n\t\tIssue getting data from Circuit " + str(i) + ".\n")
                 
                 if len(str(instantGridPowerW)) > 0:
                     self.setDriver('TIME', int(time.time()), True, True)
