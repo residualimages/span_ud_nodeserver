@@ -59,6 +59,15 @@ class PanelNode(udi_interface.Node):
 
         LOGGER.info("\nStatus Data: \n\t\t" + statusData + "\n")
 
+        spanConnection.request("GET", "/api/v1/circuits", payload, headers)
+
+        circuitsResponse = spanConnection.getresponse()
+        circuitsData = circuitsResponse.read()
+        circuitsData = circuitsData.decode("utf-8")
+        
+        LOGGER.info("\nCircuits Data: \n\t\t" + statusData + "\n\t\tCount of circuits: " + circuitsData.count('id:') + "\n")
+        self.setDriver('PULSCNT', circuitsData.count('id:'), True, True)
+
         # subscribe to the events we want
         polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
         polyglot.subscribe(polyglot.POLL, self.poll)
