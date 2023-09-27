@@ -22,7 +22,7 @@ class PanelNode(udi_interface.Node):
     id = 'panel'
     drivers = [
             {'driver': 'ST', 'value': 1, 'uom': 2},
-            {'driver': 'GV0', 'value': 1, 'uom': 56},
+            {'driver': 'GV0', 'value': 0, 'uom': 56},
             {'driver': 'GV1', 'value': 1, 'uom': 2}
             ]
 
@@ -80,9 +80,9 @@ class PanelNode(udi_interface.Node):
     '''
     def poll(self, polltype):
         if 'shortPoll' in polltype:
-            currentCount = self.poly.getDriver('GV0')
+            currentCount = self.getDriver('GV0')
             currentCount += 1
-            self.poly.setDriver('GV0', currentCount, True, True)
+            self.setDriver('GV0', currentCount, True, True)
             
             LOGGER.info('Current GV0 for polling on {} is {}'.format(self.name,currentCount))
             
