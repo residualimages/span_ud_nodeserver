@@ -43,8 +43,8 @@ class PanelNode(udi_interface.Node):
         self.Parameters = Custom(polyglot, 'customparams')
         self.ipAddress = spanIPAddress
         self.token = bearerToken
-        
-        LOGGER.debug("IP Address:" + self.ipAddress + "; Bearer Token (last 10 characters): " + self.token[-10:])
+        tokenLastTen = self.token[-10:]
+        LOGGER.debug("IP Address:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen)
 
         spanConnection = http.client.HTTPConnection(self.ipAddress)
         payload = ''
@@ -102,8 +102,8 @@ class PanelNode(udi_interface.Node):
                 # currentCount += 1
                 # self.setDriver('PULSCNT', currentCount, True, True)
                 # LOGGER.info('Current PULSCNT for polling on {} is {}'.format(self.name,currentCount))
-
-                LOGGER.info('About to query Panel node of {}, using token ending in {}'.format(self.ipAddress,self.token[-10:]))
+                tokenLastTen = self.token[-10:]
+                LOGGER.info('About to query Panel node of {}, using token ending in {}'.format(self.ipAddress,tokenLastTen))
         
                 spanConnection = http.client.HTTPConnection(self.ipAddress)
                 payload = ''
@@ -116,9 +116,11 @@ class PanelNode(udi_interface.Node):
                 panelData = panelResponse.read()
                 panelData = panelData.decode("utf-8")
                 LOGGER.info("\nPanel Data: \n\t\t" + panelData + "\n")
+               
                 panelDataAsXml = ET.fromstring(panelData)
                 LOGGER.info('panelDataAsXml: {}'.format(panelDataAsXml))
                 #feedthroughPowerW = panelDataAsXml.find('feedthroughPowerW')
+                
                 feedthroughPowerW_tuple = panelData.partition("feedthroughPowerW")
                 feedthroughPowerW = feedthroughPowerW_tuple[2]
                 LOGGER.debug("\n\t\t1st level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
@@ -147,7 +149,8 @@ class PanelNode(udi_interface.Node):
                     self.setDriver('TIME', int(time.time()), True, True)
                     self.setDriver('ST', datetime.datetime.fromtimestamp(int(time.time())), True, True)
             else:
-                LOGGER.info('\n\t\tSkipping query of Panel node {}, using token {}'.format(self.ipAddress,self.token))
+                tokenLastTen = self.token[-10:]
+                LOGGER.info('\n\t\tSkipping query of Panel node {}, using token {}'.format(self.ipAddress,tkenLastToken))
                 self.setDriver('ST', "Not Actively Querying" , True, True)
             
     def toggle_monitoring(self,val):
