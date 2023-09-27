@@ -6,4 +6,7 @@
 	<editor id="raw">
 		<range uom="56" min="0" max="20000" prec="0" /> 
 	</editor>
+	<editor id="watt">
+		<range uom="73" min="-24000" max="24000" prec="2" /> 
+	</editor>
 </editors>
