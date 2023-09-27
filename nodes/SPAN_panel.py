@@ -131,7 +131,7 @@ class PanelNode(udi_interface.Node):
                 LOGGER.info("\nFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
                 LOGGER.info("\nFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
                 self.setDriver('TPW', (instantGridPowerW-feedthroughPowerW), True, True)
-                self.setDriver('TIME', time.time(), True, True)
+                self.setDriver('TIME', int(time.time()), True, True)
             else:
                 LOGGER.info('Skipping query of Panel node {}, using token {}'.format(self.ipAddress,self.token))
             
