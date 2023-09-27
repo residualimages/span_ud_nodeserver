@@ -192,7 +192,11 @@ class PanelNode(udi_interface.Node):
                         currentCircuitW = currentCircuit_tuple[0]
                         LOGGER.debug("\n\t\t3rd level Parsed for Circuit " + str(i) + ":\t" + currentCircuitW + "\n")
                         currentCircuitW = math.ceil(float(currentCircuitW)*100)/100
-                        LOGGER.info("\n\t\tFinal Level Parsed for Circuit " + str(i) + ":\t" + str(currentCircuitW) + "\n")
+                        LOGGER.debug("\n\t\tFinal Level Parsed for Circuit " + str(i) + ":\t" + str(currentCircuitW) + "\n")
+                        if i < 32:
+                            self.setDriver('GV' + str(i-1), currentCircuitW, True, True)
+                        else:
+                            self.setDriver('GPV', currentCircuitW, True, True)
                     except:
                         LOGGER.info("\n\t\tIssue getting data from Circuit " + str(i) + ".\n")
                 
