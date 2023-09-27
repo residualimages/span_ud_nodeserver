@@ -44,7 +44,7 @@ class PanelNode(udi_interface.Node):
         self.ipAddress = spanIPAddress
         self.token = bearerToken
         
-        LOGGER.debug("IP Address:" + self.ipAddress + "; Bearer Token: " + self.token)
+        LOGGER.debug("IP Address:" + self.ipAddress + "; Bearer Token (last 10 characters): " + self.token[:-10])
 
         spanConnection = http.client.HTTPConnection(self.ipAddress)
         payload = ''
@@ -93,7 +93,7 @@ class PanelNode(udi_interface.Node):
                 self.setDriver('PULSCNT', currentCount, True, True)
                 #LOGGER.info('Current PULSCNT for polling on {} is {}'.format(self.name,currentCount))
 
-                LOGGER.info('About to query Panel node of {}, using token {}'.format(self.ipAddress,self.token))
+                LOGGER.info('About to query Panel node of {}, using token ending in {}'.format(self.ipAddress,self.token[:-10]))
         
                 spanConnection = http.client.HTTPConnection(self.ipAddress)
                 payload = ''
@@ -110,13 +110,13 @@ class PanelNode(udi_interface.Node):
                 #feedthroughPowerW = panelDataAsXml.find('feedthroughPowerW')
                 feedthroughPowerW_tuple = panelData.partition("feedthroughPowerW")
                 feedthroughPowerW = feedthroughPowerW_tuple[2]
-                LOGGER.debug("\n1st level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
+                LOGGER.debug("\n\t\t1st level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
                 feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
                 feedthroughPowerW = feedthroughPowerW_tuple[0]
-                LOGGER.debug("\n2nd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
+                LOGGER.debug("\n\t\t2nd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
                 feedthroughPowerW_tuple = feedthroughPowerW.partition(":")
                 feedthroughPowerW = feedthroughPowerW_tuple[2]
-                LOGGER.debug("\n3rd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")                
+                LOGGER.debug("\n\t\t3rd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")                
                 feedthroughPowerW = math.ceil(float(feedthroughPowerW)*100)/100
 
                 instantGridPowerW_tuple = panelData.partition("instantGridPowerW")
