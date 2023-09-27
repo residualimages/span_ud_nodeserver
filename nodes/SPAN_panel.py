@@ -30,6 +30,7 @@ class PanelNode(udi_interface.Node):
             {'driver': 'TIME', 'value': 0, 'uom': 151},
             {'driver': 'ST', 'value': 'Initializing...', 'uom': 145},
             {'driver': 'AWAKE', 'value': 1, 'uom': 2},
+            {'driver': 'GV0', 'value': 0, 'uom': 73},
             {'driver': 'GV1', 'value': 0, 'uom': 73},
             {'driver': 'GV2', 'value': 0, 'uom': 73},
             {'driver': 'GV3', 'value': 0, 'uom': 73},
@@ -99,6 +100,7 @@ class PanelNode(udi_interface.Node):
         
         LOGGER.info("\nCircuits Data: \n\t\t" + circuitsData + "\n\t\tCount of circuits: " + str(circuitsData.count('id:')) + "\n")
         self.setDriver('PULSCNT', circuitsData.count(chr(34) + 'id' + chr(34) + ':'), True, True)
+        self.setDriver('CLIEMD', 1, True, True)
 
         # subscribe to the events we want
         polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
@@ -177,6 +179,20 @@ class PanelNode(udi_interface.Node):
                 LOGGER.info("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
                 LOGGER.info("\n\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
                 self.setDriver('TPW', (instantGridPowerW-abs(feedthroughPowerW)), True, True)
+
+                for i in range(1,33):
+                    currentCircuit_tuple = panelData.partition(chr(34) + 'id' + chr(34) + ': ')
+                    currentCircuitW = currentCircuit_tuple[2]
+                    LOGGER.debug("\n\t\t1st level Parsed for Circuit " + str(i) + ":\t" + currentCircuitW + "\n")
+                    currentCircuit_tuple = currentCircuitW.partition(chr(34) + 'instantPowerW' + chr(34) + ': ')
+                    currentCircuitW = currentCircuit_tuple[2]
+                    LOGGER.debug("\n\t\t2nd level Parsed for Circuit " + str(i) + ":\t" + currentCircuitW + "\n")
+                    currentCircuit_tuple = currentCircuitW.partition(',')
+                    currentCircuitW = currentCircuit_tuple[0]
+                    LOGGER.debug("\n\t\t3rd level Parsed for Circuit " + str(i) + ":\t" + currentCircuitW + "\n")
+                    currentCircuitW = math.ceil(float(currentCircuitW)*100)/100
+                    LOGGER.info("\n\t\tFinal Level Parsed for Circuit " + str(i) + ":\t" + str(currentCircuitW) + "\n")
+                
                 if len(str(instantGridPowerW)) > 0:
                     self.setDriver('TIME', int(time.time()), True, True)
                     self.setDriver('ST', datetime.datetime.fromtimestamp(int(time.time())), True, True)
