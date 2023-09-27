@@ -122,7 +122,7 @@ class PanelNode(udi_interface.Node):
                 feedthroughPowerW = feedthroughPowerW_tuple[2]
                 LOGGER.debug("\n3rd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")                
                 feedthroughPowerW = math.ceil(float(feedthroughPowerW)*100)/100
-                LOGGER.info("\nFinal Level Parsed and rounded feedthroughPowerW:\t" + feedthroughPowerW + "\n")                
+                LOGGER.info("\nFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")                
                 self.setDriver('TPW', feedthroughPowerW, True, True)
             
     def toggle_monitoring(self,val):
