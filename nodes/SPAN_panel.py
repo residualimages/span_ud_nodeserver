@@ -67,7 +67,7 @@ class PanelNode(udi_interface.Node):
     # node not initialized
     def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None):
         if self._initialized:
-            super().setDriver(driver, value, report, force, uom)
+            self.setDriver(driver, value, report, force, uom)
 
     '''
     Read the user entered custom parameters.
