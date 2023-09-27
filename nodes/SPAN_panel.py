@@ -65,9 +65,9 @@ class PanelNode(udi_interface.Node):
     
     # overload the setDriver() of the parent class to short circuit if 
     # node not initialized
-    def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None):
-        if self._initialized:
-            self.setDriver(driver, value, report, force, uom)
+    #def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None):
+    #    if self._initialized:
+    #        super().setDriver(driver, value, report, force, uom)
 
     '''
     Read the user entered custom parameters.
@@ -80,9 +80,9 @@ class PanelNode(udi_interface.Node):
     '''
     def poll(self, polltype):
         if 'shortPoll' in polltype:
-            currentCount = self.getDriver('GV0')
+            currentCount = self.poly.getDriver('GV0')
             currentCount += 1
-            self.setDriver('GV0', currentCount, True, True)
+            self.poly.setDriver('GV0', currentCount, True, True)
             
             LOGGER.info('Current GV0 for polling on {} is {}'.format(self.name,currentCount))
             
