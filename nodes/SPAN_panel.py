@@ -84,7 +84,6 @@ class PanelNode(udi_interface.Node):
     '''
     def poll(self, polltype):
         if 'shortPoll' in polltype:
-            LOGGER.info("{}'s Parameters:".format(self.ipAddress,self.Parameters))
             if self.getDriver('AWAKE') == 1:
                 currentCount = self.getDriver('PULSCNT')
                 currentCount = int(currentCount)
@@ -117,8 +116,20 @@ class PanelNode(udi_interface.Node):
                 feedthroughPowerW = feedthroughPowerW_tuple[2]
                 LOGGER.debug("\n3rd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")                
                 feedthroughPowerW = math.ceil(float(feedthroughPowerW)*100)/100
-                LOGGER.info("\nFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")                
-                self.setDriver('TPW', feedthroughPowerW, True, True)
+
+                instantGridPowerW_tuple = panelData.partition("instantGridPowerW")
+                instantGridPowerW = instantGridPowerW_tuple[2]
+                LOGGER.debug("\n1st level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
+                instantGridPowerW_tuple = instantGridPowerW.partition(",")
+                instantGridPowerW = instantGridPowerW_tuple[0]
+                LOGGER.debug("\n2nd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
+                instantGridPowerW_tuple = instantGridPowerW.partition(":")
+                instantGridPowerW = instantGridPowerW_tuple[2]
+                LOGGER.debug("\n3rd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")                
+                instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
+                LOGGER.info("\nFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
+                LOGGER.info("\nFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
+                self.setDriver('TPW', (instantGridPowerW-feedthroughPowerW), True, True)
             else:
                 LOGGER.info('Skipping query of Panel node {}, using token {}'.format(self.ipAddress,self.token))
             
