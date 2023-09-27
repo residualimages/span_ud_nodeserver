@@ -113,9 +113,10 @@ class PanelNode(udi_interface.Node):
                 #feedthroughPowerW = panelDataAsXml.find('feedthroughPowerW')
                 feedthroughPowerW_tuple = panelData.partition("feedthroughPowerW")
                 feedthroughPowerW = feedthroughPowerW_tuple[2]
+                LOGGER.info("\n1st level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
                 feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
-                feedthroughPowerW = feedthroughPowerW_tuple[2]
-                LOGGER.info("\nParsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
+                feedthroughPowerW = feedthroughPowerW_tuple[0]
+                LOGGER.info("\n2nd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
                 #feedthroughPowerW = math.ceil(feedthroughPowerW*100)/100
                 #self.setDriver('TPW', feedthroughPowerW, True, True)
             
