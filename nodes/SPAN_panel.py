@@ -66,7 +66,7 @@ class PanelNode(udi_interface.Node):
         circuitsData = circuitsData.decode("utf-8")
         
         LOGGER.info("\nCircuits Data: \n\t\t" + circuitsData + "\n\t\tCount of circuits: " + str(circuitsData.count('id:')) + "\n")
-        self.setDriver('PULSCNT', circuitsData.count('id:'), True, True)
+        self.setDriver('PULSCNT', circuitsData.count(chr(34) + 'id' + chr(34) + ':'), True, True)
 
         # subscribe to the events we want
         polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
