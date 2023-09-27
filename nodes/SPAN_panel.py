@@ -12,6 +12,7 @@ import http.client
 # Standard Library
 from typing import Optional, Any, TYPE_CHECKING
 
+import math
 import xml.etree.ElementTree as ET
 
 LOGGER = udi_interface.LOGGER
