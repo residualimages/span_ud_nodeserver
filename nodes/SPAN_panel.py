@@ -80,17 +80,18 @@ class PanelNode(udi_interface.Node):
     '''
     def poll(self, polltype):
         if 'shortPoll' in polltype:
-            currentCount = self.getDriver('GV0')
-            currentCount += 1
-            self.setDriver('GV0', currentCount, True, True)
-            
-            LOGGER.info('Current GV0 for polling on {} is {}'.format(self.name,currentCount))
-            
-            self.count += 1
-            LOGGER.info('Current self.count for polling on {} is {}'.format(self.name,self.count))
-          
-            # be fancy and display a notice on the polyglot dashboard
-            # self.poly.Notices[self.name] = '{}: Current polling count is {}'.format(self.name, self.count)
+            if self.getDriver('GV1') == 1:
+                currentCount = self.getDriver('GV0')
+                currentCount += 1
+                self.setDriver('GV0', currentCount, True, True)
+                
+                LOGGER.info('Current GV0 for polling on {} is {}'.format(self.name,currentCount))
+                
+                self.count += 1
+                LOGGER.info('Current self.count for polling on {} is {}'.format(self.name,self.count))
+              
+                # be fancy and display a notice on the polyglot dashboard
+                # self.poly.Notices[self.name] = '{}: Current polling count is {}'.format(self.name, self.count)
 
     def toggle_monitoring(self,val):
         # On startup this will always go back to true which is the default, but how do we restore the previous user value?
