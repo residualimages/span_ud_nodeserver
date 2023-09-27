@@ -1,12 +1,12 @@
 ND-ctl-NAME = SPAN Smart Panels
-ND-ctl-ICON = Output
+ND-ctl-ICON = Electricity
 ST-ctl-ST-NAME = NodeServer Online
 ST-ctl-GV0-NAME = Number of SPAN Panels
-CMD-ctl-DISCOVER-NAME = Re-Discover
+CMD-ctl-DISCOVER-NAME = Re-Discover (Not Implemented)
 
 ND-panel-NAME = SPAN Panel
-ND-panel-ICON = Output
-ST-panel-ST-NAME = Online
+ND-panel-ICON = EnergyMonitor
+ST-panel-TPW-NAME = Total Power Used by Panel
 ST-panel-PULSCNT-NAME = Polling Count
 ST-panel-AWAKE-NAME = Being Monitored?
 CMD-TOGGLE_MONITORING-NAME = Toggle Monitoring
