@@ -22,8 +22,8 @@ class PanelNode(udi_interface.Node):
     id = 'panel'
     drivers = [
             {'driver': 'ST', 'value': 1, 'uom': 2},
-            {'driver': 'GV0', 'value': 0, 'uom': 56},
-            {'driver': 'GV1', 'value': 1, 'uom': 2}
+            {'driver': 'PULSCNT', 'value': 0, 'uom': 56},
+            {'driver': 'AWAKE', 'value': 1, 'uom': 2}
             ]
 
     def __init__(self, polyglot, parent, address, name, spanIPAddress, bearerToken):
@@ -80,15 +80,14 @@ class PanelNode(udi_interface.Node):
     '''
     def poll(self, polltype):
         if 'shortPoll' in polltype:
-            if self.getDriver('GV1') == 1:
-                currentCount = self.getDriver('GV0')
+            if self.getDriver('AWAKE') == 1:
+                currentCount = self.getDriver('PULSCNT')
                 currentCount += 1
-                self.setDriver('GV0', currentCount, True, True)
-                
-                LOGGER.info('Current GV0 for polling on {} is {}'.format(self.name,currentCount))
+                self.setDriver('PULSCNT', currentCount, True, True)
+                LOGGER.info('Current PULSCNT for polling on {} is {}'.format(self.name,currentCount))
                 
                 self.count += 1
-                LOGGER.info('Current self.count for polling on {} is {}'.format(self.name,self.count))
+                #LOGGER.info('Current self.count for polling on {} is {}'.format(self.name,self.count))
               
                 # be fancy and display a notice on the polyglot dashboard
                 # self.poly.Notices[self.name] = '{}: Current polling count is {}'.format(self.name, self.count)
@@ -96,10 +95,10 @@ class PanelNode(udi_interface.Node):
     def toggle_monitoring(self,val):
         # On startup this will always go back to true which is the default, but how do we restore the previous user value?
         LOGGER.debug(f'{self.address} val={val}')
-        self.setDriver('GV1', val, 2, True)
+        self.setDriver('AWAKE', val, True, True)
 
     def cmd_toggle_monitoring(self,val):
-        val = self.getDriver('GV1')
+        val = self.getDriver('AWAKE')
         LOGGER.debug(f'{self.address} val={val}')
         if val == 1:
             val = 0
