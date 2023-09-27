@@ -12,4 +12,7 @@
 	<editor id="timestamp">
 		<range uom="151" min="0" max="2147483647" prec="0"/> 
 	</editor>
+	<editor id="string">
+		<range uom="145" min="0" max="0" prec="0"/> 
+	</editor>
 </editors>
