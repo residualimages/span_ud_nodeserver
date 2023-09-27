@@ -42,14 +42,14 @@ class PanelNode(udi_interface.Node):
         
         LOGGER.debug("IP Address:" + spanIPAddress + "; Bearer Token: " + bearerToken)
 
-        spanConnection = http.client.HTTPConnection(spanIPAddress)
-        payload = ''
-        headers = {
+        self.spanConnection = http.client.HTTPConnection(spanIPAddress)
+        self.payload = ''
+        self.headers = {
             "Authorization": "Bearer " + bearerToken
         }
-        spanConnection.request("GET", "/api/v1/status", payload, headers)
+        self.spanConnection.request("GET", "/api/v1/status", self.payload, self.headers)
 
-        statusResponse = spanConnection.getresponse()
+        statusResponse = self.spanConnection.getresponse()
         statusData = statusResponse.read()
         statusData = statusData.decode("utf-8")
 
@@ -94,9 +94,9 @@ class PanelNode(udi_interface.Node):
                 # be fancy and display a notice on the polyglot dashboard
                 # self.poly.Notices[self.name] = '{}: Current polling count is {}'.format(self.name, self.count)
         
-                spanConnection.request("GET", "/api/v1/panel", payload, headers)
+                self.spanConnection.request("GET", "/api/v1/panel", self.payload, self.headers)
         
-                panelResponse = spanConnection.getresponse()
+                panelResponse = self.spanConnection.getresponse()
                 panelData = panelResponse.read()
                 panelData = panelData.decode("utf-8")
                 panelDataAsXml = ET.fromstring(panelData)
