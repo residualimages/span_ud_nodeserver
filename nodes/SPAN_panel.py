@@ -37,7 +37,6 @@ class PanelNode(udi_interface.Node):
         self._initialized: bool = False
         
         self.poly = polyglot
-        self.count = 0
 
         self.Parameters = Custom(polyglot, 'customparams')
         self.ipAddress = spanIPAddress
@@ -85,17 +84,13 @@ class PanelNode(udi_interface.Node):
     '''
     def poll(self, polltype):
         if 'shortPoll' in polltype:
+            LOGGER.info("{}'s Parameters:".format(self.ipAddress,self.Parameters))
             if self.getDriver('AWAKE') == 1:
                 currentCount = self.getDriver('PULSCNT')
+                currentCount = int(currentCount)
                 currentCount += 1
                 self.setDriver('PULSCNT', currentCount, True, True)
                 #LOGGER.info('Current PULSCNT for polling on {} is {}'.format(self.name,currentCount))
-                
-                self.count += 1
-                #LOGGER.info('Current self.count for polling on {} is {}'.format(self.name,self.count))
-              
-                # be fancy and display a notice on the polyglot dashboard
-                # self.poly.Notices[self.name] = '{}: Current polling count is {}'.format(self.name, self.count)
 
                 LOGGER.info('About to query Panel node of {}, using token {}'.format(self.ipAddress,self.token))
         
@@ -124,6 +119,8 @@ class PanelNode(udi_interface.Node):
                 feedthroughPowerW = math.ceil(float(feedthroughPowerW)*100)/100
                 LOGGER.info("\nFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")                
                 self.setDriver('TPW', feedthroughPowerW, True, True)
+            else:
+                LOGGER.info('Skipping query of Panel node {}, using token {}'.format(self.ipAddress,self.token))
             
     def toggle_monitoring(self,val):
         # On startup this will always go back to true which is the default, but how do we restore the previous user value?
