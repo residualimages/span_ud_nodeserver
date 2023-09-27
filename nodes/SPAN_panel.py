@@ -83,11 +83,12 @@ class PanelNode(udi_interface.Node):
 
         if 'shortPoll' in polltype:
             currentCount = self.getDriver('GV0')
-            
-            LOGGER.info(f'{self.name} Polling...')
+            currentCount +=1
+            self.setDriver('GV0', currentCount+1, 56, True)
+            LOGGER.info('Current GV0 for polling is {}'.format(currentCount)
 
-            self.setDriver('GV0', (currentCount+1), 56, True)
             self.count +=1
+            LOGGER.info('Current self.count for polling is {}'.format(self.count)
 
             # be fancy and display a notice on the polyglot dashboard
             # self.poly.Notices[self.name] = '{}: Current polling count is {}'.format(self.name, self.count)
