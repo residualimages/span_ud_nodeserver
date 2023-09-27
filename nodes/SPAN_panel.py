@@ -87,11 +87,12 @@ class PanelNode(udi_interface.Node):
     def poll(self, polltype):
         if 'shortPoll' in polltype:
             if self.getDriver('AWAKE') == 1:
-                currentCount = self.getDriver('PULSCNT')
-                currentCount = int(currentCount)
-                currentCount += 1
-                self.setDriver('PULSCNT', currentCount, True, True)
-                #LOGGER.info('Current PULSCNT for polling on {} is {}'.format(self.name,currentCount))
+                # back when the PULSCNT was being used to increment and show if Querying was Active vs Inactive (via AWAKE)...
+                # currentCount = self.getDriver('PULSCNT')
+                # currentCount = int(currentCount)
+                # currentCount += 1
+                # self.setDriver('PULSCNT', currentCount, True, True)
+                # LOGGER.info('Current PULSCNT for polling on {} is {}'.format(self.name,currentCount))
 
                 LOGGER.info('About to query Panel node of {}, using token ending in {}'.format(self.ipAddress,self.token[-10:]))
         
@@ -106,7 +107,8 @@ class PanelNode(udi_interface.Node):
                 panelData = panelResponse.read()
                 panelData = panelData.decode("utf-8")
                 LOGGER.info("\nPanel Data: \n\t\t" + panelData + "\n")
-                #panelDataAsXml = ET.fromstring(panelData)
+                panelDataAsXml = ET.fromstring(panelData)
+                LOGGER.info('panelDataAsXml: {}'.format(panelDataAsXml))
                 #feedthroughPowerW = panelDataAsXml.find('feedthroughPowerW')
                 feedthroughPowerW_tuple = panelData.partition("feedthroughPowerW")
                 feedthroughPowerW = feedthroughPowerW_tuple[2]
