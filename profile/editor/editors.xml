@@ -23,4 +23,13 @@
 			</nls>
 		</range>
 	</editor>
+	<editor id="circuitstatus">
+		<range min="-1" max="1" step="1" prec="0" uom="25">
+			<nls>
+			<e id="-1">Unknown</e>
+			<e id="0">Breaker Open or Tripped (NOT Supplying Power)</e>
+			<e id="1">Breaker Closed (Supplying Power)</e>				
+			</nls>
+		</range>
+	</editor>
 </editors>
