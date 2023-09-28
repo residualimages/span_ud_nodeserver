@@ -16,15 +16,9 @@
 		<range uom="145" min="0" max="0" prec="0"/> 
 	</editor>
 	<editor id="panelgridstatus">
-		<range min="1" max="2" step="1" prec="0" uom="25" nls="IX_panelgridstatus_">
+		<range min="1" max="2" step="1" prec="0" uom="25" nls="IX_panelgridstatus_" />
 	</editor>
 	<editor id="circuitstatus">
-		<range min="-1" max="1" step="1" prec="0" uom="25" nls="IX_circuitstatus_">
-			<nls>
-			<e id="0">Unknown</e>
-			<e id="1">Breaker Open or Tripped (NOT Supplying Power)</e>
-			<e id="2">Breaker Closed (Supplying Power)</e>				
-			</nls>
-		</range>
+		<range min="-1" max="1" step="1" prec="0" uom="25" nls="IX_circuitstatus_" />
 	</editor>
 </editors>
