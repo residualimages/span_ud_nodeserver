@@ -63,4 +63,25 @@
       </accepts>
     </cmds>
   </nodeDef>
+  <nodeDef id="circuit" nodeType="139" nls="circuit">
+    <sts>
+      <st id="TPW" editor="watt" />
+      <st id="PULSCNT" editor="raw" />
+      <st id="CLIEMD" editor="circuitstatus" />
+      <st id="TIME" editor="timestamp" />
+      <st id="ST" editor="string" />
+      <st id="AWAKE" editor="bool" />
+      <st id="GV1" editor="raw" />
+      <st id="GV2" editor="raw" />
+      <st id="GV3" editor="raw" />
+      <st id="GV4" editor="raw" />
+	  </sts>
+    <cmds>
+      <sends />
+	    <accepts>
+        <cmd id="TOGGLE_CIRCUIT_MONITORING">
+          <p id="" editor="bool" init="AWAKE" />
+        </cmd>
+      </accepts>
+    </cmds>
 </nodeDefs>
