@@ -135,28 +135,28 @@ class CircuitNode(udi_interface.Node):
                 designatedCircuitInstantPowerW = math.ceil(float(designatedCircuitInstantPowerW)*100)/100
               
                 if designatedCircuitStatus == "CLOSED":
-                  self.setDriver('CLIEMD', 1, True, True)
+                  self.setDriver('CLIEMD', 2, True, True)
                 else if designatedCircuitStatus == "OPEN":
-                  self.setDriver('CLIEMD', 0, True, True)
+                  self.setDriver('CLIEMD', 1, True, True)
                 else:
-                  self.setDriver('CLIEMD', -1, True, True)
+                  self.setDriver('CLIEMD', 0, True, True)
                 
                 self.setDriver('TPW', abs(designatedCircuitInstantPowerW), True, True)
 
-    def toggle_monitoring(self,val):
+    def toggle_circuit_monitoring(self,val):
         # On startup this will always go back to true which is the default, but how do we restore the previous user value?
         LOGGER.debug(f'{self.address} val={val}')
         self.setDriver('AWAKE', val, True, True)
 
-    def cmd_toggle_monitoring(self,val):
+    def cmd_toggle_circuit_monitoring(self,val):
         val = self.getDriver('AWAKE')
         LOGGER.debug(f'{self.address} val={val}')
         if val == 1:
             val = 0
         else:
             val = 1
-        self.toggle_monitoring(val)
+        self.toggle_circuit_monitoring(val)
 
     commands = {
-        "TOGGLE_MONITORING": cmd_toggle_monitoring,
+        "TOGGLE_CIRCUIT_MONITORING": cmd_toggle_circuit_monitoring,
     }
