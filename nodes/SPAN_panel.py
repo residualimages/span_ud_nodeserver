@@ -8,6 +8,7 @@ MIT License
 import udi_interface
 import sys
 import http.client
+from nodes import SPAN_circuit
 
 # Standard Library
 from typing import Optional, Any, TYPE_CHECKING
@@ -102,9 +103,12 @@ class PanelNode(udi_interface.Node):
         self.setDriver('PULSCNT', circuitsData.count(chr(34) + 'id' + chr(34) + ':'), True, True)
         self.setDriver('CLIEMD', 1, True, True)
 
+        self.createChildren()
+        
         # subscribe to the events we want
-        polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
+        #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
         polyglot.subscribe(polyglot.POLL, self.poll)
+        polyglot.subscribe(polyglot.STOP, self.stop)
         
     # called by the interface after the node data has been put in the Polyglot DB
     # and the node created/updated in the ISY
@@ -225,3 +229,32 @@ class PanelNode(udi_interface.Node):
     commands = {
         "TOGGLE_MONITORING": cmd_toggle_monitoring,
     }
+
+    '''
+    Create the children nodes.  Since this will be called anytime the
+    user changes the number of nodes and the new number may be less
+    than the previous number, we need to make sure we create the right
+    number of nodes.  Because this is just a simple example, we'll first
+    delete any existing nodes then create the number requested.
+    '''
+    def createChildren(self):
+        # delete any existing nodes
+        nodes = self.poly.getNodes()
+        for node in nodes:
+            if node != 'controller':   # but not the controller node
+                # self.poly.delNode(node)
+                LOGGER.debug("\n\tNode '" + node + "' found, and would be deleting in CreateChildren (except it's commented out).\n")
+
+        LOGGER.debug("\nHere is where we'll be creating Circuit children nodes. It should be a total of " + str(self.getDriver('PULSCNT')) + " child nodes.\n")
+
+    '''
+    Change all the child node active status drivers to false
+    TBD: is this needed on Circuit children via Panel parent?
+    '''
+    def stop(self):
+        nodes = self.poly.getNodes()
+        for node in nodes:
+            if node != 'controller':   # but not the controller node
+                #nodes[node].setDriver('AWAKE', 0, True, True)
+                LOGGER.debug("\n\tNode '" + node + "' found, and would be set to AWAKE = 0 in Stop (except it's commented out).\n")
+
