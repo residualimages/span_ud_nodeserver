@@ -136,7 +136,7 @@ class CircuitNode(udi_interface.Node):
               
                 if designatedCircuitStatus == "CLOSED":
                   self.setDriver('CLIEMD', 2, True, True)
-                else if designatedCircuitStatus == "OPEN":
+                elif designatedCircuitStatus == "OPEN":
                   self.setDriver('CLIEMD', 1, True, True)
                 else:
                   self.setDriver('CLIEMD', 0, True, True)
