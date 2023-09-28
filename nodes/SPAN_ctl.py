@@ -10,7 +10,7 @@ import sys
 import time
 import string
 import re
-from nodes import SPAN_panel
+from nodes import SPAN_panel,SPAN_circuit
 
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
