@@ -85,7 +85,7 @@ class CircuitNode(udi_interface.Node):
     
             for i in range(0,designatedCircuitTabsCount):
                 LOGGER.debug("\n\t\tIn Circuit " + self.circuitID + ", Tab # " + str(i) + " corresponds to breaker number:\n\t\t\t" + designatedCircuitTabsArray[i] + "\n")
-                self.setDriver('GV' + str(i),designatedCircuitTabsArray[i], True, True)
+                self.setDriver('GV' + str(i+1), designatedCircuitTabsArray[i], True, True)
 
             self.setDriver('TIME', int(time.time()), True, True)
             self.setDriver('ST', datetime.datetime.fromtimestamp(int(time.time())), True, True)
