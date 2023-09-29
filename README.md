@@ -20,13 +20,13 @@ The settings for this node are:
    * ;-delimited list of IP address(es) of the SPAN Panel(s)
 
 #### Access Token(s)
-   * ;-delimited list of Access Token(s) for the corresonding SPAN Panel IP Address(es) 
+   * ;-delimited list of Access Token(s) for the corresponding SPAN Panel IP Address(es) 
 
 
 ## Requirements
 
 1. Polyglot V3.
-2. ISY firmware 5.3.x or later
+2. ISY firmware 5.6.4 or later (due to String and Unix timestamp type UOMs)
 
 # Release Notes
 
