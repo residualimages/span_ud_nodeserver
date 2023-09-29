@@ -4,7 +4,7 @@ ST-ctl-ST-NAME = NodeServer Online
 ST-ctl-GV0-NAME = Number of SPAN Panels
 CMD-ctl-DISCOVER-NAME = Re-Discover (Not Implemented)
 
-ND-panel-NAME = SPAN Panel
+ND-panel-NAME = SPAN Panel - CIRCUITS
 ND-panel-ICON = Electricity
 ST-panel-ST-NAME = Total Power Used by Panel
 ST-panel-PULSCNT-NAME = Circuit Count
