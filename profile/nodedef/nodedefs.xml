@@ -15,11 +15,11 @@
 
   <nodeDef id="panel" nls="panel">
     <sts>
-      <st id="TPW" editor="watt" />
+      <st id="ST" editor="watt" />
       <st id="PULSCNT" editor="raw" />
       <st id="CLIEMD" editor="panelgridstatus" />
       <st id="TIME" editor="timestamp" />
-      <st id="ST" editor="string" />
+      <st id="TIMEREM" editor="string" />
       <st id="AWAKE" editor="bool" />
       <st id="GV0" editor="watt" />
       <st id="GV1" editor="watt" />
@@ -66,11 +66,11 @@
 	
   <nodeDef id="circuit" nls="circuit">
     <sts>
-      <st id="TPW" editor="watt" />
+      <st id="ST" editor="watt" />
       <st id="PULSCNT" editor="raw" />
       <st id="CLIEMD" editor="circuitstatus" />
       <st id="TIME" editor="timestamp" />
-      <st id="ST" editor="string" />
+      <st id="TIMEREM" editor="string" />
       <st id="AWAKE" editor="bool" />
       <st id="GV1" editor="raw" />
       <st id="GV2" editor="raw" />
