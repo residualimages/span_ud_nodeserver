@@ -9,7 +9,7 @@ import udi_interface
 import sys
 import http.client
 
-from nodes import *
+#from nodes/SPAN_ctl.py import getValidNodeAddress,getValidNodeAddress
 
 # Standard Library
 from typing import Optional, Any, TYPE_CHECKING
