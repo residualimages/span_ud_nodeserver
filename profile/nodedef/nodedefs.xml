@@ -64,7 +64,7 @@
     </cmds>
   </nodeDef>
 	
-  <nodeDef id="circuit" nodeType="139" nls="circuit">
+  <nodeDef id="circuit" nls="circuit">
     <sts>
       <st id="TPW" editor="watt" />
       <st id="PULSCNT" editor="raw" />
