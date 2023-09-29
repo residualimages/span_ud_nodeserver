@@ -149,8 +149,10 @@ class CircuitNode(udi_interface.Node):
             if self.getDriver('AWAKE') == 1:
                 tokenLastTen = self.token[-10:]
                 LOGGER.info('\n\tPOLL About to parse {} Circuit node of {}, using token ending in {}'.format(self.circuitID,self.ipAddress,tokenLastTen))
-                designatedCircuitData_tuple = parent.allCircuitData.partition(self.circuitID)
+                designatedCircuitData_tuple = parent.allCircuitData.partition(chr(34) + self.circuitID + chr(34) + ':')
                 designatedCircuitData = designatedCircuitData_tupple[2]
+                designatedCircuitData_tuple = designatedCircuitData.partition('},')
+                designatedCircuitData = designatedCircuitData_tuple[0] + '}'
         
                 '''
                 spanConnection = http.client.HTTPConnection(self.ipAddress)
