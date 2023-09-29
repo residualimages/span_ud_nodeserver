@@ -288,6 +288,8 @@ class PanelNode(udi_interface.Node):
             current_circuitID = "circuit_" + current_circuitID_tuple[0]
             current_circuitName_tuple = allCircuitsArray[i].partition(chr(34) + 'name' + chr(34) + ':')
             current_circuitName = current_circuitName_tuple[2]
+            current_circuitName_tuple = current_circuitName.partition(',')
+            current_circuitName = current_circuitName_tuple[0]
             title = '{}({})'.format(current_circuitName,current_circuitID)
             title = getValidNodeName(title)
             try:
