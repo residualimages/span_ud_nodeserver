@@ -50,8 +50,8 @@ def getValidNodeName(s: str) -> str:
 '''
 This is our Panel device node. 
 '''
-class PanelNode(udi_interface.Node):
-    id = 'panel'
+class PanelNodeForCircuits(udi_interface.Node):
+    id = 'panelForCircuits'
     drivers = [
             {'driver': 'ST', 'value': 0, 'uom': 73},
             {'driver': 'FREQ', 'value': '???', 'uom': 145},
@@ -95,7 +95,7 @@ class PanelNode(udi_interface.Node):
             ]
 
     def __init__(self, polyglot, parent, address, name, spanIPAddress, bearerToken):
-        super(PanelNode, self).__init__(polyglot, parent, address, name)
+        super(PanelNodeForCircuits, self).__init__(polyglot, parent, address, name)
 
         # set a flag to short circuit setDriver() until the node has been fully
         # setup in the Polyglot DB and the ISY (as indicated by START event)
