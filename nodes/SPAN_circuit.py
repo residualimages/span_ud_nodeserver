@@ -144,12 +144,6 @@ class CircuitNode(udi_interface.Node):
     def poll(self, polltype):
         if 'shortPoll' in polltype:
             if self.getDriver('AWAKE') == 1:
-                # back when the PULSCNT was being used to increment and show if Querying was Active vs Inactive (via AWAKE)...
-                # currentCount = self.getDriver('PULSCNT')
-                # currentCount = int(currentCount)
-                # currentCount += 1
-                # self.setDriver('PULSCNT', currentCount, True, True)
-                # LOGGER.info('Current PULSCNT for polling on {} is {}'.format(self.name,currentCount))
                 tokenLastTen = self.token[-10:]
                 LOGGER.info('\n\tPOLL About to query {} Circuit node of {}, using token ending in {}'.format(self.circuitID,self.ipAddress,tokenLastTen))
         
@@ -187,19 +181,19 @@ class CircuitNode(udi_interface.Node):
                     
                     LOGGER.debug("\n\tPOLL About to set ST to " + str(designatedCircuitInstantPowerW) + " for Circuit " + self.circuitID + ".\n")
                     self.setDriver('ST', abs(designatedCircuitInstantPowerW), True, True)
+
+                    if len(str(designatedCircuitInstantPowerW)) > 0:
+                        nowEpoch = int(time.time())
+                        nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+                        LOGGER.debug("\n\tPOLL about to set TIME and ST; TIME = '" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "'.\n")
+                        self.setDriver('TIME', nowEpoch, True, True)
+                        self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y %H:%M:%S"), True, True)
+                    else:
+                        LOGGER.warning("\n\tPOLL ERROR: Unable to get designatedCircuitInstantPowerW from designatedCircuitData:\n\t\t" + designatedCircuitData + "\n")
+                        self.setDriver('TIMEREM', "POLL Error Querying" , True, True)
                 else:
                     LOGGER.warning("\n\tPOLL Issue getting data for circuit '" + self.circuitID + "'.\n")
                     self.setDriver('TIMEREM', "Error Querying" , True, True)
-                    
-                if len(str(designatedCircuitInstantPowerW)) > 0:
-                    nowEpoch = int(time.time())
-                    nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-                    LOGGER.debug("\n\tPOLL about to set TIME and ST; TIME = '" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "'.\n")
-                    self.setDriver('TIME', nowEpoch, True, True)
-                    self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y %H:%M:%S"), True, True)
-                else:
-                    LOGGER.warning("\n\tPOLL ERROR: Unable to get designatedCircuitInstantPowerW from designatedCircuitData:\n\t\t" + designatedCircuitData + "\n")
-                    self.setDriver('TIMEREM', "POLL Error Querying" , True, True)
             else:
                 LOGGER.debug("\n\t\tSkipping POLL query of Circuit node '" + self.circuitID + "' due to AWAKE=0.\n")
                 self.setDriver('TIMEREM', "Not Actively Querying" , True, True)
