@@ -245,7 +245,7 @@ class PanelNode(udi_interface.Node):
                 self.poly.delNode(node)
 
         how_many = self.getDriver('PULSCNT')
-        LOGGER.debug("\nHere is where we'll be creating Circuit children nodes. It should be a total of " + str(how_man) + " child nodes.\n")
+        LOGGER.debug("\nHere is where we'll be creating Circuit children nodes. It should be a total of " + str(how_many) + " child nodes.\n")
 
         allCircuitsArray = circuitDataString.split(chr(34) + 'id' + chr(34) + ':')
         
