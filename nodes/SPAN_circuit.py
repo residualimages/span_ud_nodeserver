@@ -48,14 +48,14 @@ class CircuitNode(udi_interface.Node):
         self.poly = polyglot
         #self.n_queue = []
 
-        LOGGER.debug("\nSpan Circuit's parent is '" + parent + "' when INIT'ing.\n")
+        LOGGER.debug("\n\tSpan Circuit's parent is '" + parent + "' when INIT'ing.\n")
 
         self.Parameters = Custom(polyglot, 'customparams')
         self.ipAddress = spanIPAddress
         self.token = bearerToken
         self.circuitID = spanCircuitID
         tokenLastTen = self.token[-10:]
-        LOGGER.debug("IP Address for circuit:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen + "; Circuit ID: " + self.circuitID)
+        LOGGER.debug("\n\tIP Address for circuit:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen + "; Circuit ID: " + self.circuitID)
 
         spanConnection = http.client.HTTPConnection(self.ipAddress)
         payload = ''
@@ -63,7 +63,7 @@ class CircuitNode(udi_interface.Node):
             "Authorization": "Bearer " + self.token
         }
      
-        LOGGER.debug("\nAbout to query " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
+        LOGGER.debug("\n\tAbout to query " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
         spanConnection.request("GET", "/api/v1/circuits/" + self.circuitID, payload, headers)
 
         designatedCircuitResponse = spanConnection.getresponse()
@@ -76,7 +76,7 @@ class CircuitNode(udi_interface.Node):
             designatedCircuitTabs_tuple = designatedCircuitTabs.partition("],")
             designatedCircuitTabs = designatedCircuitTabs_tuple[0]
           
-            LOGGER.info("\nDesignated Circuit Data: \n\t\t" + designatedCircuitData + "\n\t\tCount of Circuit Breakers In Circuit: " + str(designatedCircuitTabs.count(',')+1) + "\n")
+            LOGGER.info("\n\tDesignated Circuit Data: \n\t\t" + designatedCircuitData + "\n\t\tCount of Circuit Breakers In Circuit: " + str(designatedCircuitTabs.count(',')+1) + "\n")
             self.setDriver('PULSCNT', (designatedCircuitTabs.count(',')+1), True, True)
 
             designatedCircuitTabs = designatedCircuitTabs.replace('[','')
@@ -84,13 +84,13 @@ class CircuitNode(udi_interface.Node):
             designatedCircuitTabsCount = len(designatedCircuitTabsArray)
     
             for i in range(0,designatedCircuitTabsCount):
-                LOGGER.debug("\nIn Circuit " + self.circuitID + ", Tab # " + str(i) + " corresponds to breaker number:\n\t\t" + designatedCircuitTabsArray[i] + "\n")
+                LOGGER.debug("\n\t\tIn Circuit " + self.circuitID + ", Tab # " + str(i) + " corresponds to breaker number:\n\t\t\t" + designatedCircuitTabsArray[i] + "\n")
                 self.setDriver('GV' + str(i),designatedCircuitTabsArray[i], True, True)
 
             self.setDriver('TIME', int(time.time()), True, True)
             self.setDriver('ST', datetime.datetime.fromtimestamp(int(time.time())), True, True)
         else:
-            LOGGER.warning("\nINIT Issue getting data for circuit '" + self.circuitID + "'.\n")
+            LOGGER.warning("\n\tINIT Issue getting data for circuit '" + self.circuitID + "'.\n")
             self.setDriver('ST', "INIT Error Querying" , True, True)
           
         # subscribe to the events we want
@@ -128,7 +128,7 @@ class CircuitNode(udi_interface.Node):
                 # self.setDriver('PULSCNT', currentCount, True, True)
                 # LOGGER.info('Current PULSCNT for polling on {} is {}'.format(self.name,currentCount))
                 tokenLastTen = self.token[-10:]
-                LOGGER.info('About to query {} Circuit node of {}, using token ending in {}'.format(self.circuitID,self.ipAddress,tokenLastTen))
+                LOGGER.info('\n\tAbout to query {} Circuit node of {}, using token ending in {}'.format(self.circuitID,self.ipAddress,tokenLastTen))
         
                 spanConnection = http.client.HTTPConnection(self.ipAddress)
                 payload = ''
@@ -140,7 +140,7 @@ class CircuitNode(udi_interface.Node):
                 designatedCircuitResponse = spanConnection.getresponse()
                 designatedCircuitData = designatedCircuitResponse.read()
                 designatedCircuitData = designatedCircuitData.decode("utf-8")
-                LOGGER.info("\nCircuit Data: \n\t\t" + designatedCircuitData + "\n")
+                LOGGER.info("\n\tPOLL Circuit Data: \n\t\t" + designatedCircuitData + "\n")
 
                 if "name" in designatedCircuitData:
                     designatedCircuitStatus_tuple = designatedCircuitData.partition(chr(34) + "relayState" + chr(34) + ":")
@@ -163,7 +163,7 @@ class CircuitNode(udi_interface.Node):
                     
                     self.setDriver('TPW', abs(designatedCircuitInstantPowerW), True, True)
                 else:
-                    LOGGER.warning("\nPOLL Issue getting data for circuit '" + self.circuitID + "'.\n")
+                    LOGGER.warning("\n\tPOLL Issue getting data for circuit '" + self.circuitID + "'.\n")
                     self.setDriver('ST', "Error Querying" , True, True)
                     
                 if len(str(designatedCircuitInstantPowerW)) > 0:
@@ -178,12 +178,12 @@ class CircuitNode(udi_interface.Node):
 
     def toggle_circuit_monitoring(self,val):
         # On startup this will always go back to true which is the default, but how do we restore the previous user value?
-        LOGGER.debug(f'{self.address} val={val}')
+        LOGGER.debug(f'{self.address} being set via toggle_circuit_monitoring to val={val}')
         self.setDriver('AWAKE', val, True, True)
 
     def cmd_toggle_circuit_monitoring(self,val):
         val = self.getDriver('AWAKE')
-        LOGGER.debug(f'{self.address} val={val}')
+        LOGGER.debug(f'{self.address} being set via cmd_toggle_circuit_monitoring to val={val}')
         if val == 1:
             val = 0
         else:
