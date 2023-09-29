@@ -83,5 +83,6 @@
           <p id="" editor="bool" init="AWAKE" />
         </cmd>
       </accepts>
-    </cmds>
+    </cmds>  
+  </nodeDef>
 </nodeDefs>
