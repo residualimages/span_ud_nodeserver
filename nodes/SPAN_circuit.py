@@ -25,11 +25,11 @@ This is our Circuit device node.
 class CircuitNode(udi_interface.Node):
     id = 'circuit'
     drivers = [
-            {'driver': 'TPW', 'value': 0, 'uom': 73},
+            {'driver': 'ST', 'value': 0, 'uom': 73},
             {'driver': 'PULSCNT', 'value': 0, 'uom': 56},
             {'driver': 'CLIEMD', 'value': 0, 'uom': 25},
             {'driver': 'TIME', 'value': 0, 'uom': 151},
-            {'driver': 'ST', 'value': 'Initializing...', 'uom': 145},
+            {'driver': 'TIMREM', 'value': 'Initializing...', 'uom': 145},
             {'driver': 'AWAKE', 'value': 1, 'uom': 2},
             {'driver': 'GV1', 'value': 'N/A', 'uom': 56},
             {'driver': 'GV2', 'value': 'N/A', 'uom': 56},
@@ -185,24 +185,24 @@ class CircuitNode(udi_interface.Node):
                     else:
                       self.setDriver('CLIEMD', 0, True, True)
                     
-                    LOGGER.debug("\n\tPOLL About to set TPW to " + str(designatedCircuitInstantPowerW) + " for Circuit " + self.circuitID + ".\n")
-                    self.setDriver('TPW', abs(designatedCircuitInstantPowerW), True, True)
+                    LOGGER.debug("\n\tPOLL About to set ST to " + str(designatedCircuitInstantPowerW) + " for Circuit " + self.circuitID + ".\n")
+                    self.setDriver('ST', abs(designatedCircuitInstantPowerW), True, True)
                 else:
                     LOGGER.warning("\n\tPOLL Issue getting data for circuit '" + self.circuitID + "'.\n")
-                    self.setDriver('ST', "Error Querying" , True, True)
+                    self.setDriver('TIMEREM', "Error Querying" , True, True)
                     
                 if len(str(designatedCircuitInstantPowerW)) > 0:
                     nowEpoch = int(time.time())
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                     LOGGER.debug("\n\tPOLL about to set TIME and ST; TIME = '" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "'.\n")
                     self.setDriver('TIME', nowEpoch, True, True)
-                    self.setDriver('ST', nowDT.strftime("%m/%d/%Y %H:%M:%S"), True, True)
+                    self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y %H:%M:%S"), True, True)
                 else:
                     LOGGER.warning("\n\tPOLL ERROR: Unable to get designatedCircuitInstantPowerW from designatedCircuitData:\n\t\t" + designatedCircuitData + "\n")
-                    self.setDriver('ST', "POLL Error Querying" , True, True)
+                    self.setDriver('TIMEREM', "POLL Error Querying" , True, True)
             else:
                 LOGGER.debug("\n\t\tSkipping POLL query of Circuit node '" + self.circuitID + "' due to AWAKE=0.\n")
-                self.setDriver('ST', "Not Actively Querying" , True, True)
+                self.setDriver('TIMEREM', "Not Actively Querying" , True, True)
 
     def toggle_circuit_monitoring(self,val):
         # On startup this will always go back to true which is the default, but how do we restore the previous user value?
