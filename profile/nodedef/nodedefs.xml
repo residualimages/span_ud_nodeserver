@@ -1,6 +1,6 @@
 <nodeDefs>
 
-  <nodeDef id="ctl" nodeType="139" nls="ctl">
+  <nodeDef id="ctl" nls="ctl">
     <sts>
       <st id="ST" editor="bool" />
       <st id="GV0" editor="raw" />
@@ -13,7 +13,7 @@
     </cmds>
   </nodeDef>
 
-  <nodeDef id="panel" nodeType="139" nls="panel">
+  <nodeDef id="panel" nls="panel">
     <sts>
       <st id="TPW" editor="watt" />
       <st id="PULSCNT" editor="raw" />
