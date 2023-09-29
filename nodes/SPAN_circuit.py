@@ -164,7 +164,7 @@ class CircuitNode(udi_interface.Node):
                     else:
                       self.setDriver('CLIEMD', 0, True, True)
                     
-                    LOGGER.debug("\n\tPOLL About to set TPW to " + designatedCircuitInstantPowerW + " for Circuit " + self.circuitID + ".\n")
+                    LOGGER.debug("\n\tPOLL About to set TPW to " + str(designatedCircuitInstantPowerW) + " for Circuit " + self.circuitID + ".\n")
                     self.setDriver('TPW', abs(designatedCircuitInstantPowerW), True, True)
                 else:
                     LOGGER.warning("\n\tPOLL Issue getting data for circuit '" + self.circuitID + "'.\n")
