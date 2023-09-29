@@ -10,10 +10,10 @@
 		<range uom="73" min="-24000" max="24000" prec="2" /> 
 	</editor>
 	<editor id="timestamp">
-		<range uom="151" min="0" max="2147483647" prec="0"/> 
+		<range uom="151" min="0" max="2147483647" prec="0" /> 
 	</editor>
 	<editor id="string">
-		<range uom="145" min="0" max="0" prec="0"/> 
+		<range uom="145" min="0" max="0" prec="0" /> 
 	</editor>
 	<editor id="panelgridstatus">
 		<range min="1" max="2" step="1" prec="0" uom="25" nls="IX_panelgridstatus_" />
