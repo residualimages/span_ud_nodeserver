@@ -49,7 +49,7 @@ ST-panel-GV30-NAME = Breaker 31
 ST-panel-GPV-NAME = Breaker 32
 
 ND-circuit-NAME = SPAN Circuit
-ND-circuit-ICON = Energy Monitor
+ND-circuit-ICON = EnergyMonitor
 ST-circuit-TPW-NAME = Total Power Used by Circuit
 ST-circuit-PULSCNT-NAME = Breaker Count
 ST-circuit-CLIEMD-NAME = Circuit Status
