@@ -150,11 +150,7 @@ class PanelNode(udi_interface.Node):
     '''
     def node_queue(self, data):
         self.n_queue.append(data['address'])
-
-    def wait_for_node_done(self):
-        while len(self.n_queue) == 0:
-            time.sleep(0.1)
-        self.n_queue.pop()
+        
         LOGGER.info("\n\tWAIT FOR NODE CREATION: Fully Complete for Panel " + self.address + "\n")
         if "circuits" in self.circuitsDataCopy:
             LOGGER.info("\n\tINIT Panel node's Circuits Data: \n\t\t" + self.circuitsDataCopy + "\n\t\tCount of circuits: " + str(self.circuitsDataCopy.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
@@ -164,6 +160,11 @@ class PanelNode(udi_interface.Node):
             self.createChildren(self.circuitsDataCopy)
         else:
             LOGGER.warning("\n\tINIT Issue getting Circuits Data for Panel @ " + self.ipAddress + ".\n")
+
+    def wait_for_node_done(self):
+        while len(self.n_queue) == 0:
+            time.sleep(0.1)
+        self.n_queue.pop()
 
     # called by the interface after the node data has been put in the Polyglot DB
     # and the node created/updated in the ISY
