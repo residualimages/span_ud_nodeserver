@@ -139,6 +139,8 @@ class PanelNode(udi_interface.Node):
         #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
         polyglot.subscribe(polyglot.POLL, self.poll)
         polyglot.subscribe(polyglot.STOP, self.stop)
+        polyglot.subscribe(polyglot.START, self.start, address)
+        polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
 
     '''
     node_queue() and wait_for_node_event() create a simple way to wait
