@@ -47,14 +47,14 @@ class CircuitNode(udi_interface.Node):
         self.poly = polyglot
         #self.n_queue = []
 
-        LOGGER.debug("\n\tSpan Circuit's parent is '" + parent + "' when INIT'ing.\n")
+        LOGGER.debug("\n\tINIT Span Circuit's parent is '" + parent + "' when INIT'ing.\n")
 
         self.Parameters = Custom(polyglot, 'customparams')
         self.ipAddress = spanIPAddress
         self.token = bearerToken
         self.circuitID = spanCircuitID
         tokenLastTen = self.token[-10:]
-        LOGGER.debug("\n\tIP Address for circuit:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen + "; Circuit ID: " + self.circuitID)
+        LOGGER.debug("\n\tINIT IP Address for circuit:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen + "; Circuit ID: " + self.circuitID)
 
         spanConnection = http.client.HTTPConnection(self.ipAddress)
         payload = ''
@@ -62,7 +62,7 @@ class CircuitNode(udi_interface.Node):
             "Authorization": "Bearer " + self.token
         }
      
-        LOGGER.debug("\n\tAbout to query " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
+        LOGGER.debug("\n\tINIT About to query " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
         spanConnection.request("GET", "/api/v1/circuits/" + self.circuitID, payload, headers)
 
         designatedCircuitResponse = spanConnection.getresponse()
@@ -75,7 +75,7 @@ class CircuitNode(udi_interface.Node):
             designatedCircuitTabs_tuple = designatedCircuitTabs.partition("],")
             designatedCircuitTabs = designatedCircuitTabs_tuple[0]
           
-            LOGGER.info("\n\tDesignated Circuit Data: \n\t\t" + designatedCircuitData + "\n\t\tCount of Circuit Breakers In Circuit: " + str(designatedCircuitTabs.count(',')+1) + "\n")
+            LOGGER.info("\n\tINIT Designated Circuit Data: \n\t\t" + designatedCircuitData + "\n\t\tCount of Circuit Breakers In Circuit: " + str(designatedCircuitTabs.count(',')+1) + "\n")
             self.setDriver('PULSCNT', (designatedCircuitTabs.count(',')+1), True, True)
 
             designatedCircuitTabs = designatedCircuitTabs.replace('[','')
@@ -130,7 +130,7 @@ class CircuitNode(udi_interface.Node):
                 # self.setDriver('PULSCNT', currentCount, True, True)
                 # LOGGER.info('Current PULSCNT for polling on {} is {}'.format(self.name,currentCount))
                 tokenLastTen = self.token[-10:]
-                LOGGER.info('\n\tAbout to query {} Circuit node of {}, using token ending in {}'.format(self.circuitID,self.ipAddress,tokenLastTen))
+                LOGGER.info('\n\tPOLL About to query {} Circuit node of {}, using token ending in {}'.format(self.circuitID,self.ipAddress,tokenLastTen))
         
                 spanConnection = http.client.HTTPConnection(self.ipAddress)
                 payload = ''
@@ -156,13 +156,15 @@ class CircuitNode(udi_interface.Node):
                     designatedCircuitInstantPowerW = designatedCircuitInstantPowerW_tuple[0]
                     designatedCircuitInstantPowerW = math.ceil(float(designatedCircuitInstantPowerW)*100)/100
                   
-                    if designatedCircuitStatus == "CLOSED":
+                    LOGGER.debug("\n\tPOLL about to evaluate Circuit Status (" + designatedCircuitStatus + ") and set CLIEMD appropriately.\n")
+                    if "CLOSED" in designatedCircuitStatus:
                       self.setDriver('CLIEMD', 2, True, True)
-                    elif designatedCircuitStatus == "OPEN":
+                    elif "OPEN" in designatedCircuitStatus:
                       self.setDriver('CLIEMD', 1, True, True)
                     else:
                       self.setDriver('CLIEMD', 0, True, True)
                     
+                    LOGGER.debug("\n\tPOLL About to set TPW to " + designatedCircuitInstantPowerW + " for Circuit " + self.circuitID + ".\n")
                     self.setDriver('TPW', abs(designatedCircuitInstantPowerW), True, True)
                 else:
                     LOGGER.warning("\n\tPOLL Issue getting data for circuit '" + self.circuitID + "'.\n")
@@ -171,11 +173,11 @@ class CircuitNode(udi_interface.Node):
                 if len(str(designatedCircuitInstantPowerW)) > 0:
                     nowEpoch = int(time.time())
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-                    
+                    LOGGER.debug("\n\tPOLL about to set TIME and ST; TIME = '" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "'.\n")
                     self.setDriver('TIME', nowEpoch, True, True)
-                    self.setDriver('ST', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
+                    self.setDriver('ST', nowDT.strftime("%m/%d/%Y %H:%M:%S"), True, True)
                 else:
-                    LOGGER.warning("\n\tUnable to get designatedCircuitInstantPowerW from designatedCircuitData:\n\t\t" + designatedCircuitData + "\n")
+                    LOGGER.warning("\n\tPOLL ERROR: Unable to get designatedCircuitInstantPowerW from designatedCircuitData:\n\t\t" + designatedCircuitData + "\n")
                     self.setDriver('ST', "POLL Error Querying" , True, True)
             else:
                 LOGGER.debug("\n\t\tSkipping POLL query of Circuit node '" + self.circuitID + "' due to AWAKE=0.\n")
