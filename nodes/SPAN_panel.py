@@ -101,6 +101,7 @@ class PanelNode(udi_interface.Node):
         self._initialized: bool = False
         
         self.poly = polyglot
+        self.n_queue = []
 
         self.Parameters = Custom(polyglot, 'customparams')
         self.ipAddress = spanIPAddress
