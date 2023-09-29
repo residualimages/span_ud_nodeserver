@@ -46,6 +46,7 @@ class CircuitNode(udi_interface.Node):
         self._initialized: bool = False
         
         self.poly = polyglot
+        self.n_queue = []
 
         self.Parameters = Custom(polyglot, 'customparams')
         self.ipAddress = spanIPAddress
@@ -81,7 +82,7 @@ class CircuitNode(udi_interface.Node):
             LOGGER.warning("\nINIT Issue getting data for circuit '" + self.circuitID + "'.\n")
           
         # subscribe to the events we want
-        polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
+        #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
         polyglot.subscribe(polyglot.POLL, self.poll)
         
     # called by the interface after the node data has been put in the Polyglot DB
@@ -151,6 +152,9 @@ class CircuitNode(udi_interface.Node):
                     self.setDriver('TPW', abs(designatedCircuitInstantPowerW), True, True)
                 else:
                     LOGGER.warning("\nPOLL Issue getting data for circuit '" + self.circuitID + "'.\n")
+            else:
+                LOGGER.debug("\n\t\tSkipping POLL query of Circuit node '" + self.circuitID + "' due to AWAKE=0.\n")
+                self.setDriver('ST', "Not Actively Querying" , True, True)
 
     def toggle_circuit_monitoring(self,val):
         # On startup this will always go back to true which is the default, but how do we restore the previous user value?
