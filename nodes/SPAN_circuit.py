@@ -46,7 +46,7 @@ class CircuitNode(udi_interface.Node):
         self._initialized: bool = False
         
         self.poly = polyglot
-        self.n_queue = []
+        #self.n_queue = []
 
         LOGGER.debug("\n\tINIT Span Circuit's parent is '" + parent + "' when INIT'ing.\n")
 
@@ -56,23 +56,6 @@ class CircuitNode(udi_interface.Node):
         self.circuitID = spanCircuitID
         tokenLastTen = self.token[-10:]
         LOGGER.debug("\n\tINIT IP Address for circuit:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen + "; Circuit ID: " + self.circuitID)
-          
-        # subscribe to the events we want
-        #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
-        polyglot.subscribe(polyglot.POLL, self.poll)
-        polyglot.subscribe(polyglot.START, self.start, address)
-        polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
-        
-    '''
-    node_queue() and wait_for_node_event() create a simple way to wait
-    for a node to be created.  The nodeAdd() API call is asynchronous and
-    will return before the node is fully created. Using this, we can wait
-    until it is fully created before we try to use it.
-    '''
-    def node_queue(self, data):
-        self.n_queue.append(data['address'])
-        
-        LOGGER.info("\n\tWAIT FOR NODE CREATION: Fully Complete for Circuit " + self.address + "\n")
 
         self.setDriver('GPV', self.circuitID, True, True)
         
@@ -117,11 +100,28 @@ class CircuitNode(udi_interface.Node):
         else:
             LOGGER.warning("\n\tINIT Issue getting data for circuit '" + self.circuitID + "'.\n")
             self.setDriver('TIMEREM', "INIT Error Querying" , True, True)
+            
+        # subscribe to the events we want
+        #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
+        polyglot.subscribe(polyglot.POLL, self.poll)
+        polyglot.subscribe(polyglot.START, self.start, address)
+        #polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
+        
+    '''
+    node_queue() and wait_for_node_event() create a simple way to wait
+    for a node to be created.  The nodeAdd() API call is asynchronous and
+    will return before the node is fully created. Using this, we can wait
+    until it is fully created before we try to use it.
+    def node_queue(self, data):
+        self.n_queue.append(data['address'])        
+        LOGGER.info("\n\tWAIT FOR NODE CREATION: Fully Complete for Circuit " + self.address + "\n")
+
 
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
             time.sleep(0.1)
         self.n_queue.pop()
+    '''
         
     # called by the interface after the node data has been put in the Polyglot DB
     # and the node created/updated in the ISY
