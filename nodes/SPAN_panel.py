@@ -292,7 +292,7 @@ class PanelNode(udi_interface.Node):
     TODO: Handle fewer circuit nodes by deleting (currently commented out)
     '''
     def createCircuits(self,circuitDataString):
-        '''
+        
         # delete any existing nodes but only under this panel
         currentPanelCircuitPrefix = "s" + self.address.replace('panel_','') + "_circuit_"
         nodes = self.poly.getNodes()
@@ -300,7 +300,7 @@ class PanelNode(udi_interface.Node):
              if currentPanelCircuitPrefix in node:
                 self.poly.delNode(node)
                 LOGGER.debug("\n\tDeleting " + node + " when creating children for " + self.address + ".\n")
-        '''
+        
 
         how_many = self.getDriver('PULSCNT')
         
