@@ -256,8 +256,11 @@ class PanelNode(udi_interface.Node):
                         LOGGER.warning("\n\tPOLL Issue getting data from Breaker " + str(i) + " on Panel node " + format(self.ipAddress) + ".\n")
                 
                 if len(str(instantGridPowerW)) > 0:
-                    self.setDriver('TIME', int(time.time()), True, True)
-                    self.setDriver('ST', datetime.datetime.fromtimestamp(int(time.time())), True, True)
+                    nowEpoch = int(time.time())
+                    nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+                    
+                    self.setDriver('TIME', nowEpoch, True, True)
+                    self.setDriver('ST', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
             else:
                 tokenLastTen = self.token[-10:]
                 LOGGER.debug('\n\tSkipping POLL query of Panel node at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
