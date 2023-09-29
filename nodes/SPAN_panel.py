@@ -285,12 +285,12 @@ class PanelNode(udi_interface.Node):
             address = 'Circuit_{}'.format(i)
             address = getValidNodeAddress(address)
             current_circuitID_tuple = allCircuitsArray[i].partition(',')
-            current_circuitID = "circuit_" + current_circuitID_tuple[0]
+            current_circuitID = current_circuitID_tuple[0].replace(chr(34),'')
             current_circuitName_tuple = allCircuitsArray[i].partition(chr(34) + 'name' + chr(34) + ':')
             current_circuitName = current_circuitName_tuple[2]
             current_circuitName_tuple = current_circuitName.partition(',')
-            current_circuitName = current_circuitName_tuple[0]
-            title = '{}({})'.format(current_circuitName,current_circuitID)
+            current_circuitName = current_circuitName_tuple[0].replace(chr(34),'')
+            title = '{} ({})'.format(current_circuitName,current_circuitID)
             title = getValidNodeName(title)
             try:
                 node = SPAN_circuit.CircuitNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken,current_circuitID)
