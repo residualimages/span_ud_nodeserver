@@ -58,7 +58,8 @@ class CircuitNode(udi_interface.Node):
         LOGGER.debug("\n\tINIT IP Address for circuit:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen + "; Circuit ID: " + self.circuitID)
 
         self.setDriver('GPV', self.circuitID, True, True)
-        
+
+        '''
         spanConnection = http.client.HTTPConnection(self.ipAddress)
         payload = ''
         headers = {
@@ -71,6 +72,14 @@ class CircuitNode(udi_interface.Node):
         designatedCircuitResponse = spanConnection.getresponse()
         designatedCircuitData = designatedCircuitResponse.read()
         designatedCircuitData = designatedCircuitData.decode("utf-8")
+        '''
+        parentPrefix = self.address.partition('_')
+        parentPrefix = parentPrefix.replace('s','panel_')        
+        allCircuitsData = globals()[parentPrefix + '_allCircuitsData']
+        designatedCircuitData_tuple = allCircuitsData.partition(chr(34) + self.circuitID + chr(34) + ':')
+        designatedCircuitData = designatedCircuitData_tupple[2]
+        designatedCircuitData_tuple = designatedCircuitData.partition('},')
+        designatedCircuitData = designatedCircuitData_tuple[0] + '}'
 
         if "name" in designatedCircuitData:
             designatedCircuitTabs_tuple = designatedCircuitData.partition(chr(34) + "tabs" + chr(34) + ":")
@@ -145,9 +154,14 @@ class CircuitNode(udi_interface.Node):
     This is where the real work happens.  When we get a shortPoll, do some work. 
     '''
     def poll(self, polltype):
-        global allCircuitsData,allCircuitsDataUpdated
-        while allCircuitsDataUpdated == 0:
+        parentPrefix = self.address.partition('_')
+        parentPrefix = parentPrefix.replace('s','panel_')
+        
+        while globals()[parentPrefix + '_allCircuitsDataUpdated'] == 0:
             time.sleep(0.1)
+        
+        allCircuitsData = globals()[parentPrefix + '_allCircuitsData']
+            
         if 'shortPoll' in polltype:
             if self.getDriver('AWAKE') == 1:
                 tokenLastTen = self.token[-10:]
