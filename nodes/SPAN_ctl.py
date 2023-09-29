@@ -35,6 +35,7 @@ def getValidNodeName(s: str) -> str:
 
     # first convert unicode quotes to ascii quotes (single and double) and
     # then drop all other non-ascii characters
+    # looks like the Admin Console limits to 29 characters, while the node's name can actually be longer and viewed in PG3
     # TODO: Test ".", "~", and other "special" characters to see if they cause problems
     # TODO: Test Kanji and other international characters with and without ascii converstion
     name = s.translate({ 0x2018:0x27, 0x2019:0x27, 0x201C:0x22, 0x201D:0x22 }).encode("ascii", "ignore").decode("ascii")
@@ -133,7 +134,7 @@ class Controller(udi_interface.Node):
     def start(self):
         self.poly.setCustomParamsDoc()
         # Not necessary to call this since profile_version is used from server.json
-        self.poly.updateProfile()
+        # self.poly.updateProfile()
 
     '''
     Create the controller nodes. 
