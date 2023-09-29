@@ -163,7 +163,7 @@ class Controller(udi_interface.Node):
             current_BearerToken = listOfBearerTokens[i]
             address = 'Panel_{}'.format(i+1)
             address = getValidNodeAddress(address)
-            title = 'Panel @ {}'.format(current_IPaddress)
+            title = 'SPAN Panel @ {}'.format(current_IPaddress)
             title = getValidNodeName(title)
             try:
                 node = SPAN_panel.PanelNode(self.poly, address, address, title, current_IPaddress, current_BearerToken)
