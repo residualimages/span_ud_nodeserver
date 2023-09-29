@@ -85,8 +85,13 @@ class CircuitNode(udi_interface.Node):
     
             for i in range(0,designatedCircuitTabsCount):
                 LOGGER.debug("\nIn Circuit " + self.circuitID + ", Tab # " + str(i) + " corresponds to breaker number:\n\t\t" + designatedCircuitTabsArray[i] + "\n")
+                self.setDriver('GV' + str(i),designatedCircuitTabsArray[i], True, True)
+
+            self.setDriver('TIME', int(time.time()), True, True)
+            self.setDriver('ST', datetime.datetime.fromtimestamp(int(time.time())), True, True)
         else:
             LOGGER.warning("\nINIT Issue getting data for circuit '" + self.circuitID + "'.\n")
+            self.setDriver('ST', "INIT Error Querying" , True, True)
           
         # subscribe to the events we want
         #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
@@ -159,13 +164,14 @@ class CircuitNode(udi_interface.Node):
                     self.setDriver('TPW', abs(designatedCircuitInstantPowerW), True, True)
                 else:
                     LOGGER.warning("\nPOLL Issue getting data for circuit '" + self.circuitID + "'.\n")
+                    self.setDriver('ST', "Error Querying" , True, True)
                     
                 if len(str(designatedCircuitInstantPowerW)) > 0:
                     self.setDriver('TIME', int(time.time()), True, True)
                     self.setDriver('ST', datetime.datetime.fromtimestamp(int(time.time())), True, True)
                 else:
                     LOGGER.warning("\n\tUnable to get designatedCircuitInstantPowerW from designatedCircuitData:\n\t\t" + designatedCircuitData + "\n")
-                    self.setDriver('ST', "Error Querying" , True, True)
+                    self.setDriver('ST', "POLL Error Querying" , True, True)
             else:
                 LOGGER.debug("\n\t\tSkipping POLL query of Circuit node '" + self.circuitID + "' due to AWAKE=0.\n")
                 self.setDriver('ST', "Not Actively Querying" , True, True)
