@@ -99,11 +99,11 @@ class PanelNode(udi_interface.Node):
         circuitsData = circuitsResponse.read()
         circuitsData = circuitsData.decode("utf-8")
         
-        LOGGER.info("\nCircuits Data: \n\t\t" + circuitsData + "\n\t\tCount of circuits: " + str(circuitsData.count('id:')) + "\n")
+        LOGGER.info("\nCircuits Data: \n\t\t" + circuitsData + "\n\t\tCount of circuits: " + str(circuitsData.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
         self.setDriver('PULSCNT', circuitsData.count(chr(34) + 'id' + chr(34) + ':'), True, True)
         self.setDriver('CLIEMD', 1, True, True)
 
-        self.createChildren()
+        self.createChildren(circuitsData)
         
         # subscribe to the events we want
         #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
@@ -237,15 +237,35 @@ class PanelNode(udi_interface.Node):
     number of nodes.  Because this is just a simple example, we'll first
     delete any existing nodes then create the number requested.
     '''
-    def createChildren(self):
+    def createChildren(self,circuitDataString):
         # delete any existing nodes
         nodes = self.poly.getNodes()
         for node in nodes:
-            if node != 'controller':   # but not the controller node
-                # self.poly.delNode(node)
-                LOGGER.debug("\n\tNode '" + node + "' found, and would be deleting in CreateChildren (except it's commented out).\n")
+            if "panel_" not in node:   # but not the panel node
+                self.poly.delNode(node)
 
-        LOGGER.debug("\nHere is where we'll be creating Circuit children nodes. It should be a total of " + str(self.getDriver('PULSCNT')) + " child nodes.\n")
+        how_many = self.getDriver('PULSCNT')
+        LOGGER.debug("\nHere is where we'll be creating Circuit children nodes. It should be a total of " + str(how_man) + " child nodes.\n")
+
+        allCircuitsArray = circuitDataString.split(chr(34) + 'id' + chr(34) + ':')
+        
+        for i in range(0, how_many):
+            LOGGER.debug("\nHere is the currentCircuitData:\n\t\t" + allCircuitsArray[i] + "\n")
+            current_IPaddress = self.ipAddress
+            current_BearerToken = self.token
+            address = 'Circuit_{}'.format(i)
+            address = getValidNodeAddress(address)
+            current_circuitID = "circuit_" + str(i)
+            current_circuitName = "Circuit #" + str(i)
+            title = '{}({})'.format(current_circuitName,current_circuitID)
+            title = getValidNodeName(title)
+            try:
+                node = SPAN_circuit.CircuitNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken,current_circuitID)
+                self.poly.addNode(node)
+                self.wait_for_node_done()
+                node.setDriver('AWAKE', 1, True, True)
+            except Exception as e:
+                LOGGER.error('Failed to create {}: {}'.format(title, e))
 
     '''
     Change all the child node active status drivers to false
@@ -254,7 +274,6 @@ class PanelNode(udi_interface.Node):
     def stop(self):
         nodes = self.poly.getNodes()
         for node in nodes:
-            if node != 'controller':   # but not the controller node
-                #nodes[node].setDriver('AWAKE', 0, True, True)
-                LOGGER.debug("\n\tNode '" + node + "' found, and would be set to AWAKE = 0 in Stop (except it's commented out).\n")
+            if "panel_" not in node:   # but not the panel node
+                nodes[node].setDriver('AWAKE', 0, True, True)
 
