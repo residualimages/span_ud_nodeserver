@@ -137,7 +137,21 @@ class PanelNode(udi_interface.Node):
         #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
         polyglot.subscribe(polyglot.POLL, self.poll)
         polyglot.subscribe(polyglot.STOP, self.stop)
-        
+
+    '''
+    node_queue() and wait_for_node_event() create a simple way to wait
+    for a node to be created.  The nodeAdd() API call is asynchronous and
+    will return before the node is fully created. Using this, we can wait
+    until it is fully created before we try to use it.
+    '''
+    def node_queue(self, data):
+        self.n_queue.append(data['address'])
+
+    def wait_for_node_done(self):
+        while len(self.n_queue) == 0:
+            time.sleep(0.1)
+        self.n_queue.pop()
+    
     # called by the interface after the node data has been put in the Polyglot DB
     # and the node created/updated in the ISY
     def start(self):
@@ -277,7 +291,7 @@ class PanelNode(udi_interface.Node):
         
         allCircuitsArray = circuitDataString.split(chr(34) + 'id' + chr(34) + ':')
         panelNumberPrefix = self.address
-        panelNumberPrefix = panelNumberPrefix.replace('Panel_','')
+        panelNumberPrefix = panelNumberPrefix.replace('panel_','')
 
         LOGGER.debug("\nHere is where we'll be creating Circuit children nodes for " + self.address + ". It should be a total of " + str(how_many) + " child nodes, each with an address starting with P" + panelNumberPrefix + "_...\n")
 
