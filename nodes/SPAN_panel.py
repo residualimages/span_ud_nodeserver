@@ -274,7 +274,7 @@ class PanelNode(udi_interface.Node):
                 #LOGGER.debug("\nWould be deleting " + node + ", but it's commented out.\n")
 
         how_many = self.getDriver('PULSCNT')
-        LOGGER.debug("\nHere is where we'll be creating Circuit children nodes for " + self + ". It should be a total of " + str(how_many) + " child nodes.\n")
+        LOGGER.debug("\nHere is where we'll be creating Circuit children nodes for " + self.address + ". It should be a total of " + str(how_many) + " child nodes.\n")
 
         allCircuitsArray = circuitDataString.split(chr(34) + 'id' + chr(34) + ':')
         
@@ -282,7 +282,7 @@ class PanelNode(udi_interface.Node):
             LOGGER.debug("\nHere is the currentCircuitData:\n\t\t" + allCircuitsArray[i] + "\n")
             current_IPaddress = self.ipAddress
             current_BearerToken = self.token
-            address = self + '_Circuit_{}'.format(i)
+            address = self.address + '_Circuit_{}'.format(i)
             address = getValidNodeAddress(address)
             current_circuitID_tuple = allCircuitsArray[i].partition(',')
             current_circuitID = current_circuitID_tuple[0].replace(chr(34),'')
