@@ -63,6 +63,7 @@
       </accepts>
     </cmds>
   </nodeDef>
+	
   <nodeDef id="circuit" nodeType="139" nls="circuit">
     <sts>
       <st id="TPW" editor="watt" />
