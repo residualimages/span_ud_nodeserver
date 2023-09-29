@@ -8,6 +8,7 @@ MIT License
 import udi_interface
 import sys
 import http.client
+import re
 
 # Standard Library
 from typing import Optional, Any, TYPE_CHECKING
