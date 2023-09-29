@@ -298,8 +298,8 @@ class PanelNodeForCircuits(udi_interface.Node):
         nodes = self.poly.getNodes()
         for node in nodes:
              if currentPanelCircuitPrefix in node:
+                LOGGER.debug("\n\tDeleting " + node + " when creating child Circuit nodes for " + self.address + ".\n")
                 self.poly.delNode(node)
-                LOGGER.debug("\n\tDeleting " + node + " when creating children for " + self.address + ".\n")
         '''
 
         how_many = self.getDriver('PULSCNT')
