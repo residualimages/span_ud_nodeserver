@@ -302,7 +302,7 @@ class PanelNode(udi_interface.Node):
         panelNumberPrefix = self.address
         panelNumberPrefix = panelNumberPrefix.replace('panel_','')
 
-        LOGGER.debug("\nHere is where we'll be creating Circuit children nodes for " + self.address + ". It should be a total of " + str(how_many) + " child nodes, each with an address starting with P" + panelNumberPrefix + "_...\n")
+        LOGGER.debug("\nHere is where we'll be creating Circuit children nodes for " + self.address + ". It should be a total of " + str(how_many) + " child nodes, each with an address starting with S" + panelNumberPrefix + "_...\n")
 
         for i in range(1, how_many+1):
             LOGGER.debug("\nHere is the currentCircuitData:\n\t\t" + allCircuitsArray[i] + "\n")
