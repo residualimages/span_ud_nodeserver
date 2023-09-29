@@ -158,7 +158,7 @@ class Controller(udi_interface.Node):
         for i in range(0, how_many):
             current_IPaddress = listOfIPAddresses[i]
             current_BearerToken = listOfBearerTokens[i]
-            address = 'Panel_{}'.format(i)
+            address = 'Panel_{}'.format(i+1)
             address = getValidNodeAddress(address)
             title = 'Panel @ {}'.format(current_IPaddress)
             title = getValidNodeName(title)
