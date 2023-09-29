@@ -170,8 +170,11 @@ class CircuitNode(udi_interface.Node):
                     self.setDriver('ST', "Error Querying" , True, True)
                     
                 if len(str(designatedCircuitInstantPowerW)) > 0:
-                    self.setDriver('TIME', int(time.time()), True, True)
-                    self.setDriver('ST', datetime.datetime.fromtimestamp(int(time.time())), True, True)
+                    nowEpoch = int(time.time())
+                    nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+                    
+                    self.setDriver('TIME', nowEpoch, True, True)
+                    self.setDriver('ST', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
                 else:
                     LOGGER.warning("\n\tUnable to get designatedCircuitInstantPowerW from designatedCircuitData:\n\t\t" + designatedCircuitData + "\n")
                     self.setDriver('ST', "POLL Error Querying" , True, True)
