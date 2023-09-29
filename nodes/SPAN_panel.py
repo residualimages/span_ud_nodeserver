@@ -214,23 +214,23 @@ class PanelNode(udi_interface.Node):
 
                 for i in range(1,33):
                     try:
-                        currentCircuit_tuple = panelData.partition(chr(34) + 'id' + chr(34) + ':' + str(i))
-                        currentCircuitW = currentCircuit_tuple[2]
-                        #LOGGER.debug("\n\t\t1st level Parsed for Circuit " + str(i) + ":\t" + currentCircuitW + "\n")
-                        currentCircuit_tuple = currentCircuitW.partition(chr(34) + 'instantPowerW' + chr(34) + ':')
-                        currentCircuitW = currentCircuit_tuple[2]
-                        #LOGGER.debug("\n\t\t2nd level Parsed for Circuit " + str(i) + ":\t" + currentCircuitW + "\n")
-                        currentCircuit_tuple = currentCircuitW.partition(',')
-                        currentCircuitW = currentCircuit_tuple[0]
-                        #LOGGER.debug("\n\t\t3rd level Parsed for Circuit " + str(i) + ":\t" + currentCircuitW + "\n")
-                        currentCircuitW = abs(math.ceil(float(currentCircuitW)*100)/100)
-                        LOGGER.debug("\n\t\tFinal Level Parsed for Circuit " + str(i) + ":\t" + str(currentCircuitW) + "\n")
+                        currentBreaker_tuple = panelData.partition(chr(34) + 'id' + chr(34) + ':' + str(i))
+                        currentBreakerW = currentBreaker_tuple[2]
+                        #LOGGER.debug("\n\t\t1st level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
+                        currentBreaker_tuple = currentBreakerW.partition(chr(34) + 'instantPowerW' + chr(34) + ':')
+                        currentBreakerW = currentBreaker_tuple[2]
+                        #LOGGER.debug("\n\t\t2nd level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
+                        currentBreaker_tuple = currentBreakerW.partition(',')
+                        currentBreakerW = currentBreaker_tuple[0]
+                        #LOGGER.debug("\n\t\t3rd level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
+                        currentBreakerW = abs(math.ceil(float(currentBreakerW)*100)/100)
+                        LOGGER.debug("\n\t\tFinal Level Parsed for Breaker " + str(i) + ":\t" + str(currentBreakerW) + "\n")
                         if i < 32:
-                            self.setDriver('GV' + str(i-1), currentCircuitW, True, True)
+                            self.setDriver('GV' + str(i-1), currentBreakerW, True, True)
                         else:
-                            self.setDriver('GPV', currentCircuitW, True, True)
+                            self.setDriver('GPV', currentBreakerW, True, True)
                     except:
-                        LOGGER.warning("\n\t\tIssue getting data from Circuit " + str(i) + " on Panel " + format(self.ipAddress) + ".\n")
+                        LOGGER.warning("\n\t\tIssue getting data from Breaker " + str(i) + " on Panel " + format(self.ipAddress) + ".\n")
                 
                 if len(str(instantGridPowerW)) > 0:
                     self.setDriver('TIME', int(time.time()), True, True)
