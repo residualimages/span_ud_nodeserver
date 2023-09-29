@@ -31,6 +31,7 @@ class CircuitNode(udi_interface.Node):
             {'driver': 'TIME', 'value': 0, 'uom': 151},
             {'driver': 'TIMEREM', 'value': 'Initializing...', 'uom': 145},
             {'driver': 'AWAKE', 'value': 1, 'uom': 2},
+            {'driver': 'GPV', 'value': '???', 'uom': 145},
             {'driver': 'GV1', 'value': 'N/A', 'uom': 56},
             {'driver': 'GV2', 'value': 'N/A', 'uom': 56},
             {'driver': 'GV3', 'value': 'N/A', 'uom': 56},
@@ -72,6 +73,8 @@ class CircuitNode(udi_interface.Node):
         self.n_queue.append(data['address'])
         
         LOGGER.info("\n\tWAIT FOR NODE CREATION: Fully Complete for Circuit " + self.address + "\n")
+
+        self.setDriver('GPV', self.circuitID, True, True)
         
         spanConnection = http.client.HTTPConnection(self.ipAddress)
         payload = ''
