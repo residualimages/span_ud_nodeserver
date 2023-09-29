@@ -1,6 +1,7 @@
 ## Configuration
 
-shortPoll = how often to begin the SPAN circuit value query.
+shortPoll = how often to begin the SPAN circuit value query
+longPoll  = not currently used
 
 Custom Parameters:
 
