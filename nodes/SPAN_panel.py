@@ -317,11 +317,11 @@ class PanelNode(udi_interface.Node):
             title = '{} ({})'.format(current_circuitName,current_circuitID)
             title = getValidNodeName(title)
             try:
-                #node = SPAN_circuit.CircuitNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken,current_circuitID)
-                #self.poly.addNode(node)
+                node = SPAN_circuit.CircuitNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken,current_circuitID)
+                self.poly.addNode(node)
                 #self.wait_for_node_done()
-                #node.setDriver('AWAKE', 1, True, True)
-                LOGGER.info('This is where we would create a Circuit child node {} under Panel {}\n'.format(title, panelNumberPrefix))
+                node.setDriver('AWAKE', 1, True, True)
+                LOGGER.info('Created a Circuit child node {} under Panel {}\n'.format(title, panelNumberPrefix))
             except Exception as e:
                 LOGGER.error('Failed to create Circuit child node {} under Panel {} due to error: {}.\n'.format(title, panelNumberPrefix, e))
 
