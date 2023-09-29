@@ -134,13 +134,21 @@ class PanelNode(udi_interface.Node):
             self.circuitsDataCopy = circuitsData
         else:
             LOGGER.warning("\n\tINIT Issue getting Status Data for Panel @ " + self.ipAddress + ".\n")
+
+        # delete any existing nodes but only under this panel
+        currentPanelCircuitPrefix = "s" + self.address.replace('panel_','') + "_circuit_"
+        nodes = self.poly.getNodes()
+        for node in nodes:
+             if currentPanelCircuitPrefix in node:
+                self.poly.delNode(node)
+                LOGGER.debug("\n\tDeleting " + node + " when creating children for " + self.address + ".\n")
         
         # subscribe to the events we want
         #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
         polyglot.subscribe(polyglot.POLL, self.poll)
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.START, self.start, address)
-        polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
+        polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue_panelFinished)
 
     '''
     node_queue() and wait_for_node_event() create a simple way to wait
@@ -148,7 +156,7 @@ class PanelNode(udi_interface.Node):
     will return before the node is fully created. Using this, we can wait
     until it is fully created before we try to use it.
     '''
-    def node_queue(self, data):
+    def node_queue_panelFinished(self, data):
         self.n_queue.append(data['address'])
         
         LOGGER.info("\n\tWAIT FOR NODE CREATION: Fully Complete for Panel " + self.address + "\n")
@@ -297,13 +305,6 @@ class PanelNode(udi_interface.Node):
     delete any existing nodes then create the number requested.
     '''
     def createChildren(self,circuitDataString):
-        # delete any existing nodes but only under this panel
-        currentPanelCircuitPrefix = "s" + self.address.replace('panel_','') + "_circuit_"
-        nodes = self.poly.getNodes()
-        for node in nodes:
-             if currentPanelCircuitPrefix in node:
-                self.poly.delNode(node)
-                LOGGER.debug("\n\tDeleting " + node + " when creating children for " + self.address + ".\n")
 
         how_many = self.getDriver('PULSCNT')
         
