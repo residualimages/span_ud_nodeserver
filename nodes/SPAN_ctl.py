@@ -61,13 +61,6 @@ class Controller(udi_interface.Node):
 
         self.Parameters = Custom(polyglot, 'customparams')
 
-        # delete any existing nodes
-        nodes = self.poly.getNodes()
-        for node in nodes:
-            if node != 'controller':   # but not the controller node
-                self.poly.delNode(node)
-                LOGGER.debug("\n\tINIT Controller - deleting " + node + " when creating base NodeServer controller.\n")
-
         # subscribe to the events we want
         polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
         polyglot.subscribe(polyglot.STOP, self.stop)
@@ -120,7 +113,7 @@ class Controller(udi_interface.Node):
             LOGGER.error('\n\tCONFIGURATION ERROR: Missing Access_Tokens parameter.')
         
         if validIP_Addresses and validAccess_Tokens:
-            self.createChildren()
+            self.createPanelControllers()
             self.poly.Notices.clear()
         else:
             if not(validIP_Addresses):
@@ -142,15 +135,18 @@ class Controller(udi_interface.Node):
         # Not necessary to call this since profile_version is used from server.json
         self.poly.updateProfile()
 
-
     '''
-    Create the children nodes.  Since this will be called anytime the
-    user changes the number of nodes and the new number may be less
-    than the previous number, we need to make sure we create the right
-    number of nodes.  Because this is just a simple example, we'll first
-    delete any existing nodes then create the number requested.
+    Create the controller nodes. 
     '''
-    def createChildren(self):
+    def createPanelControllers(self):
+        '''
+        # delete any existing nodes
+        nodes = self.poly.getNodes()
+        for node in nodes:
+            if node != 'controller':   # but not the controller node
+                self.poly.delNode(node)
+                LOGGER.debug("\n\tINIT Controller - deleting " + node + " when creating base NodeServer controller.\n")
+        '''
 
         ipAddresses = self.Parameters['IP_Addresses']
         accessTokens = self.Parameters['Access_Tokens']
