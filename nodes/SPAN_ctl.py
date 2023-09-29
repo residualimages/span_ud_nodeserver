@@ -61,6 +61,13 @@ class Controller(udi_interface.Node):
 
         self.Parameters = Custom(polyglot, 'customparams')
 
+        # delete any existing nodes
+        nodes = self.poly.getNodes()
+        for node in nodes:
+            if node != 'controller':   # but not the controller node
+                self.poly.delNode(node)
+                LOGGER.debug("\n\tINIT Controller - deleting " + node + " when creating base NodeServer controller.\n")
+
         # subscribe to the events we want
         polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
         polyglot.subscribe(polyglot.STOP, self.stop)
@@ -144,11 +151,6 @@ class Controller(udi_interface.Node):
     delete any existing nodes then create the number requested.
     '''
     def createChildren(self):
-        # delete any existing nodes
-        nodes = self.poly.getNodes()
-        for node in nodes:
-            if node != 'controller':   # but not the controller node
-                self.poly.delNode(node)
 
         ipAddresses = self.Parameters['IP_Addresses']
         accessTokens = self.Parameters['Access_Tokens']
