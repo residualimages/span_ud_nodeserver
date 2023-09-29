@@ -72,6 +72,7 @@
       <st id="TIME" editor="timestamp" />
       <st id="TIMEREM" editor="string" />
       <st id="AWAKE" editor="bool" />
+      <st id="GPV" editor="string" />
       <st id="GV1" editor="raw" />
       <st id="GV2" editor="raw" />
       <st id="GV3" editor="raw" />
