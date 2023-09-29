@@ -16,6 +16,7 @@
   <nodeDef id="panel" nls="panel">
     <sts>
       <st id="ST" editor="watt" />
+      <st id="FREQ" editor="string" />
       <st id="PULSCNT" editor="raw" />
       <st id="CLIEMD" editor="panelgridstatus" />
       <st id="TIME" editor="timestamp" />
