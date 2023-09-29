@@ -258,7 +258,7 @@ class PanelNode(udi_interface.Node):
                     self.setDriver('ST', datetime.datetime.fromtimestamp(int(time.time())), True, True)
             else:
                 tokenLastTen = self.token[-10:]
-                LOGGER.debug('\n\t\tSkipping query of Panel node {}, using token {}'.format(self.ipAddress,tkenLastToken))
+                LOGGER.debug('\n\t\tSkipping query of Panel node {}, using token {}'.format(self.ipAddress,tokenLastTen))
                 self.setDriver('ST', "Not Actively Querying" , True, True)
             
     def toggle_monitoring(self,val):
