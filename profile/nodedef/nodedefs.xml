@@ -13,7 +13,7 @@
     </cmds>
   </nodeDef>
 
-  <nodeDef id="panel" nls="panel">
+  <nodeDef id="panelForCircuits" nls="panelForCircuits">
     <sts>
       <st id="ST" editor="watt" />
       <st id="FREQ" editor="string" />
