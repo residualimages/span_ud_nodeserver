@@ -9,6 +9,8 @@ import udi_interface
 import sys
 import http.client
 
+from nodes import SPAN_panel
+
 # Standard Library
 from typing import Optional, Any, TYPE_CHECKING
 
