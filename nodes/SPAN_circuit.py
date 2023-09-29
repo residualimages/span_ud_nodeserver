@@ -81,7 +81,7 @@ class CircuitNode(udi_interface.Node):
 
             designatedCircuitTabs = designatedCircuitTabs.replace('[','')
             designatedCircuitTabsArray = designatedCircuitTabs.split(',')
-            designatedCircuitTabsCount = len(designatedCircuitsTabsArray)
+            designatedCircuitTabsCount = len(designatedCircuitTabsArray)
     
             for i in range(0,designatedCircuitTabsCount):
                 LOGGER.debug("\nIn Circuit " + self.circuitID + ", Tab # " + str(i) + " corresponds to breaker number:\n\t\t" + designatedCircuitTabsArray[i] + "\n")
