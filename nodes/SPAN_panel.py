@@ -108,6 +108,7 @@ class PanelNode(udi_interface.Node):
         self.Parameters = Custom(polyglot, 'customparams')
         self.ipAddress = spanIPAddress
         self.token = bearerToken
+        self.circuitsDataCopy = "Not yet queried"
         tokenLastTen = self.token[-10:]
         LOGGER.debug("\n\tINIT Panel node's IP Address:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen)
 
@@ -130,15 +131,7 @@ class PanelNode(udi_interface.Node):
             circuitsResponse = spanConnection.getresponse()
             circuitsData = circuitsResponse.read()
             circuitsData = circuitsData.decode("utf-8")
-            
-            if "circuits" in circuitsData:
-                LOGGER.info("\n\tINIT Panel node's Circuits Data: \n\t\t" + circuitsData + "\n\t\tCount of circuits: " + str(circuitsData.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
-                self.setDriver('PULSCNT', circuitsData.count(chr(34) + 'id' + chr(34) + ':'), True, True)
-                self.setDriver('CLIEMD', 1, True, True)
-        
-                self.createChildren(circuitsData)
-            else:
-                LOGGER.warning("\n\tINIT Issue getting Circuits Data for Panel @ " + self.ipAddress + ".\n")
+            self.circuitsDataCopy = circuitsData
         else:
             LOGGER.warning("\n\tINIT Issue getting Status Data for Panel @ " + self.ipAddress + ".\n")
         
@@ -160,6 +153,15 @@ class PanelNode(udi_interface.Node):
         while len(self.n_queue) == 0:
             time.sleep(0.1)
         self.n_queue.pop()
+        LOGGER.info("\n\tWAIT FOR NODE CREATION: Fully Complete for Panel " + self.address + "\n")
+        if "circuits" in self.circuitsDataCopy:
+            LOGGER.info("\n\tINIT Panel node's Circuits Data: \n\t\t" + self.circuitsDataCopy + "\n\t\tCount of circuits: " + str(self.circuitsDataCopy.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
+            self.setDriver('PULSCNT', self.circuitsDataCopy.count(chr(34) + 'id' + chr(34) + ':'), True, True)
+            self.setDriver('CLIEMD', 1, True, True)
+    
+            self.createChildren(self.circuitsDataCopy)
+        else:
+            LOGGER.warning("\n\tINIT Issue getting Circuits Data for Panel @ " + self.ipAddress + ".\n")
 
     # called by the interface after the node data has been put in the Polyglot DB
     # and the node created/updated in the ISY
