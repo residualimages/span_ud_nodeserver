@@ -19,6 +19,6 @@
 		<range min="1" max="2" step="1" prec="0" uom="25" nls="IX_panelgridstatus_" />
 	</editor>
 	<editor id="circuitstatus">
-		<range min="-1" max="1" step="1" prec="0" uom="25" nls="IX_circuitstatus_" />
+		<range min="0" max="2" step="1" prec="0" uom="25" nls="IX_circuitstatus_" />
 	</editor>
 </editors>
