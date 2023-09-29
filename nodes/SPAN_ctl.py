@@ -57,7 +57,7 @@ class Controller(udi_interface.Node):
         self.poly = polyglot
         self.n_queue = []
 
-        LOGGER.debug("\nController's parent is '" + parent + "' when INIT'ing.\n")
+        LOGGER.debug("\n\tController's parent is '" + parent + "' when INIT'ing.\n")
 
         self.Parameters = Custom(polyglot, 'customparams')
 
@@ -90,6 +90,8 @@ class Controller(udi_interface.Node):
     configure IP_Addresses and Access_Tokens for SPAN Panels.
     '''
     def parameterHandler(self, params):
+        self.poly.Notices.clear()
+        
         self.Parameters.load(params)
         validIP_Addresses = False
         validAccess_Tokens = False
@@ -98,17 +100,17 @@ class Controller(udi_interface.Node):
             if len(self.Parameters['IP_Addresses']) > 6:
                 validIP_Addresses = True
             else:
-                LOGGER.error('Invalid values for IP_Addresses parameter.')
+                LOGGER.error('\n\tCONFIGURATION ERROR: Invalid values for IP_Addresses parameter.')
         else:
-            LOGGER.error('Missing IP_Addresses parameter.')
+            LOGGER.error('\n\tCONFIGURATION ERROR: Missing IP_Addresses parameter.')
 
         if self.Parameters['Access_Tokens'] is not None:
             if len(self.Parameters['Access_Tokens']) > 120:
                 validAccess_Tokens = True
             else:
-                LOGGER.error('Invalid values for Access_Tokens parameter.')
+                LOGGER.error('\n\tCONFIGURATION ERROR: Invalid values for Access_Tokens parameter.')
         else:
-            LOGGER.error('Missing Access_Tokens parameter.')
+            LOGGER.error('\n\tCONFIGURATION ERROR: Missing Access_Tokens parameter.')
         
         if validIP_Addresses and validAccess_Tokens:
             self.createChildren()
@@ -155,7 +157,7 @@ class Controller(udi_interface.Node):
         listOfBearerTokens = accessTokens.split(";")
         how_many = len(listOfIPAddresses)
 
-        LOGGER.info('Creating {} children nodes'.format(how_many))
+        LOGGER.info('\n\tCreating {} Panel nodes (which will be controllers for Circuit nodes)'.format(how_many))
         for i in range(0, how_many):
             current_IPaddress = listOfIPAddresses[i]
             current_BearerToken = listOfBearerTokens[i]
@@ -192,6 +194,6 @@ class Controller(udi_interface.Node):
     match what is in the nodedef profile file. 
     '''
     def noop(self):
-        LOGGER.info('Discover not implemented')
+        LOGGER.info('\n\tNOTE: Discover not implemented')
 
     commands = {'DISCOVER': noop}
