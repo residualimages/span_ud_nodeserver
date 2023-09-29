@@ -148,8 +148,11 @@ class CircuitNode(udi_interface.Node):
         if 'shortPoll' in polltype:
             if self.getDriver('AWAKE') == 1:
                 tokenLastTen = self.token[-10:]
-                LOGGER.info('\n\tPOLL About to query {} Circuit node of {}, using token ending in {}'.format(self.circuitID,self.ipAddress,tokenLastTen))
+                LOGGER.info('\n\tPOLL About to parse {} Circuit node of {}, using token ending in {}'.format(self.circuitID,self.ipAddress,tokenLastTen))
+                designatedCircuitData_tuple = parent.allCircuitData.partition(self.circuitID)
+                designatedCircuitData = designatedCircuitData_tupple[2]
         
+                '''
                 spanConnection = http.client.HTTPConnection(self.ipAddress)
                 payload = ''
                 headers = {
@@ -160,8 +163,10 @@ class CircuitNode(udi_interface.Node):
                 designatedCircuitResponse = spanConnection.getresponse()
                 designatedCircuitData = designatedCircuitResponse.read()
                 designatedCircuitData = designatedCircuitData.decode("utf-8")
+                '''
+            
                 LOGGER.info("\n\tPOLL Circuit Data: \n\t\t" + designatedCircuitData + "\n")
-
+            
                 if "name" in designatedCircuitData:
                     designatedCircuitStatus_tuple = designatedCircuitData.partition(chr(34) + "relayState" + chr(34) + ":")
                     designatedCircuitStatus = designatedCircuitStatus_tuple[2]
