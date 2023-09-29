@@ -53,11 +53,11 @@ This is our Panel device node.
 class PanelNode(udi_interface.Node):
     id = 'panel'
     drivers = [
-            {'driver': 'TPW', 'value': 0, 'uom': 73},
+            {'driver': 'ST', 'value': 0, 'uom': 73},
             {'driver': 'PULSCNT', 'value': 0, 'uom': 56},
             {'driver': 'CLIEMD', 'value': 0, 'uom': 25},
             {'driver': 'TIME', 'value': 0, 'uom': 151},
-            {'driver': 'ST', 'value': 'Initializing...', 'uom': 145},
+            {'driver': 'TIMEREM', 'value': 'Initializing...', 'uom': 145},
             {'driver': 'AWAKE', 'value': 1, 'uom': 2},
             {'driver': 'GV0', 'value': 0, 'uom': 73},
             {'driver': 'GV1', 'value': 0, 'uom': 73},
