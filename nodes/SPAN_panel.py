@@ -194,8 +194,8 @@ class PanelNodeForCircuits(udi_interface.Node):
     '''
     This is where the real work happens.  When we get a shortPoll, do some work. 
     '''
-        if 'shortPoll' in polltype:
     def poll(self, polltype):
+        if 'shortPoll' in polltype:
             global allCircuitsUpdated,allCircuitsData
             allCircuitsDataUpdated = 0
             allCircuitsData = ''
