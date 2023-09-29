@@ -110,6 +110,7 @@ class PanelNodeForCircuits(udi_interface.Node):
         self.ipAddress = spanIPAddress
         self.token = bearerToken
         self.circuitsDataCopy = "Not yet queried"
+        self.circuitsDataUpdated = 0
         tokenLastTen = self.token[-10:]
         LOGGER.debug("\n\tINIT Panel node's IP Address:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen)
 
@@ -133,6 +134,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             circuitsData = circuitsResponse.read()
             circuitsData = circuitsData.decode("utf-8")
             self.circuitsDataCopy = circuitsData
+            self.circuitsDataUpdated = 1
         else:
             LOGGER.warning("\n\tINIT Issue getting Status Data for Panel @ " + self.ipAddress + ".\n")
         
@@ -193,6 +195,7 @@ class PanelNodeForCircuits(udi_interface.Node):
     '''
     def poll(self, polltype):
         if 'shortPoll' in polltype:
+            self.circuitsDataUpdated = 0
             if self.getDriver('AWAKE') == 1:
                 tokenLastTen = self.token[-10:]
                 LOGGER.info('\n\tPOLL About to query Panel node of {}, using token ending in {}'.format(self.ipAddress,tokenLastTen))
@@ -261,6 +264,14 @@ class PanelNodeForCircuits(udi_interface.Node):
                         
                         self.setDriver('TIME', nowEpoch, True, True)
                         self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
+    
+                spanConnection.request("GET", "/api/v1/circuits", payload, headers)
+                circuitsResponse = spanConnection.getresponse()
+                circuitsData = circuitsResponse.read()
+                circuitsData = circuitsData.decode("utf-8")
+                self.circuitsDataCopy = circuitsData
+                self.circuitsDataUpdated = 1
+
                 else:
                     tokenLastTen = self.token[-10:]
                     LOGGER.debug('\n\tPOLL ERROR when querying Panel node at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
