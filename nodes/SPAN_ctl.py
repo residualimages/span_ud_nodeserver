@@ -164,7 +164,7 @@ class Controller(udi_interface.Node):
             title = 'Panel @ {}'.format(current_IPaddress)
             title = getValidNodeName(title)
             try:
-                node = SPAN_panel.PanelNode(self.poly, self.poly, address, title, current_IPaddress, current_BearerToken)
+                node = SPAN_panel.PanelNode(self.poly, self.poly.address, address, title, current_IPaddress, current_BearerToken)
                 self.poly.addNode(node)
                 self.wait_for_node_done()
                 node.setDriver('AWAKE', 1, True, True)
