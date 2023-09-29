@@ -294,7 +294,7 @@ class PanelNode(udi_interface.Node):
         for node in nodes:
             if "panel_" not in node and node != 'controller':   # but not the controller or panel nodes
                 self.poly.delNode(node)
-                #LOGGER.debug("\n\tWould be deleting " + node + ", but it's commented out.\n")
+                LOGGER.debug("\n\tDeleting " + node + " when creating children for " + self.address + ".\n")
 
         how_many = self.getDriver('PULSCNT')
         
@@ -336,5 +336,5 @@ class PanelNode(udi_interface.Node):
         for node in nodes:
             if "panel_" not in node and node != 'controller':   # but not the controller or panel nodes
                 nodes[node].setDriver('AWAKE', 0, True, True)
-                #LOGGER.debug("\nWould be setting " + node + " AWAKE = 0, but it's commented out.\n")
+                LOGGER.debug("\n\tSetting " + node + "'s property AWAKE = 0.\n")
 
