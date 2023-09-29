@@ -78,8 +78,13 @@ class CircuitNode(udi_interface.Node):
           
             LOGGER.info("\nDesignated Circuit Data: \n\t\t" + designatedCircuitData + "\n\t\tCount of Circuit Breakers In Circuit: " + str(designatedCircuitTabs.count(',')+1) + "\n")
             self.setDriver('PULSCNT', (designatedCircuitTabs.count(',')+1), True, True)
+
+            designatedCircuitTabs = designatedCircuitTabs.replace('[','')
+            designatedCircuitTabsArray = designatedCircuitTabs.split(',')
+            designatedCircuitTabsCount = len(designatedCircuitsTabsArray)
     
-            LOGGER.debug("\nTabs data:\n\t\t" + designatedCircuitTabs + "\n")
+            for i in range(0,designatedCircuitTabsCount):
+                LOGGER.debug("\nIn Circuit " + self.circuitID + ", Tab # " + str(i) + " corresponds to breaker number:\n\t\t" + designatedCircuitTabsArray[i] + "\n")
         else:
             LOGGER.warning("\nINIT Issue getting data for circuit '" + self.circuitID + "'.\n")
           
