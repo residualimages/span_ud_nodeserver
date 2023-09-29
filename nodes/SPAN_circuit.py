@@ -113,10 +113,10 @@ class CircuitNode(udi_interface.Node):
             nowDT = datetime.datetime.fromtimestamp(nowEpoch)
             
             self.setDriver('TIME', nowEpoch, True, True)
-            self.setDriver('ST', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
+            self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
         else:
             LOGGER.warning("\n\tINIT Issue getting data for circuit '" + self.circuitID + "'.\n")
-            self.setDriver('ST', "INIT Error Querying" , True, True)
+            self.setDriver('TIMEREM', "INIT Error Querying" , True, True)
 
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
