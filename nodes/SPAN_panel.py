@@ -269,7 +269,7 @@ class PanelNode(udi_interface.Node):
         for node in nodes:
             if "panel_" not in node:   # but not the panel node
                 #self.poly.delNode(node)
-                LOGGER.DEBUG("\nWould be deleting " + node + ", but it's commented out.\n")
+                LOGGER.debug("\nWould be deleting " + node + ", but it's commented out.\n")
 
         how_many = self.getDriver('PULSCNT')
         LOGGER.debug("\nHere is where we'll be creating Circuit children nodes. It should be a total of " + str(how_many) + " child nodes.\n")
