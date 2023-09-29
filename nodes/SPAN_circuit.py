@@ -66,16 +66,19 @@ class CircuitNode(udi_interface.Node):
         designatedCircuitResponse = spanConnection.getresponse()
         designatedCircuitData = designatedCircuitResponse.read()
         designatedCircuitData = designatedCircuitData.decode("utf-8")
-      
-        designatedCircuitTabs_tuple = designatedCircuitData.partition(chr(34) + "tabs" + chr(34) + ":")
-        designatedCircuitTabs = designatedCircuitTabs_tuple[2]
-        designatedCircuitTabs_tuple = designatedCircuitTabs.partition("],")
-        designatedCircuitTabs = designatedCircuitTabs_tuple[0]
-      
-        LOGGER.info("\nDesignated Circuit Data: \n\t\t" + designatedCircuitData + "\n\t\tCount of Circuit Breakers In Circuit: " + str(designatedCircuitTabs.count(',')+1) + "\n")
-        self.setDriver('PULSCNT', (designatedCircuitTabs.count(',')+1), True, True)
 
-        LOGGER.debug("\nTabs data:\n\t\t" + designatedCircuitTabs + "\n")
+        if "name" in designatedCircuitData:
+            designatedCircuitTabs_tuple = designatedCircuitData.partition(chr(34) + "tabs" + chr(34) + ":")
+            designatedCircuitTabs = designatedCircuitTabs_tuple[2]
+            designatedCircuitTabs_tuple = designatedCircuitTabs.partition("],")
+            designatedCircuitTabs = designatedCircuitTabs_tuple[0]
+          
+            LOGGER.info("\nDesignated Circuit Data: \n\t\t" + designatedCircuitData + "\n\t\tCount of Circuit Breakers In Circuit: " + str(designatedCircuitTabs.count(',')+1) + "\n")
+            self.setDriver('PULSCNT', (designatedCircuitTabs.count(',')+1), True, True)
+    
+            LOGGER.debug("\nTabs data:\n\t\t" + designatedCircuitTabs + "\n")
+        else:
+            LOGGER.warning("\nINIT Issue getting data for circuit '" + self.circuitID + "'.\n")
           
         # subscribe to the events we want
         polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
@@ -125,26 +128,29 @@ class CircuitNode(udi_interface.Node):
                 designatedCircuitData = designatedCircuitResponse.read()
                 designatedCircuitData = designatedCircuitData.decode("utf-8")
                 LOGGER.info("\nCircuit Data: \n\t\t" + designatedCircuitData + "\n")
-              
-                designatedCircuitStatus_tuple = designatedCircuitData.partition(chr(34) + "relayState" + chr(34) + ":")
-                designatedCircuitStatus = designatedCircuitStatus_tuple[2]
-                designatedCircuitStatus_tuple = designatedCircuitStatus.partition(',')
-                designatedCircuitStatus = designatedCircuitStatus_tuple[0]
 
-                designatedCircuitInstantPowerW_tuple = designatedCircuitData.partition(chr(34) + "instantPowerW" + chr(34) + ":")
-                designatedCircuitInstantPowerW = designatedCircuitInstantPowerW_tuple[2]
-                designatedCircuitInstantPowerW_tuple = designatedCircuitInstantPowerW.partition(',')
-                designatedCircuitInstantPowerW = designatedCircuitInstantPowerW_tuple[0]
-                designatedCircuitInstantPowerW = math.ceil(float(designatedCircuitInstantPowerW)*100)/100
-              
-                if designatedCircuitStatus == "CLOSED":
-                  self.setDriver('CLIEMD', 2, True, True)
-                elif designatedCircuitStatus == "OPEN":
-                  self.setDriver('CLIEMD', 1, True, True)
+                if "name" in designatedCircuitData:
+                    designatedCircuitStatus_tuple = designatedCircuitData.partition(chr(34) + "relayState" + chr(34) + ":")
+                    designatedCircuitStatus = designatedCircuitStatus_tuple[2]
+                    designatedCircuitStatus_tuple = designatedCircuitStatus.partition(',')
+                    designatedCircuitStatus = designatedCircuitStatus_tuple[0]
+    
+                    designatedCircuitInstantPowerW_tuple = designatedCircuitData.partition(chr(34) + "instantPowerW" + chr(34) + ":")
+                    designatedCircuitInstantPowerW = designatedCircuitInstantPowerW_tuple[2]
+                    designatedCircuitInstantPowerW_tuple = designatedCircuitInstantPowerW.partition(',')
+                    designatedCircuitInstantPowerW = designatedCircuitInstantPowerW_tuple[0]
+                    designatedCircuitInstantPowerW = math.ceil(float(designatedCircuitInstantPowerW)*100)/100
+                  
+                    if designatedCircuitStatus == "CLOSED":
+                      self.setDriver('CLIEMD', 2, True, True)
+                    elif designatedCircuitStatus == "OPEN":
+                      self.setDriver('CLIEMD', 1, True, True)
+                    else:
+                      self.setDriver('CLIEMD', 0, True, True)
+                    
+                    self.setDriver('TPW', abs(designatedCircuitInstantPowerW), True, True)
                 else:
-                  self.setDriver('CLIEMD', 0, True, True)
-                
-                self.setDriver('TPW', abs(designatedCircuitInstantPowerW), True, True)
+                    LOGGER.warning("\nPOLL Issue getting data for circuit '" + self.circuitID + "'.\n")
 
     def toggle_circuit_monitoring(self,val):
         # On startup this will always go back to true which is the default, but how do we restore the previous user value?
