@@ -10,6 +10,8 @@ import sys
 import http.client
 import re
 
+from nodes import SPAN_circuit
+
 # Standard Library
 from typing import Optional, Any, TYPE_CHECKING
 
@@ -187,10 +189,10 @@ class PanelNode(udi_interface.Node):
                 
                 feedthroughPowerW_tuple = panelData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
                 feedthroughPowerW = feedthroughPowerW_tuple[2]
-                LOGGER.debug("\n\t\t1st level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
+                #LOGGER.debug("\n\t\t1st level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
                 feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
                 feedthroughPowerW = feedthroughPowerW_tuple[0]
-                LOGGER.debug("\n\t\t2nd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
+                #LOGGER.debug("\n\t\t2nd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
                 #feedthroughPowerW_tuple = feedthroughPowerW.partition(":")
                 #feedthroughPowerW = feedthroughPowerW_tuple[2]
                 #LOGGER.debug("\n\t\t3rd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")                
@@ -198,29 +200,29 @@ class PanelNode(udi_interface.Node):
 
                 instantGridPowerW_tuple = panelData.partition(chr(34) + "instantGridPowerW" + chr(34) + ":")
                 instantGridPowerW = instantGridPowerW_tuple[2]
-                LOGGER.debug("\n\t\t1st level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
+                #LOGGER.debug("\n\t\t1st level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
                 instantGridPowerW_tuple = instantGridPowerW.partition(",")
                 instantGridPowerW = instantGridPowerW_tuple[0]
-                LOGGER.debug("\n\t\t2nd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
+                #LOGGER.debug("\n\t\t2nd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
                 #instantGridPowerW_tuple = instantGridPowerW.partition(":")
                 #instantGridPowerW = instantGridPowerW_tuple[2]
                 #LOGGER.debug("\n\t\t3rd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")                
                 instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
                 LOGGER.debug("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
-                LOGGER.debug("\n\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
+                LOGGER.debug("\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
                 self.setDriver('TPW', (instantGridPowerW-abs(feedthroughPowerW)), True, True)
 
                 for i in range(1,33):
                     try:
                         currentCircuit_tuple = panelData.partition(chr(34) + 'id' + chr(34) + ':' + str(i))
                         currentCircuitW = currentCircuit_tuple[2]
-                        LOGGER.debug("\n\t\t1st level Parsed for Circuit " + str(i) + ":\t" + currentCircuitW + "\n")
+                        #LOGGER.debug("\n\t\t1st level Parsed for Circuit " + str(i) + ":\t" + currentCircuitW + "\n")
                         currentCircuit_tuple = currentCircuitW.partition(chr(34) + 'instantPowerW' + chr(34) + ':')
                         currentCircuitW = currentCircuit_tuple[2]
-                        LOGGER.debug("\n\t\t2nd level Parsed for Circuit " + str(i) + ":\t" + currentCircuitW + "\n")
+                        #LOGGER.debug("\n\t\t2nd level Parsed for Circuit " + str(i) + ":\t" + currentCircuitW + "\n")
                         currentCircuit_tuple = currentCircuitW.partition(',')
                         currentCircuitW = currentCircuit_tuple[0]
-                        LOGGER.debug("\n\t\t3rd level Parsed for Circuit " + str(i) + ":\t" + currentCircuitW + "\n")
+                        #LOGGER.debug("\n\t\t3rd level Parsed for Circuit " + str(i) + ":\t" + currentCircuitW + "\n")
                         currentCircuitW = abs(math.ceil(float(currentCircuitW)*100)/100)
                         LOGGER.debug("\n\t\tFinal Level Parsed for Circuit " + str(i) + ":\t" + str(currentCircuitW) + "\n")
                         if i < 32:
@@ -267,7 +269,7 @@ class PanelNode(udi_interface.Node):
         # delete any existing nodes
         nodes = self.poly.getNodes()
         for node in nodes:
-            if "panel_" not in node:   # but not the panel node
+            if "panel_" not in node and node != 'controller':   # but not the controller or panel nodes
                 #self.poly.delNode(node)
                 LOGGER.debug("\nWould be deleting " + node + ", but it's commented out.\n")
 
@@ -301,7 +303,7 @@ class PanelNode(udi_interface.Node):
     def stop(self):
         nodes = self.poly.getNodes()
         for node in nodes:
-            if "panel_" not in node:   # but not the panel node
+            if "panel_" not in node and node != 'controller':   # but not the controller or panel nodes
                 #nodes[node].setDriver('AWAKE', 0, True, True)
                 LOGGER.debug("\nWould be setting " + node + " AWAKE = 0, but it's commented out.\n")
 
