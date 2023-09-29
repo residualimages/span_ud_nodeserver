@@ -120,19 +120,25 @@ class PanelNode(udi_interface.Node):
         statusData = statusResponse.read()
         statusData = statusData.decode("utf-8")
 
-        LOGGER.info("\nStatus Data: \n\t\t" + statusData + "\n")
+        if "system" in statusData:
+            LOGGER.info("\nStatus Data: \n\t\t" + statusData + "\n")
 
-        spanConnection.request("GET", "/api/v1/circuits", payload, headers)
-
-        circuitsResponse = spanConnection.getresponse()
-        circuitsData = circuitsResponse.read()
-        circuitsData = circuitsData.decode("utf-8")
+            spanConnection.request("GET", "/api/v1/circuits", payload, headers)
+    
+            circuitsResponse = spanConnection.getresponse()
+            circuitsData = circuitsResponse.read()
+            circuitsData = circuitsData.decode("utf-8")
+            
+            if "circuits" in circuitsData:
+                LOGGER.info("\nCircuits Data: \n\t\t" + circuitsData + "\n\t\tCount of circuits: " + str(circuitsData.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
+                self.setDriver('PULSCNT', circuitsData.count(chr(34) + 'id' + chr(34) + ':'), True, True)
+                self.setDriver('CLIEMD', 1, True, True)
         
-        LOGGER.info("\nCircuits Data: \n\t\t" + circuitsData + "\n\t\tCount of circuits: " + str(circuitsData.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
-        self.setDriver('PULSCNT', circuitsData.count(chr(34) + 'id' + chr(34) + ':'), True, True)
-        self.setDriver('CLIEMD', 1, True, True)
-
-        self.createChildren(circuitsData)
+                self.createChildren(circuitsData)
+            else:
+                LOGGER.warning("\nINIT Issue getting Circuits Data for Panel @ " + self.ipAddress + ".\n")
+        else:
+            LOGGER.warning("\nINIT Issue getting Status Data for Panel @ " + self.ipAddress + ".\n")
         
         # subscribe to the events we want
         #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
