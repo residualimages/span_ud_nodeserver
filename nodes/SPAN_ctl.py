@@ -55,7 +55,6 @@ class Controller(udi_interface.Node):
         super(Controller, self).__init__(polyglot, parent, address, name)
 
         self.poly = polyglot
-        self.count = 0
         self.n_queue = []
 
         self.Parameters = Custom(polyglot, 'customparams')
