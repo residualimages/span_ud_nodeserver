@@ -29,7 +29,7 @@ class CircuitNode(udi_interface.Node):
             {'driver': 'PULSCNT', 'value': 0, 'uom': 56},
             {'driver': 'CLIEMD', 'value': 0, 'uom': 25},
             {'driver': 'TIME', 'value': 0, 'uom': 151},
-            {'driver': 'TIMREM', 'value': 'Initializing...', 'uom': 145},
+            {'driver': 'TIMEREM', 'value': 'Initializing...', 'uom': 145},
             {'driver': 'AWAKE', 'value': 1, 'uom': 2},
             {'driver': 'GV1', 'value': 'N/A', 'uom': 56},
             {'driver': 'GV2', 'value': 'N/A', 'uom': 56},
