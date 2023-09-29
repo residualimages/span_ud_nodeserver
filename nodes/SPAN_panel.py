@@ -292,10 +292,11 @@ class PanelNode(udi_interface.Node):
     delete any existing nodes then create the number requested.
     '''
     def createChildren(self,circuitDataString):
-        # delete any existing nodes
+        # delete any existing nodes but only under this panel
+        currentPanelCircuitPrefix = "s" + self.address.relace('panel_','') + "_circuit_"
         nodes = self.poly.getNodes()
         for node in nodes:
-            if "panel_" not in node and node != 'controller':   # but not the controller or panel nodes
+             if currentPanelCircuitPrefix in node:
                 self.poly.delNode(node)
                 LOGGER.debug("\n\tDeleting " + node + " when creating children for " + self.address + ".\n")
 
@@ -335,9 +336,10 @@ class PanelNode(udi_interface.Node):
     TBD: is this needed on Circuit children via Panel parent?
     '''
     def stop(self):
+        currentPanelCircuitPrefix = "s" + self.address.relace('panel_','') + "_circuit_"
         nodes = self.poly.getNodes()
         for node in nodes:
-            if "panel_" not in node and node != 'controller':   # but not the controller or panel nodes
+            if currentPanelCircuitPrefix in node:
                 nodes[node].setDriver('AWAKE', 0, True, True)
                 LOGGER.debug("\n\tSetting " + node + "'s property AWAKE = 0.\n")
 
