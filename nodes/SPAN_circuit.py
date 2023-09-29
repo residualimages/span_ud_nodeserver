@@ -145,11 +145,13 @@ class CircuitNode(udi_interface.Node):
     This is where the real work happens.  When we get a shortPoll, do some work. 
     '''
     def poll(self, polltype):
+        while parent.circuitsDataUpdated == 0:
+            time.sleep(0.1)
         if 'shortPoll' in polltype:
             if self.getDriver('AWAKE') == 1:
                 tokenLastTen = self.token[-10:]
                 LOGGER.info('\n\tPOLL About to parse {} Circuit node of {}, using token ending in {}'.format(self.circuitID,self.ipAddress,tokenLastTen))
-                designatedCircuitData_tuple = parent.allCircuitData.partition(chr(34) + self.circuitID + chr(34) + ':')
+                designatedCircuitData_tuple = parent.circuitsDataCopy.partition(chr(34) + self.circuitID + chr(34) + ':')
                 designatedCircuitData = designatedCircuitData_tupple[2]
                 designatedCircuitData_tuple = designatedCircuitData.partition('},')
                 designatedCircuitData = designatedCircuitData_tuple[0] + '}'
