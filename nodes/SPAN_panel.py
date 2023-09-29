@@ -103,6 +103,8 @@ class PanelNode(udi_interface.Node):
         self.poly = polyglot
         #self.n_queue = []
 
+        LOGGER.debug("\nSpan Panel's parent is '" + parent + "' when INIT'ing.\n")
+
         self.Parameters = Custom(polyglot, 'customparams')
         self.ipAddress = spanIPAddress
         self.token = bearerToken
