@@ -41,6 +41,7 @@ def getValidNodeName(s: str) -> str:
 
     # first convert unicode quotes to ascii quotes (single and double) and
     # then drop all other non-ascii characters
+    # looks like the Admin Console limits to 29 characters, while the node's name can actually be longer and viewed in PG3
     # TODO: Test ".", "~", and other "special" characters to see if they cause problems
     # TODO: Test Kanji and other international characters with and without ascii converstion
     name = s.translate({ 0x2018:0x27, 0x2019:0x27, 0x201C:0x22, 0x201D:0x22 }).encode("ascii", "ignore").decode("ascii")
@@ -190,12 +191,6 @@ class PanelNode(udi_interface.Node):
     def poll(self, polltype):
         if 'shortPoll' in polltype:
             if self.getDriver('AWAKE') == 1:
-                # back when the PULSCNT was being used to increment and show if Querying was Active vs Inactive (via AWAKE)...
-                # currentCount = self.getDriver('PULSCNT')
-                # currentCount = int(currentCount)
-                # currentCount += 1
-                # self.setDriver('PULSCNT', currentCount, True, True)
-                # LOGGER.info('Current PULSCNT for polling on {} is {}'.format(self.name,currentCount))
                 tokenLastTen = self.token[-10:]
                 LOGGER.info('\n\tPOLL About to query Panel node of {}, using token ending in {}'.format(self.ipAddress,tokenLastTen))
         
