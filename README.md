@@ -12,7 +12,7 @@ This node server simply updates the values at every poll() interval.
 The settings for this node are:
 
 #### Short Poll
-   * How often to begin the SPAN circuit value query.
+   * How often to begin the SPAN circuit value query
 #### Long Poll
    * Not used
 
