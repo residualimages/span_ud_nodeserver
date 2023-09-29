@@ -238,7 +238,7 @@ class PanelNode(udi_interface.Node):
                 instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
                 #LOGGER.debug("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
                 #LOGGER.debug("\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
-                self.setDriver('TPW', (instantGridPowerW-abs(feedthroughPowerW)), True, True)
+                self.setDriver('ST', (instantGridPowerW-abs(feedthroughPowerW)), True, True)
 
                 for i in range(1,33):
                     try:
@@ -265,11 +265,11 @@ class PanelNode(udi_interface.Node):
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                     
                     self.setDriver('TIME', nowEpoch, True, True)
-                    self.setDriver('ST', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
+                    self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
             else:
                 tokenLastTen = self.token[-10:]
                 LOGGER.debug('\n\tSkipping POLL query of Panel node at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
-                self.setDriver('ST', "Not Actively Querying" , True, True)
+                self.setDriver('TIMEREM', "Not Actively Querying" , True, True)
             
     def toggle_monitoring(self,val):
         # On startup this will always go back to true which is the default, but how do we restore the previous user value?
@@ -331,7 +331,7 @@ class PanelNode(udi_interface.Node):
             try:
                 node = SPAN_circuit.CircuitNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken,current_circuitID)
                 self.poly.addNode(node)
-                #self.wait_for_node_done()
+                self.wait_for_node_done()
                 node.setDriver('AWAKE', 1, True, True)
                 LOGGER.info('\n\tCreated a Circuit child node {} under Panel {}\n'.format(title, panelNumberPrefix))
             except Exception as e:
