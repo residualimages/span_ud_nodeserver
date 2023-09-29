@@ -293,7 +293,7 @@ class PanelNode(udi_interface.Node):
     '''
     def createChildren(self,circuitDataString):
         # delete any existing nodes but only under this panel
-        currentPanelCircuitPrefix = "s" + self.address.relace('panel_','') + "_circuit_"
+        currentPanelCircuitPrefix = "s" + self.address.replace('panel_','') + "_circuit_"
         nodes = self.poly.getNodes()
         for node in nodes:
              if currentPanelCircuitPrefix in node:
@@ -336,7 +336,7 @@ class PanelNode(udi_interface.Node):
     TBD: is this needed on Circuit children via Panel parent?
     '''
     def stop(self):
-        currentPanelCircuitPrefix = "s" + self.address.relace('panel_','') + "_circuit_"
+        currentPanelCircuitPrefix = "s" + self.address.replace('panel_','') + "_circuit_"
         nodes = self.poly.getNodes()
         for node in nodes:
             if currentPanelCircuitPrefix in node:
