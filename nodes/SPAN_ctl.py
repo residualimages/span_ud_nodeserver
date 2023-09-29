@@ -140,14 +140,13 @@ class Controller(udi_interface.Node):
     Create the controller nodes. 
     '''
     def createPanelControllers(self):
-        '''
+        
         # delete any existing nodes
         nodes = self.poly.getNodes()
         for node in nodes:
             if node != 'controller':   # but not the controller node
                 self.poly.delNode(node)
                 LOGGER.debug("\n\tINIT Controller - deleting " + node + " when creating base NodeServer controller.\n")
-        '''
 
         ipAddresses = self.Parameters['IP_Addresses']
         accessTokens = self.Parameters['Access_Tokens']
