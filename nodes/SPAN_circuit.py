@@ -60,7 +60,7 @@ class CircuitNode(udi_interface.Node):
             "Authorization": "Bearer " + self.token
         }
      
-        LOGGER.debug("\nAbout to query " self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
+        LOGGER.debug("\nAbout to query " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
         spanConnection.request("GET", "/api/v1/circuits/" + self.circuitID, payload, headers)
 
         designatedCircuitResponse = spanConnection.getresponse()
