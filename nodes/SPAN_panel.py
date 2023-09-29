@@ -134,14 +134,6 @@ class PanelNode(udi_interface.Node):
             self.circuitsDataCopy = circuitsData
         else:
             LOGGER.warning("\n\tINIT Issue getting Status Data for Panel @ " + self.ipAddress + ".\n")
-
-        # delete any existing nodes but only under this panel
-        currentPanelCircuitPrefix = "s" + self.address.replace('panel_','') + "_circuit_"
-        nodes = self.poly.getNodes()
-        for node in nodes:
-             if currentPanelCircuitPrefix in node:
-                self.poly.delNode(node)
-                LOGGER.debug("\n\tDeleting " + node + " when creating children for " + self.address + ".\n")
         
         # subscribe to the events we want
         #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
@@ -165,7 +157,7 @@ class PanelNode(udi_interface.Node):
             self.setDriver('PULSCNT', self.circuitsDataCopy.count(chr(34) + 'id' + chr(34) + ':'), True, True)
             self.setDriver('CLIEMD', 1, True, True)
     
-            self.createChildren(self.circuitsDataCopy)
+            self.createCircuits(self.circuitsDataCopy)
         else:
             LOGGER.warning("\n\tINIT Issue getting Circuits Data for Panel @ " + self.ipAddress + ".\n")
 
@@ -298,13 +290,19 @@ class PanelNode(udi_interface.Node):
     }
 
     '''
-    Create the children nodes.  Since this will be called anytime the
-    user changes the number of nodes and the new number may be less
-    than the previous number, we need to make sure we create the right
-    number of nodes.  Because this is just a simple example, we'll first
-    delete any existing nodes then create the number requested.
+    Create the circuit nodes.
+    TODO: Handle fewer circuit nodes by deleting (currently commented out)
     '''
-    def createChildren(self,circuitDataString):
+    def createCircuits(self,circuitDataString):
+        '''
+        # delete any existing nodes but only under this panel
+        currentPanelCircuitPrefix = "s" + self.address.replace('panel_','') + "_circuit_"
+        nodes = self.poly.getNodes()
+        for node in nodes:
+             if currentPanelCircuitPrefix in node:
+                self.poly.delNode(node)
+                LOGGER.debug("\n\tDeleting " + node + " when creating children for " + self.address + ".\n")
+        '''
 
         how_many = self.getDriver('PULSCNT')
         
