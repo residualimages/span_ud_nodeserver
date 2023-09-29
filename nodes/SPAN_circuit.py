@@ -138,7 +138,7 @@ class CircuitNode(udi_interface.Node):
                 headers = {
                     "Authorization": "Bearer " + self.token
                 }
-                spanConnection.request("GET", "/api/v1/circuit/" + self.circuitID, payload, headers)
+                spanConnection.request("GET", "/api/v1/circuits/" + self.circuitID, payload, headers)
         
                 designatedCircuitResponse = spanConnection.getresponse()
                 designatedCircuitData = designatedCircuitResponse.read()
