@@ -134,7 +134,7 @@ class Controller(udi_interface.Node):
     def start(self):
         self.poly.setCustomParamsDoc()
         # Not necessary to call this since profile_version is used from server.json
-        # self.poly.updateProfile()
+        self.poly.updateProfile()
 
     '''
     Create the controller nodes. 
@@ -172,7 +172,6 @@ class Controller(udi_interface.Node):
                 LOGGER.error('Failed to create {}: {}'.format(title, e))
 
         self.setDriver('GV0', how_many, True, True)
-
 
     '''
     Change all the child node active status drivers to false
