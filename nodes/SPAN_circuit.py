@@ -9,7 +9,7 @@ import udi_interface
 import sys
 import http.client
 
-from nodes import SPAN_panel
+#from nodes import SPAN_panel
 
 # Standard Library
 from typing import Optional, Any, TYPE_CHECKING
@@ -159,6 +159,13 @@ class CircuitNode(udi_interface.Node):
                     self.setDriver('TPW', abs(designatedCircuitInstantPowerW), True, True)
                 else:
                     LOGGER.warning("\nPOLL Issue getting data for circuit '" + self.circuitID + "'.\n")
+                    
+                if len(str(designatedCircuitInstantPowerW)) > 0:
+                    self.setDriver('TIME', int(time.time()), True, True)
+                    self.setDriver('ST', datetime.datetime.fromtimestamp(int(time.time())), True, True)
+                else:
+                    LOGGER.warning("\n\tUnable to get designatedCircuitInstantPowerW from designatedCircuitData:\n\t\t" + designatedCircuitData + "\n")
+                    self.setDriver('ST', "Error Querying" , True, True)
             else:
                 LOGGER.debug("\n\t\tSkipping POLL query of Circuit node '" + self.circuitID + "' due to AWAKE=0.\n")
                 self.setDriver('ST', "Not Actively Querying" , True, True)
