@@ -101,7 +101,7 @@ class PanelNode(udi_interface.Node):
         self._initialized: bool = False
         
         self.poly = polyglot
-        self.n_queue = []
+        #self.n_queue = []
 
         self.Parameters = Custom(polyglot, 'customparams')
         self.ipAddress = spanIPAddress
@@ -150,7 +150,7 @@ class PanelNode(udi_interface.Node):
     for a node to be created.  The nodeAdd() API call is asynchronous and
     will return before the node is fully created. Using this, we can wait
     until it is fully created before we try to use it.
-    '''
+    
     def node_queue(self, data):
         self.n_queue.append(data['address'])
 
@@ -158,7 +158,7 @@ class PanelNode(udi_interface.Node):
         while len(self.n_queue) == 0:
             time.sleep(0.1)
         self.n_queue.pop()
-    
+    '''
     # called by the interface after the node data has been put in the Polyglot DB
     # and the node created/updated in the ISY
     def start(self):
@@ -258,7 +258,7 @@ class PanelNode(udi_interface.Node):
                     self.setDriver('ST', datetime.datetime.fromtimestamp(int(time.time())), True, True)
             else:
                 tokenLastTen = self.token[-10:]
-                LOGGER.debug('\n\t\tSkipping query of Panel node {}, using token {}'.format(self.ipAddress,tokenLastTen))
+                LOGGER.debug('\n\t\tSkipping POLL query of Panel node {}, using token {}'.format(self.ipAddress,tokenLastTen))
                 self.setDriver('ST', "Not Actively Querying" , True, True)
             
     def toggle_monitoring(self,val):
