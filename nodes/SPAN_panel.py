@@ -282,7 +282,7 @@ class PanelNode(udi_interface.Node):
             LOGGER.debug("\nHere is the currentCircuitData:\n\t\t" + allCircuitsArray[i] + "\n")
             current_IPaddress = self.ipAddress
             current_BearerToken = self.token
-            address = self.address + '_Circuit_{}'.format(i)
+            address = 'Circuit_{}_{}'.format(self.address.replace('Panel_',''),i)
             address = getValidNodeAddress(address)
             current_circuitID_tuple = allCircuitsArray[i].partition(',')
             current_circuitID = current_circuitID_tuple[0].replace(chr(34),'')
