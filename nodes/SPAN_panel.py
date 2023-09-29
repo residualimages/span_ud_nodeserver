@@ -270,11 +270,11 @@ class PanelNode(udi_interface.Node):
         nodes = self.poly.getNodes()
         for node in nodes:
             if "panel_" not in node and node != 'controller':   # but not the controller or panel nodes
-                #self.poly.delNode(node)
-                LOGGER.debug("\nWould be deleting " + node + ", but it's commented out.\n")
+                self.poly.delNode(node)
+                #LOGGER.debug("\nWould be deleting " + node + ", but it's commented out.\n")
 
         how_many = self.getDriver('PULSCNT')
-        LOGGER.debug("\nHere is where we'll be creating Circuit children nodes. It should be a total of " + str(how_many) + " child nodes.\n")
+        LOGGER.debug("\nHere is where we'll be creating Circuit children nodes for " + self + ". It should be a total of " + str(how_many) + " child nodes.\n")
 
         allCircuitsArray = circuitDataString.split(chr(34) + 'id' + chr(34) + ':')
         
@@ -282,7 +282,7 @@ class PanelNode(udi_interface.Node):
             LOGGER.debug("\nHere is the currentCircuitData:\n\t\t" + allCircuitsArray[i] + "\n")
             current_IPaddress = self.ipAddress
             current_BearerToken = self.token
-            address = 'Circuit_{}'.format(i)
+            address = self + '_Circuit_{}'.format(i)
             address = getValidNodeAddress(address)
             current_circuitID_tuple = allCircuitsArray[i].partition(',')
             current_circuitID = current_circuitID_tuple[0].replace(chr(34),'')
@@ -308,6 +308,6 @@ class PanelNode(udi_interface.Node):
         nodes = self.poly.getNodes()
         for node in nodes:
             if "panel_" not in node and node != 'controller':   # but not the controller or panel nodes
-                #nodes[node].setDriver('AWAKE', 0, True, True)
-                LOGGER.debug("\nWould be setting " + node + " AWAKE = 0, but it's commented out.\n")
+                nodes[node].setDriver('AWAKE', 0, True, True)
+                #LOGGER.debug("\nWould be setting " + node + " AWAKE = 0, but it's commented out.\n")
 
