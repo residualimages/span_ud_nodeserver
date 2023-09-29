@@ -16,7 +16,6 @@ from nodes import SPAN_circuit
 from typing import Optional, Any, TYPE_CHECKING
 
 import math,time,datetime
-import xml.etree.ElementTree as ET
 
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
@@ -210,61 +209,61 @@ class PanelNode(udi_interface.Node):
                 panelData = panelData.decode("utf-8")
                 LOGGER.info("\n\tPOLL Panel node's Panel Data: \n\t\t" + panelData + "\n")
                
-                #panelDataAsXml = ET.fromstring(panelData)
-                #LOGGER.info('panelDataAsXml: {}'.format(panelDataAsXml))
-                #feedthroughPowerW = panelDataAsXml.find('feedthroughPowerW')
-                
-                feedthroughPowerW_tuple = panelData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
-                feedthroughPowerW = feedthroughPowerW_tuple[2]
-                #LOGGER.debug("\n\t\t1st level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
-                feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
-                feedthroughPowerW = feedthroughPowerW_tuple[0]
-                #LOGGER.debug("\n\t\t2nd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
-                #feedthroughPowerW_tuple = feedthroughPowerW.partition(":")
-                #feedthroughPowerW = feedthroughPowerW_tuple[2]
-                #LOGGER.debug("\n\t\t3rd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")                
-                feedthroughPowerW = math.ceil(float(feedthroughPowerW)*100)/100
-
-                instantGridPowerW_tuple = panelData.partition(chr(34) + "instantGridPowerW" + chr(34) + ":")
-                instantGridPowerW = instantGridPowerW_tuple[2]
-                #LOGGER.debug("\n\t\t1st level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
-                instantGridPowerW_tuple = instantGridPowerW.partition(",")
-                instantGridPowerW = instantGridPowerW_tuple[0]
-                #LOGGER.debug("\n\t\t2nd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
-                #instantGridPowerW_tuple = instantGridPowerW.partition(":")
-                #instantGridPowerW = instantGridPowerW_tuple[2]
-                #LOGGER.debug("\n\t\t3rd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")                
-                instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
-                #LOGGER.debug("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
-                #LOGGER.debug("\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
-                self.setDriver('ST', (instantGridPowerW-abs(feedthroughPowerW)), True, True)
-
-                for i in range(1,33):
-                    try:
-                        currentBreaker_tuple = panelData.partition(chr(34) + 'id' + chr(34) + ':' + str(i))
-                        currentBreakerW = currentBreaker_tuple[2]
-                        #LOGGER.debug("\n\t\t1st level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
-                        currentBreaker_tuple = currentBreakerW.partition(chr(34) + 'instantPowerW' + chr(34) + ':')
-                        currentBreakerW = currentBreaker_tuple[2]
-                        #LOGGER.debug("\n\t\t2nd level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
-                        currentBreaker_tuple = currentBreakerW.partition(',')
-                        currentBreakerW = currentBreaker_tuple[0]
-                        #LOGGER.debug("\n\t\t3rd level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
-                        currentBreakerW = abs(math.ceil(float(currentBreakerW)*100)/100)
-                        #LOGGER.debug("\n\t\tFinal Level Parsed for Breaker " + str(i) + ":\t" + str(currentBreakerW) + "\n")
-                        if i < 32:
-                            self.setDriver('GV' + str(i-1), currentBreakerW, True, True)
-                        else:
-                            self.setDriver('GPV', currentBreakerW, True, True)
-                    except:
-                        LOGGER.warning("\n\tPOLL Issue getting data from Breaker " + str(i) + " on Panel node " + format(self.ipAddress) + ".\n")
-                
-                if len(str(instantGridPowerW)) > 0:
-                    nowEpoch = int(time.time())
-                    nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+                if "branches" in panelData:
+                    feedthroughPowerW_tuple = panelData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
+                    feedthroughPowerW = feedthroughPowerW_tuple[2]
+                    #LOGGER.debug("\n\t\t1st level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
+                    feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
+                    feedthroughPowerW = feedthroughPowerW_tuple[0]
+                    #LOGGER.debug("\n\t\t2nd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
+                    #feedthroughPowerW_tuple = feedthroughPowerW.partition(":")
+                    #feedthroughPowerW = feedthroughPowerW_tuple[2]
+                    #LOGGER.debug("\n\t\t3rd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")                
+                    feedthroughPowerW = math.ceil(float(feedthroughPowerW)*100)/100
+    
+                    instantGridPowerW_tuple = panelData.partition(chr(34) + "instantGridPowerW" + chr(34) + ":")
+                    instantGridPowerW = instantGridPowerW_tuple[2]
+                    #LOGGER.debug("\n\t\t1st level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
+                    instantGridPowerW_tuple = instantGridPowerW.partition(",")
+                    instantGridPowerW = instantGridPowerW_tuple[0]
+                    #LOGGER.debug("\n\t\t2nd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
+                    #instantGridPowerW_tuple = instantGridPowerW.partition(":")
+                    #instantGridPowerW = instantGridPowerW_tuple[2]
+                    #LOGGER.debug("\n\t\t3rd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")                
+                    instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
+                    #LOGGER.debug("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
+                    #LOGGER.debug("\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
+                    self.setDriver('ST', (instantGridPowerW-abs(feedthroughPowerW)), True, True)
+    
+                    for i in range(1,33):
+                        try:
+                            currentBreaker_tuple = panelData.partition(chr(34) + 'id' + chr(34) + ':' + str(i))
+                            currentBreakerW = currentBreaker_tuple[2]
+                            #LOGGER.debug("\n\t\t1st level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
+                            currentBreaker_tuple = currentBreakerW.partition(chr(34) + 'instantPowerW' + chr(34) + ':')
+                            currentBreakerW = currentBreaker_tuple[2]
+                            #LOGGER.debug("\n\t\t2nd level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
+                            currentBreaker_tuple = currentBreakerW.partition(',')
+                            currentBreakerW = currentBreaker_tuple[0]
+                            #LOGGER.debug("\n\t\t3rd level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
+                            currentBreakerW = abs(math.ceil(float(currentBreakerW)*100)/100)
+                            #LOGGER.debug("\n\t\tFinal Level Parsed for Breaker " + str(i) + ":\t" + str(currentBreakerW) + "\n")
+                            if i < 32:
+                                self.setDriver('GV' + str(i-1), currentBreakerW, True, True)
+                            else:
+                                self.setDriver('GPV', currentBreakerW, True, True)
+                        except:
+                            LOGGER.warning("\n\tPOLL Issue getting data from Breaker " + str(i) + " on Panel node " + format(self.ipAddress) + ".\n")
                     
-                    self.setDriver('TIME', nowEpoch, True, True)
-                    self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
+                    if len(str(instantGridPowerW)) > 0:
+                        nowEpoch = int(time.time())
+                        nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+                        
+                        self.setDriver('TIME', nowEpoch, True, True)
+                        self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
+                else:
+                    tokenLastTen = self.token[-10:]
+                    LOGGER.debug('\n\tPOLL ERROR when querying Panel node at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
             else:
                 tokenLastTen = self.token[-10:]
                 LOGGER.debug('\n\tSkipping POLL query of Panel node at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
