@@ -265,12 +265,12 @@ class PanelNodeForCircuits(udi_interface.Node):
                         self.setDriver('TIME', nowEpoch, True, True)
                         self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
     
-                spanConnection.request("GET", "/api/v1/circuits", payload, headers)
-                circuitsResponse = spanConnection.getresponse()
-                circuitsData = circuitsResponse.read()
-                circuitsData = circuitsData.decode("utf-8")
-                self.circuitsDataCopy = circuitsData
-                self.circuitsDataUpdated = 1
+                    spanConnection.request("GET", "/api/v1/circuits", payload, headers)
+                    circuitsResponse = spanConnection.getresponse()
+                    circuitsData = circuitsResponse.read()
+                    circuitsData = circuitsData.decode("utf-8")
+                    self.circuitsDataCopy = circuitsData
+                    self.circuitsDataUpdated = 1
 
                 else:
                     tokenLastTen = self.token[-10:]
