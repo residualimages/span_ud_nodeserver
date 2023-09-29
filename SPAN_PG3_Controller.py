@@ -17,7 +17,7 @@ if __name__ == "__main__":
         polyglot.start()
 
         # Create the controller node
-        SPAN_ctl.Controller(polyglot, 'controller', 'controller', 'SPAN Smart Panels')
+        SPAN_ctl.Controller(polyglot, 'controller', 'controller', 'SPAN Smart Panel Nodeserver')
 
         # Just sit and wait for events
         polyglot.runForever()
