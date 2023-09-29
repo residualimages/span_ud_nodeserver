@@ -14,7 +14,6 @@ import http.client
 from typing import Optional, Any, TYPE_CHECKING
 
 import math,time,datetime
-import xml.etree.ElementTree as ET
 
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
