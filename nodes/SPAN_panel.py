@@ -278,14 +278,16 @@ class PanelNode(udi_interface.Node):
 
         allCircuitsArray = circuitDataString.split(chr(34) + 'id' + chr(34) + ':')
         
-        for i in range(0, how_many):
+        for i in range(1, how_many+1):
             LOGGER.debug("\nHere is the currentCircuitData:\n\t\t" + allCircuitsArray[i] + "\n")
             current_IPaddress = self.ipAddress
             current_BearerToken = self.token
             address = 'Circuit_{}'.format(i)
             address = getValidNodeAddress(address)
-            current_circuitID = "circuit_" + str(i)
-            current_circuitName = "Circuit #" + str(i)
+            current_circuitID_tuple = allCircuitsArray[i].partition(',')
+            current_circuitID = "circuit_" + current_circuitID_tuple[0]
+            current_circuitName_tuple = allCircuitsArray[i].partition(chr(34) + 'name' + chr(34) + ':')
+            current_circuitName = current_circuitName_tuple[2]
             title = '{}({})'.format(current_circuitName,current_circuitID)
             title = getValidNodeName(title)
             try:
