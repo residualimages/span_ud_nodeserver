@@ -318,7 +318,7 @@ class PanelNode(udi_interface.Node):
             title = getValidNodeName(title)
             try:
                 node = SPAN_circuit.CircuitNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken,current_circuitID)
-                self.addNode(node)
+                self.poly.addNode(node,self)
                 #self.wait_for_node_done()
                 node.setDriver('AWAKE', 1, True, True)
                 LOGGER.info('Created a Circuit child node {} under Panel {}\n'.format(title, panelNumberPrefix))
