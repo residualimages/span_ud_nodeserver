@@ -152,7 +152,7 @@ class PanelNode(udi_interface.Node):
     for a node to be created.  The nodeAdd() API call is asynchronous and
     will return before the node is fully created. Using this, we can wait
     until it is fully created before we try to use it.
-    
+    '''
     def node_queue(self, data):
         self.n_queue.append(data['address'])
 
@@ -160,7 +160,7 @@ class PanelNode(udi_interface.Node):
         while len(self.n_queue) == 0:
             time.sleep(0.1)
         self.n_queue.pop()
-    '''
+
     # called by the interface after the node data has been put in the Polyglot DB
     # and the node created/updated in the ISY
     def start(self):
@@ -169,9 +169,9 @@ class PanelNode(udi_interface.Node):
     
     # overload the setDriver() of the parent class to short circuit if 
     # node not initialized
-    #def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None):
-    #    if self._initialized:
-    #        super().setDriver(driver, value, report, force, uom)
+    def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None):
+        if self._initialized:
+            super().setDriver(driver, value, report, force, uom)
 
     '''
     Read the user entered custom parameters.
