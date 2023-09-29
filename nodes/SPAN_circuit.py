@@ -86,9 +86,12 @@ class CircuitNode(udi_interface.Node):
             for i in range(0,designatedCircuitTabsCount):
                 LOGGER.debug("\n\t\tIn Circuit " + self.circuitID + ", Tab # " + str(i) + " corresponds to breaker number:\n\t\t\t" + designatedCircuitTabsArray[i] + "\n")
                 self.setDriver('GV' + str(i+1), designatedCircuitTabsArray[i], True, True)
-
-            self.setDriver('TIME', int(time.time()), True, True)
-            self.setDriver('ST', datetime.datetime.fromtimestamp(int(time.time())), True, True)
+            
+            nowEpoch = int(time.time())
+            nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+            
+            self.setDriver('TIME', nowEpoch, True, True)
+            self.setDriver('ST', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
         else:
             LOGGER.warning("\n\tINIT Issue getting data for circuit '" + self.circuitID + "'.\n")
             self.setDriver('ST', "INIT Error Querying" , True, True)
