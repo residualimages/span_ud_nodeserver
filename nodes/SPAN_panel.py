@@ -109,10 +109,7 @@ class PanelNodeForCircuits(udi_interface.Node):
         self.Parameters = Custom(polyglot, 'customparams')
         self.ipAddress = spanIPAddress
         self.token = bearerToken
-        global allCircuitsData
-        allCircuitsData = ''
-        global allCircuitsDataUpdated
-        allCircuitsDataUpdated = 0
+
         tokenLastTen = self.token[-10:]
         LOGGER.debug("\n\tINIT Panel node's IP Address:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen)
 
@@ -133,9 +130,8 @@ class PanelNodeForCircuits(udi_interface.Node):
             spanConnection.request("GET", "/api/v1/circuits", payload, headers)
     
             circuitsResponse = spanConnection.getresponse()
-            allCircuitsData = circuitsResponse.read()
-            allCircuitsData = allCircuitsData.decode("utf-8")
-            allCircuitsDataUpdated = 1
+            self.allCircuitsData = circuitsResponse.read()
+            self.allCircuitsData = self.allCircuitsData.decode("utf-8")
         else:
             LOGGER.warning("\n\tINIT Issue getting Status Data for Panel @ " + self.ipAddress + ".\n")
         
@@ -154,14 +150,16 @@ class PanelNodeForCircuits(udi_interface.Node):
     '''
     def node_queue_panelFinished(self, data):
         self.n_queue.append(data['address'])
-        global allCircuitsData
+        globals()[self.address + '_allCircuitsData'] = self.allCircuitsData
+        globals()[self.address + '_allCircuitsDataUpdated'] = 1
+
         LOGGER.info("\n\tWAIT FOR NODE CREATION: Fully Complete for Panel " + self.address + "\n")
 
         self.setDriver('FREQ', self.ipAddress, True, True)
         
-        if "circuits" in allCircuitsData:
-            LOGGER.info("\n\tINIT Panel node's Circuits Data: \n\t\t" + allCircuitsData + "\n\t\tCount of circuits: " + str(allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
-            self.setDriver('PULSCNT', allCircuitsData.count(chr(34) + 'id' + chr(34) + ':'), True, True)
+        if "circuits" in self.allCircuitsData:
+            LOGGER.info("\n\tINIT Panel node's Circuits Data: \n\t\t" + self.allCircuitsData + "\n\t\tCount of circuits: " + str(self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
+            self.setDriver('PULSCNT', self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':'), True, True)
             self.setDriver('CLIEMD', 1, True, True)
     
             self.createCircuits()
@@ -196,9 +194,8 @@ class PanelNodeForCircuits(udi_interface.Node):
     '''
     def poll(self, polltype):
         if 'shortPoll' in polltype:
-            global allCircuitsUpdated,allCircuitsData
-            allCircuitsDataUpdated = 0
-            allCircuitsData = ''
+            globals()[self.address + '_allCircuitsData'] = ''
+            globals()[self.address + '_allCircuitsDataUpdated'] = 0
             if self.getDriver('AWAKE') == 1:
                 tokenLastTen = self.token[-10:]
                 LOGGER.info('\n\tPOLL About to query Panel node of {}, using token ending in {}'.format(self.ipAddress,tokenLastTen))
@@ -270,10 +267,12 @@ class PanelNodeForCircuits(udi_interface.Node):
     
                     spanConnection.request("GET", "/api/v1/circuits", payload, headers)
                     circuitsResponse = spanConnection.getresponse()
-                    allCircuitsData = circuitsResponse.read()
-                    allCircuitsData = allCircuitsData.decode("utf-8")
-                    allCircuitsDataUpdated = 1
-
+                    self.allCircuitsData = circuitsResponse.read()
+                    self.allCircuitsData = self.allCircuitsData.decode("utf-8")
+                    
+                    globals()[self.address + '_allCircuitsData'] = self.allCircuitsData
+                    globals()[self.address + '_allCircuitsDataUpdated'] = 1
+        
                 else:
                     tokenLastTen = self.token[-10:]
                     LOGGER.debug('\n\tPOLL ERROR when querying Panel node at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
@@ -305,7 +304,6 @@ class PanelNodeForCircuits(udi_interface.Node):
     TODO: Handle fewer circuit nodes by deleting (currently commented out)
     '''
     def createCircuits(self):
-        global allCircuitsData
         '''
         # delete any existing nodes but only under this panel
         currentPanelCircuitPrefix = "s" + self.address.replace('panel_','') + "_circuit_"
@@ -318,7 +316,7 @@ class PanelNodeForCircuits(udi_interface.Node):
 
         how_many = self.getDriver('PULSCNT')
         
-        allCircuitsArray = allCircuitsData.split(chr(34) + 'id' + chr(34) + ':')
+        allCircuitsArray = self.allCircuitsData.split(chr(34) + 'id' + chr(34) + ':')
         panelNumberPrefix = self.address
         panelNumberPrefix = panelNumberPrefix.replace('panel_','')
 
