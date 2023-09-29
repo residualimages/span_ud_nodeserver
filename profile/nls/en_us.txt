@@ -6,11 +6,11 @@ CMD-ctl-DISCOVER-NAME = Re-Discover (Not Implemented)
 
 ND-panel-NAME = SPAN Panel
 ND-panel-ICON = Electricity
-ST-panel-TPW-NAME = Total Power Used by Panel
+ST-panel-ST-NAME = Total Power Used by Panel
 ST-panel-PULSCNT-NAME = Circuit Count
 ST-panel-CLIEMD-NAME = Grid / Connection Status
 ST-panel-TIME-NAME = Last Successful Query
-ST-panel-ST-NAME = Last Successful Query (String Format)
+ST-panel-TIMEREM-NAME = Last Successful Query (String Format)
 ST-panel-AWAKE-NAME = Being Monitored?
 CMD-TOGGLE_MONITORING-NAME = Toggle Monitoring
 IX_panelgridstatus_1 = PANEL_ON_GRID
@@ -50,11 +50,11 @@ ST-panel-GPV-NAME = Breaker 32
 
 ND-circuit-NAME = SPAN Circuit
 ND-circuit-ICON = EnergyMonitor
-ST-circuit-TPW-NAME = Total Power Used by Circuit
+ST-circuit-ST-NAME = Total Power Used by Circuit
 ST-circuit-PULSCNT-NAME = Breaker Count
 ST-circuit-CLIEMD-NAME = Circuit Status
 ST-circuit-TIME-NAME = Last Successful Query
-ST-circuit-ST-NAME = Last Successful Query (String Format)
+ST-circuit-TIMEREM-NAME = Last Successful Query (String Format)
 ST-circuit-AWAKE-NAME = Being Monitored?
 CMD-TOGGLE_CIRCUIT_MONITORING-NAME = Toggle Monitoring
 IX_circuitstatus_0 = Unknown
