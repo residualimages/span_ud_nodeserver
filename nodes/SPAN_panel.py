@@ -55,6 +55,7 @@ class PanelNode(udi_interface.Node):
     id = 'panel'
     drivers = [
             {'driver': 'ST', 'value': 0, 'uom': 73},
+            {'driver': 'FREQ', 'value': '???', 'uom': 145},
             {'driver': 'PULSCNT', 'value': 0, 'uom': 56},
             {'driver': 'CLIEMD', 'value': 0, 'uom': 25},
             {'driver': 'TIME', 'value': 0, 'uom': 151},
@@ -153,6 +154,9 @@ class PanelNode(udi_interface.Node):
         self.n_queue.append(data['address'])
         
         LOGGER.info("\n\tWAIT FOR NODE CREATION: Fully Complete for Panel " + self.address + "\n")
+
+        self.setDriver('FREQ', self.ipAddress, True, True)
+        
         if "circuits" in self.circuitsDataCopy:
             LOGGER.info("\n\tINIT Panel node's Circuits Data: \n\t\t" + self.circuitsDataCopy + "\n\t\tCount of circuits: " + str(self.circuitsDataCopy.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
             self.setDriver('PULSCNT', self.circuitsDataCopy.count(chr(34) + 'id' + chr(34) + ':'), True, True)
