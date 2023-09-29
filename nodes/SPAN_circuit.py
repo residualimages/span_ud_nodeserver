@@ -45,7 +45,7 @@ class CircuitNode(udi_interface.Node):
         self._initialized: bool = False
         
         self.poly = polyglot
-        #self.n_queue = []
+        self.n_queue = []
 
         LOGGER.debug("\n\tINIT Span Circuit's parent is '" + parent + "' when INIT'ing.\n")
 
@@ -101,6 +101,22 @@ class CircuitNode(udi_interface.Node):
         # subscribe to the events we want
         #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
         polyglot.subscribe(polyglot.POLL, self.poll)
+        polyglot.subscribe(polyglot.START, self.start, address)
+        polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
+        
+    '''
+    node_queue() and wait_for_node_event() create a simple way to wait
+    for a node to be created.  The nodeAdd() API call is asynchronous and
+    will return before the node is fully created. Using this, we can wait
+    until it is fully created before we try to use it.
+    '''
+    def node_queue(self, data):
+        self.n_queue.append(data['address'])
+
+    def wait_for_node_done(self):
+        while len(self.n_queue) == 0:
+            time.sleep(0.1)
+        self.n_queue.pop()
         
     # called by the interface after the node data has been put in the Polyglot DB
     # and the node created/updated in the ISY
@@ -110,9 +126,9 @@ class CircuitNode(udi_interface.Node):
     
     # overload the setDriver() of the parent class to short circuit if 
     # node not initialized
-    #def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None):
-    #    if self._initialized:
-    #        super().setDriver(driver, value, report, force, uom)
+    def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None):
+        if self._initialized:
+            super().setDriver(driver, value, report, force, uom)
 
     '''
     Read the user entered custom parameters.
