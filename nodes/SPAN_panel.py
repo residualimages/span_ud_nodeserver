@@ -101,7 +101,7 @@ class PanelNode(udi_interface.Node):
         self._initialized: bool = False
         
         self.poly = polyglot
-        #self.n_queue = []
+        self.n_queue = []
 
         LOGGER.debug("\n\tINIT Panel node's parent is '" + parent + "' when INIT'ing.\n")
 
