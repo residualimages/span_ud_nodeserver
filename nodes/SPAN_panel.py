@@ -280,7 +280,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                             try:
                                 node.updateNode(self.allCircuitsData)
                             except Exception as e:
-                                LOGGER.debug("\n\t\tPOLL ERROR: Cannot seem to update node needed in for-loop due to error:\t" + e + ".\n")
+                                LOGGER.debug("\n\t\tPOLL ERROR: Cannot seem to update node needed in for-loop due to error:\t{}.\n".format(e))
                 else:
                     tokenLastTen = self.token[-10:]
                     LOGGER.debug('\n\tPOLL ERROR when querying Panel node at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
