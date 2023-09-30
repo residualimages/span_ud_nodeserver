@@ -175,13 +175,20 @@ class Controller(udi_interface.Node):
                 self.poly.addNode(circuitController)
                 self.wait_for_node_done()
                 circuitController.setDriver('AWAKE', 1, True, True)
-                LOGGER.info("\n\t\tTHEORETICAL ADDING OF breakerController = SPAN_panel.PanelNodeForBreakers(self.poly, " + addressBreakers + ", " + addressBreakers + ", " + titleBreakers + ", " + current_IPaddress + ", " + current_BearerToken + ")\n")
-                #breakerController = SPAN_panel.PanelNodeForBreakers(self.poly, address, address, title, current_IPaddress, current_BearerToken)
-                #self.poly.addNode(breakerController)
-                #self.wait_for_node_done()
             except Exception as e:
-                LOGGER.error('Failed to create {}: {}'.format(title, e))
+                LOGGER.error('Failed to create {}: {}'.format(titleCircuits, e))
 
+            try:
+                LOGGER.info("\n\t\tTHEORETICAL ADDING OF breakerController = SPAN_panel.PanelNodeForBreakers(self.poly, " + addressBreakers + ", " + addressBreakers + ", " + titleBreakers + ", " + current_IPaddress + ", " + current_BearerToken + ")\n")
+                breakerController = SPAN_panel.PanelNodeForBreakers(self.poly, addressBreakers, addressBreakers, titleBreakers, current_IPaddress, current_BearerToken)
+                self.poly.addNode(breakerController)
+                self.wait_for_node_done()
+            except Exception as e:
+                LOGGER.error('Failed to create {}: {}'.format(titleBreakers, e))
+
+
+
+        
         self.setDriver('GV0', how_many, True, True)
 
     '''
