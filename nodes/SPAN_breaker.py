@@ -52,7 +52,7 @@ class BreakerNode(udi_interface.Node):
         tokenLastTen = self.token[-10:]
         LOGGER.debug("\n\tINIT IP Address for breaker:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen + "; Breaker ID: " + str(self.breakerID))
 
-        self.setDriver('GPV', self.breakerID, True, True)
+        self.setDriver('PULSCNT', self.breakerID, True, True)
 
         '''
         spanConnection = http.client.HTTPConnection(self.ipAddress)
@@ -134,8 +134,8 @@ class BreakerNode(udi_interface.Node):
     
             LOGGER.debug("\n\tAbout to search for 'name' in:\n\t\t" + designatedBreakerData + "\n")
 
-            if "???" in self.getDriver('GPV'):
-                LOGGER.debug("\n\t\tSHOULD SET GPV because it is currently ???.\n")
+            if self.getDriver('PULSCNT') = 0:
+                LOGGER.debug("\n\t\tSHOULD SET PULSCNT because it is currently 0.\n")
                     
                 nowEpoch = int(time.time())
                 nowDT = datetime.datetime.fromtimestamp(nowEpoch)
