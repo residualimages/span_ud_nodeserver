@@ -82,6 +82,7 @@ class BreakerNode(udi_interface.Node):
         #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
         #polyglot.subscribe(polyglot.POLL, self.poll)
         #polyglot.subscribe(polyglot.START, self.start, address)
+        polyglot.subscribe(polyglot.STOP, self.stop, address)
         #polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
         
         self.initialized = True
@@ -205,3 +206,9 @@ class BreakerNode(udi_interface.Node):
             else:
                 LOGGER.warning("\n\tPOLL ERROR: Unable to get designatedBreakerInstantPowerW from designatedBreakerData:\n\t\t" + designatedBreakerData + "\n")
                 self.setDriver('TIMEREM', "POLL Error Querying" , True, True)
+                
+    '''
+    Change self status driver to 0 W
+    '''
+    def stop(self):
+        self.setDriver('ST', 0, True, True)
