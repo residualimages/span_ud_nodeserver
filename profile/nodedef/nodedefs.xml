@@ -98,14 +98,6 @@
       <st id="TIME" editor="timestamp" />
       <st id="TIMEREM" editor="string" />
 	  </sts>
-    <cmds>
-      <sends />
-	    <accepts>
-        <cmd id="TOGGLE_MONITORING">
-          <p id="" editor="bool" init="AWAKE" />
-        </cmd>
-      </accepts>
-    </cmds>
   </nodeDef>
 	
   <nodeDef id="breaker" nls="breaker">
