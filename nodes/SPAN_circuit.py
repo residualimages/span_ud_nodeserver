@@ -84,7 +84,7 @@ class CircuitNode(udi_interface.Node):
         allCircuitsData = globals()[parentPrefix + '_allCircuitsData']
         '''
         designatedCircuitData_tuple = self.allCircuitsData.partition(chr(34) + self.circuitID + chr(34) + ':')
-        designatedCircuitData = designatedCircuitData_tupple[2]
+        designatedCircuitData = designatedCircuitData_tuple[2]
         designatedCircuitData_tuple = designatedCircuitData.partition('},')
         designatedCircuitData = designatedCircuitData_tuple[0] + '}'
 
@@ -172,7 +172,7 @@ class CircuitNode(udi_interface.Node):
                 tokenLastTen = self.token[-10:]
                 LOGGER.info('\n\tPOLL About to parse {} Circuit node of {}, using token ending in {}'.format(self.circuitID,self.ipAddress,tokenLastTen))
                 designatedCircuitData_tuple = self.allCircuitsData.partition(chr(34) + self.circuitID + chr(34) + ':')
-                designatedCircuitData = designatedCircuitData_tupple[2]
+                designatedCircuitData = designatedCircuitData_tuple[2]
                 designatedCircuitData_tuple = designatedCircuitData.partition('},')
                 designatedCircuitData = designatedCircuitData_tuple[0] + '}'
         
