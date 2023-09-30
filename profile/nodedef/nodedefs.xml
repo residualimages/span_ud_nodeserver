@@ -68,11 +68,6 @@
   </nodeDef>
 	
   <nodeDef id="panelForBreakers" nls="panelForBreakers">
-	  <editors>
-		<editor id="panelgridstatus">
-			<range uom="25" subset="1-3" nls="IX_SPAN_panelgridstatus" />
-		</editor>
-	  </editors>
     <sts>
       <st id="ST" editor="watt" />
       <st id="FREQ" editor="string" />
