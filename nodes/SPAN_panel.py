@@ -641,7 +641,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                 node = SPAN_breaker.BreakerNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken, i)
                 self.poly.addNode(node)
                 self.wait_for_node_done()
-                #node.setDriver('AWAKE', 1, True, True)
+                
                 LOGGER.debug('\n\tCreated a Breaker child node {} under Panel Breaker controller {}\n'.format(title, panelNumberPrefix))
             except Exception as e:
                 LOGGER.warning('\n\tFailed to create Breaker child node {} under Panel Breaker controller {} due to error: {}.\n'.format(title, panelNumberPrefix, e))
