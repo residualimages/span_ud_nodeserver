@@ -464,7 +464,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             self.setDriver('FREQ', self.ipAddress, True, True)
         
             if "branches" in self.allBreakersData:
-                LOGGER.info("\n\tINIT Panel node's Breakers Data: \n\t\t" + self.allBreakersData + "\n\t\tCount of OPEN Breakers: " + str(self.allBreakersData.count(chr(34) + 'OPEN' + chr(34) + ',')) + "\n\t\tCount of CLOSED Breakers: " + str(self.allBreakersData.count(chr(34) + 'CLOSED' + chr(34) + ',')) + "\n")))
+                LOGGER.info("\n\tINIT Panel node's Breakers Data: \n\t\t" + self.allBreakersData + "\n\t\tCount of OPEN Breakers: " + str(self.allBreakersData.count(chr(34) + 'OPEN' + chr(34) + ',')) + "\n\t\tCount of CLOSED Breakers: " + str(self.allBreakersData.count(chr(34) + 'CLOSED' + chr(34) + ',')) + "\n")
                 self.setDriver('PULSCNT', self.allBreakersData.count(chr(34) + 'CLOSED' + chr(34) + ','), True, True)
                 self.setDriver('GPV', self.allBreakersData.count(chr(34) + 'OPEN' + chr(34) + ','), True, True)
         
