@@ -123,6 +123,8 @@ class PanelNodeForCircuits(udi_interface.Node):
         statusResponse = spanConnection.getresponse()
         statusData = statusResponse.read()
         statusData = statusData.decode("utf-8")
+        self.allCircuitsData = ''
+        self.allCircuitsDataUpdated = 0
 
         if "system" in statusData:
             LOGGER.info("\n\tINIT Panel node's Status Data: \n\t\t" + statusData + "\n")
@@ -132,6 +134,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             circuitsResponse = spanConnection.getresponse()
             self.allCircuitsData = circuitsResponse.read()
             self.allCircuitsData = self.allCircuitsData.decode("utf-8")
+            self.allCircuitsDataUpdated = 1
         else:
             LOGGER.warning("\n\tINIT Issue getting Status Data for Panel @ " + self.ipAddress + ".\n")
         
