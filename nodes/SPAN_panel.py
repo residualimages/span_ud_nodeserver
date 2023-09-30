@@ -10,7 +10,7 @@ import sys
 import http.client
 import re
 
-from nodes import SPAN_circuit
+from nodes import SPAN_circuit,SPAN_breaker
 
 # Standard Library
 from typing import Optional, Any, TYPE_CHECKING
@@ -48,7 +48,7 @@ def getValidNodeName(s: str) -> str:
     return name
 
 '''
-This is our Panel device node. 
+This is our PanelForCircuits device node. 
 '''
 class PanelNodeForCircuits(udi_interface.Node):
     id = 'panelForCircuits'
@@ -104,14 +104,14 @@ class PanelNodeForCircuits(udi_interface.Node):
         self.poly = polyglot
         self.n_queue = []
 
-        LOGGER.debug("\n\tINIT Panel node's parent is '" + parent + "' when INIT'ing.\n")
+        LOGGER.debug("\n\tINIT Panel Circuit Controller " + address + "'s parent is '" + parent + "' when INIT'ing.\n")
 
         self.Parameters = Custom(polyglot, 'customparams')
         self.ipAddress = spanIPAddress
         self.token = bearerToken
 
         tokenLastTen = self.token[-10:]
-        LOGGER.debug("\n\tINIT Panel node's IP Address:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen)
+        LOGGER.debug("\n\tINIT Panel Circuit Controller's IP Address:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen)
 
         spanConnection = http.client.HTTPConnection(self.ipAddress)
         payload = ''
@@ -381,6 +381,272 @@ class PanelNodeForCircuits(udi_interface.Node):
         nodes = self.poly.getNodes()
         for node in nodes:
             if currentPanelCircuitPrefix in node:
+                nodes[node].setDriver('AWAKE', 0, True, True)
+                LOGGER.debug("\n\tSetting " + node + "'s property AWAKE = 0.\n")
+
+'''
+This is our PanelForBreakers device node. 
+'''
+class PanelNodeForBreakers(udi_interface.Node):
+    id = 'panelForBreakers'
+    drivers = [
+            {'driver': 'ST', 'value': 0, 'uom': 73},
+            {'driver': 'FREQ', 'value': '???', 'uom': 145},
+            {'driver': 'PULSCNT', 'value': 0, 'uom': 56},
+            {'driver': 'GPV', 'value': 0, 'uom': 73},
+            {'driver': 'TIME', 'value': 0, 'uom': 151},
+            {'driver': 'TIMEREM', 'value': 'Initializing...', 'uom': 145}
+            ]
+
+    def __init__(self, polyglot, parent, address, name, spanIPAddress, bearerToken):
+        super(PanelNodeForBreakers, self).__init__(polyglot, parent, address, name)
+
+        # set a flag to short circuit setDriver() until the node has been fully
+        # setup in the Polyglot DB and the ISY (as indicated by START event)
+        self._initialized: bool = False
+        
+        self.poly = polyglot
+        self.n_queue = []
+
+        LOGGER.debug("\n\tINIT Panel Breaker Controller " + address + "'s parent is '" + parent + "' when INIT'ing.\n")
+
+        self.Parameters = Custom(polyglot, 'customparams')
+        self.ipAddress = spanIPAddress
+        self.token = bearerToken
+
+        tokenLastTen = self.token[-10:]
+        LOGGER.debug("\n\tINIT Panel Breaker Controller's IP Address:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen)
+
+        spanConnection = http.client.HTTPConnection(self.ipAddress)
+        payload = ''
+        headers = {
+            "Authorization": "Bearer " + self.token
+        }
+        spanConnection.request("GET", "/api/v1/status", payload, headers)
+
+        statusResponse = spanConnection.getresponse()
+        statusData = statusResponse.read()
+        statusData = statusData.decode("utf-8")
+        self.allBreakersData = ''
+        self.allBreakersDataUpdated = 0
+
+        if "system" in statusData:
+            LOGGER.info("\n\tINIT Panel Breaker Controller's Status Data: \n\t\t" + statusData + "\n")
+
+            spanConnection.request("GET", "/api/v1/panel", payload, headers)
+    
+            panelResponse = spanConnection.getresponse()
+            self.allBreakersData = panelResponse.read()
+            self.allBreakersData = self.allBreakersData.decode("utf-8")
+            self.allBreakersDataUpdated = 1
+        else:
+            LOGGER.warning("\n\tINIT Issue getting Status Data for Panel @ " + self.ipAddress + ".\n")
+        
+        # subscribe to the events we want
+        #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
+        polyglot.subscribe(polyglot.POLL, self.poll)
+        polyglot.subscribe(polyglot.STOP, self.stop)
+        polyglot.subscribe(polyglot.START, self.start, address)
+        polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue_panelFinished)
+
+    '''
+    node_queue() and wait_for_node_event() create a simple way to wait
+    for a node to be created.  The nodeAdd() API call is asynchronous and
+    will return before the node is fully created. Using this, we can wait
+    until it is fully created before we try to use it.
+    '''
+    def node_queue_panelFinished(self, data):
+        self.n_queue.append(data['address'])
+        #LOGGER.info("\n\t\tSUBSCRIBED AddNodeDone under Panel Controller: Node Creation Complete for " + data['address'] + ".\n")
+        if self.address == data['address']:
+            LOGGER.info("\n\t\t\tPanelForBreakers Controller Creation Completed; Queue Breaker child node(s) creation.\n")
+            self.setDriver('AWAKE', 1, True, True)
+            self.setDriver('FREQ', self.ipAddress, True, True)
+        
+            if "branches" in self.allBreakersData:
+                LOGGER.info("\n\tINIT Panel node's Breakers Data: \n\t\t" + self.allBreakersData + "\n\t\tCount of OPEN Breakers: " + str(self.allBreakersData.count(chr(34) + 'OPEN' + chr(34) + ',')) + "\n\t\tCount of CLOSED Breakers: " + str(self.allBreakersData.count(chr(34) + 'CLOSED' + chr(34) + ',')) + "\n"))
+                self.setDriver('PULSCNT', self.allBreakersData.count(chr(34) + 'CLOSED' + chr(34) + ','), True, True)
+                self.setDriver('GPV', self.allBreakersData.count(chr(34) + 'OPEN' + chr(34) + ','), True, True)
+        
+                self.createBreakers()
+            else:
+                LOGGER.warning("\n\tINIT Issue getting Breakers Data for Panel @ " + self.ipAddress + ".\n")
+
+    def wait_for_node_done(self):
+        while len(self.n_queue) == 0:
+            time.sleep(0.1)
+        self.n_queue.pop()
+
+    # called by the interface after the node data has been put in the Polyglot DB
+    # and the node created/updated in the ISY
+    def start(self):
+        # set the initlized flag to allow setDriver to work
+        self._initialized = True
+    
+    # overload the setDriver() of the parent class to short circuit if 
+    # node not initialized
+    def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None):
+        if self._initialized:
+            super().setDriver(driver, value, report, force, uom)
+
+    '''
+    Read the user entered custom parameters.
+    '''
+    def parameterHandler(self, params):
+        self.Parameters.load(params)
+
+    def updateNode(self, passedAllBreakersData):
+        self.allBreakersData = passedAllBreakersData
+
+    '''
+    This is where the real work happens.  When we get a shortPoll, do some work. 
+    '''
+    def poll(self, polltype):
+        if 'shortPoll' in polltype:
+            if self.getDriver('AWAKE') == 1:
+                tokenLastTen = self.token[-10:]
+                LOGGER.info('\n\tPOLL About to query Panel node of {}, using token ending in {}'.format(self.ipAddress,tokenLastTen))
+        
+                spanConnection = http.client.HTTPConnection(self.ipAddress)
+                payload = ''
+                headers = {
+                    "Authorization": "Bearer " + self.token
+                }
+                spanConnection.request("GET", "/api/v1/panel", payload, headers)
+        
+                panelResponse = spanConnection.getresponse()
+                self.allBreakersData = panelResponse.read()
+                self.allBreakersData = self.allBreakersData.decode("utf-8")
+
+                LOGGER.info("\n\tPOLL Panel node's allBreakersData: \n\t\t" + self.allBreakersData + "\n")
+               
+                if "branches" in self.allBreakersData:
+                    feedthroughPowerW_tuple = self.allBreakersData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
+                    feedthroughPowerW = feedthroughPowerW_tuple[2]
+                    #LOGGER.debug("\n\t\t1st level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
+                    feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
+                    feedthroughPowerW = feedthroughPowerW_tuple[0]
+                    #LOGGER.debug("\n\t\t2nd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
+                    #feedthroughPowerW_tuple = feedthroughPowerW.partition(":")
+                    #feedthroughPowerW = feedthroughPowerW_tuple[2]
+                    #LOGGER.debug("\n\t\t3rd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")                
+                    feedthroughPowerW = math.ceil(float(feedthroughPowerW)*100)/100
+    
+                    instantGridPowerW_tuple = self.allBreakersData.partition(chr(34) + "instantGridPowerW" + chr(34) + ":")
+                    instantGridPowerW = instantGridPowerW_tuple[2]
+                    #LOGGER.debug("\n\t\t1st level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
+                    instantGridPowerW_tuple = instantGridPowerW.partition(",")
+                    instantGridPowerW = instantGridPowerW_tuple[0]
+                    #LOGGER.debug("\n\t\t2nd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
+                    #instantGridPowerW_tuple = instantGridPowerW.partition(":")
+                    #instantGridPowerW = instantGridPowerW_tuple[2]
+                    #LOGGER.debug("\n\t\t3rd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")                
+                    instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
+                    #LOGGER.debug("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
+                    #LOGGER.debug("\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
+                    self.setDriver('ST', (instantGridPowerW-abs(feedthroughPowerW)), True, True)
+    
+                    for i in range(1,33):
+                        try:
+                            currentBreaker_tuple = self.allBreakersData.partition(chr(34) + 'id' + chr(34) + ':' + str(i))
+                            currentBreakerW = currentBreaker_tuple[2]
+                            #LOGGER.debug("\n\t\t1st level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
+                            currentBreaker_tuple = currentBreakerW.partition(chr(34) + 'instantPowerW' + chr(34) + ':')
+                            currentBreakerW = currentBreaker_tuple[2]
+                            #LOGGER.debug("\n\t\t2nd level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
+                            currentBreaker_tuple = currentBreakerW.partition(',')
+                            currentBreakerW = currentBreaker_tuple[0]
+                            #LOGGER.debug("\n\t\t3rd level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
+                            currentBreakerW = abs(math.ceil(float(currentBreakerW)*100)/100)
+                            #LOGGER.debug("\n\t\tFinal Level Parsed for Breaker " + str(i) + ":\t" + str(currentBreakerW) + "\n")
+                            currentBreaker
+                        except:
+                            LOGGER.warning("\n\tPOLL Issue getting data from Breaker " + str(i) + " on Panel node " + format(self.ipAddress) + ".\n")
+                    
+                    if len(str(instantGridPowerW)) > 0:
+                        nowEpoch = int(time.time())
+                        nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+                        
+                        self.setDriver('TIME', nowEpoch, True, True)
+                        self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
+    
+                    '''            
+                    nodes = self.poly.getNodes()
+                    currentPanelCircuitPrefix = "s" + self.address.replace('panel_','') + "_circuit_"
+                    LOGGER.debug("\n\tWill be looking for Circuit nodes with this as the prefix: '" + currentPanelCircuitPrefix + "'.\n")
+                    for node in nodes:
+                         if currentPanelCircuitPrefix in node:
+                            LOGGER.debug("\n\tUpdating " + node + " (which should be a Circuit node under this Panel controller: " + self.address + ").\n")
+                            try:
+                                nodes[node].updateNode(self.allBreakersData)
+                            except Exception as e:
+                                LOGGER.debug('\n\t\tPOLL ERROR: Cannot seem to update node needed in for-loop due to error:\t{}.\n'.format(e))
+                    '''
+                else:
+                    tokenLastTen = self.token[-10:]
+                    LOGGER.debug('\n\tPOLL ERROR when querying Panel node at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
+            else:
+                tokenLastTen = self.token[-10:]
+                LOGGER.debug('\n\tSkipping POLL query of Panel node at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
+                self.setDriver('TIMEREM', "Not Actively Querying" , True, True)
+            
+    '''
+    Create the breaker nodes.
+    '''
+    def createBreakers(self):
+        '''
+        # delete any existing nodes but only under this panel
+        currentPanelBreakerPrefix = "s" + self.address.replace('panel_','') + "_breaker_"
+        nodes = self.poly.getNodes()
+        for node in nodes:
+             if currentPanelBreakerPrefix in node:
+                LOGGER.debug("\n\tDeleting " + node + " when creating child Breaker nodes for " + self.address + ".\n")
+                self.poly.delNode(node)
+        '''
+
+        #how_many = self.getDriver('PULSCNT')
+        
+        allBreakersArray = self.allBreakersData.split(chr(34) + 'id' + chr(34) + ':')
+        panelNumberPrefix = self.address
+        panelNumberPrefix = panelNumberPrefix.replace('panel_','')
+
+        LOGGER.debug("\n\tHere is where we'll be creating Breaker children nodes for " + self.address + ". It should be a total of 32 child nodes, each with an address starting with S" + panelNumberPrefix + "_...\n")
+
+        for i in range(1, 33):
+            LOGGER.debug("\n\tHere is the currentBreakersData:\n\t\t" + allBreakersArray[i] + "\n")
+            
+            current_IPaddress = self.ipAddress
+            #LOGGER.debug("\n\t\t'current_IPaddress':\t" + current_IPaddress + "\n")
+            current_BearerToken = self.token
+            #LOGGER.debug("\n\t\t'current_BearerToken':\t" + current_BearerToken + "\n")
+            
+            address = 'S' + panelNumberPrefix + '_Breaker_' + str(i)
+            address = getValidNodeAddress(address)
+            #LOGGER.debug("\n\t\tCalculated 'address':\t" + address + "\n")
+            
+            title = "Breaker #"
+            if i < 10:
+                title = title + "0"
+            title = title + str(i)
+            title = getValidNodeName(title)
+            try:
+                node = SPAN_breaker.BreakerNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken)
+                self.poly.addNode(node)
+                self.wait_for_node_done()
+                node.setDriver('AWAKE', 1, True, True)
+                LOGGER.info('\n\tCreated a Breaker child node {} under Panel {}\n'.format(title, panelNumberPrefix))
+            except Exception as e:
+                LOGGER.error('\n\tFailed to create Breaker child node {} under Panel {} due to error: {}.\n'.format(title, panelNumberPrefix, e))
+
+    '''
+    Change all the child node active status drivers to false
+    TBD: is this needed on Breaker children via Panel parent?
+    '''
+    def stop(self):
+        currentPanelBreakerPrefix = "s" + self.address.replace('panel_','') + "_breaker_"
+        nodes = self.poly.getNodes()
+        for node in nodes:
+            if currentPanelbreakerPrefix in node:
                 nodes[node].setDriver('AWAKE', 0, True, True)
                 LOGGER.debug("\n\tSetting " + node + "'s property AWAKE = 0.\n")
 
