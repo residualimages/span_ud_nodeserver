@@ -125,13 +125,13 @@ class PanelNodeForCircuits(udi_interface.Node):
             statusData = statusResponse.read()
             statusData = statusData.decode("utf-8")
         except Exception as e:
-            LOGGER.debug('\n\t\tINIT ERROR: SPAN API GET request failed in Panel Circuit Controller due to error:\t{}.\n'.format(e))
+            LOGGER.warning('\n\t\tINIT ERROR: SPAN API GET request failed in Panel Circuit Controller due to error:\t{}.\n'.format(e))
             statusData = ''
         
         self.allCircuitsData = ''
 
         if "system" in statusData:
-            LOGGER.info("\n\tINIT Panel Circuit Controller's Status Data: \n\t\t" + statusData + "\n")
+            LOGGER.debug("\n\tINIT Panel Circuit Controller's Status Data: \n\t\t" + statusData + "\n")
 
             spanConnection.request("GET", "/api/v1/circuits", payload, headers)
     
@@ -156,14 +156,14 @@ class PanelNodeForCircuits(udi_interface.Node):
     '''
     def node_queue_panelCircuitsFinished(self, data):
         self.n_queue.append(data['address'])
-        #LOGGER.info("\n\t\tSUBSCRIBED AddNodeDone under Panel Circuits Controller: Node Creation Complete for " + data['address'] + ".\n")
+        #LOGGER.debug("\n\t\tSUBSCRIBED AddNodeDone under Panel Circuits Controller: Node Creation Complete for " + data['address'] + ".\n")
         if self.address == data['address']:
-            LOGGER.info("\n\t\t\tPanelForCircuits Controller Creation Completed; Queue Circuit child node(s) creation.\n")
+            LOGGER.debug("\n\t\t\tPanelForCircuits Controller Creation Completed; Queue Circuit child node(s) creation.\n")
             self.setDriver('AWAKE', 1, True, True)
             self.setDriver('FREQ', self.ipAddress, True, True)
         
             if "circuits" in self.allCircuitsData:
-                LOGGER.info("\n\tINIT Panel Circuit Controller's Circuits Data: \n\t\t" + self.allCircuitsData + "\n\t\tCount of circuits: " + str(self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
+                LOGGER.debug("\n\tINIT Panel Circuit Controller's Circuits Data: \n\t\t" + self.allCircuitsData + "\n\t\tCount of circuits: " + str(self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
                 self.setDriver('PULSCNT', self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':'), True, True)
                 self.setDriver('CLIEMD', 1, True, True)
         
@@ -204,7 +204,7 @@ class PanelNodeForCircuits(udi_interface.Node):
         if 'shortPoll' in polltype:
             if self.getDriver('AWAKE') == 1:
                 tokenLastTen = self.token[-10:]
-                LOGGER.info('\n\tPOLL About to query Panel Circuits Controller of {}, using token ending in {}'.format(self.ipAddress,tokenLastTen))
+                LOGGER.debug('\n\tPOLL About to query Panel Circuits Controller of {}, using token ending in {}'.format(self.ipAddress,tokenLastTen))
         
                 spanConnection = http.client.HTTPConnection(self.ipAddress)
                 payload = ''
@@ -218,7 +218,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                     panelResponse = spanConnection.getresponse()
                     panelData = panelResponse.read()
                     panelData = panelData.decode("utf-8")
-                    LOGGER.info("\n\tPOLL Panel Circuit Controller's Panel Data: \n\t\t" + panelData + "\n")
+                    LOGGER.debug("\n\tPOLL Panel Circuit Controller's Panel Data: \n\t\t" + panelData + "\n")
                 except Exception as e:
                     LOGGER.warning('\n\t\tPOLL ERROR: SPAN API GET request for Panel Circuits Controller failed due to error:\t{}.\n'.format(e))
                     panelData = ''
@@ -380,9 +380,9 @@ class PanelNodeForCircuits(udi_interface.Node):
                 self.poly.addNode(node)
                 self.wait_for_node_done()
                 node.setDriver('AWAKE', 1, True, True)
-                LOGGER.info('\n\tCreated a Circuit child node {} under Panel Circuit Controller {}\n'.format(title, panelNumberPrefix))
+                LOGGER.debug('\n\tCreated a Circuit child node {} under Panel Circuit Controller {}\n'.format(title, panelNumberPrefix))
             except Exception as e:
-                LOGGER.error('\n\tFailed to create Circuit child node {} under Panel Circuit Controller {} due to error: {}.\n'.format(title, panelNumberPrefix, e))
+                LOGGER.warning('\n\tFailed to create Circuit child node {} under Panel Circuit Controller {} due to error: {}.\n'.format(title, panelNumberPrefix, e))
 
     '''
     Change all the child node active status drivers to false
@@ -460,14 +460,14 @@ class PanelNodeForBreakers(udi_interface.Node):
     '''
     def node_queue_panelFinished(self, data):
         self.n_queue.append(data['address'])
-        #LOGGER.info("\n\t\tSUBSCRIBED AddNodeDone under Panel Breaker Controller: Node Creation Complete for " + data['address'] + ".\n")
+        #LOGGER.debug("\n\t\tSUBSCRIBED AddNodeDone under Panel Breaker Controller: Node Creation Complete for " + data['address'] + ".\n")
         if self.address == data['address']:
-            LOGGER.info("\n\t\t\tPanelForBreakers Controller Creation Completed; Queue Breaker child node(s) creation.\n")
+            LOGGER.debug("\n\t\t\tPanelForBreakers Controller Creation Completed; Queue Breaker child node(s) creation.\n")
             #self.setDriver('AWAKE', 1, True, True)
             self.setDriver('FREQ', self.ipAddress, True, True)
         
             if "branches" in self.allBreakersData:
-                LOGGER.info("\n\tINIT Panel node's Breakers Data: \n\t\t" + self.allBreakersData + "\n\t\tCount of OPEN Breakers: " + str(self.allBreakersData.count(chr(34) + 'OPEN' + chr(34) + ',')) + "\n\t\tCount of CLOSED Breakers: " + str(self.allBreakersData.count(chr(34) + 'CLOSED' + chr(34) + ',')) + "\n")
+                LOGGER.debug("\n\tINIT Panel node's Breakers Data: \n\t\t" + self.allBreakersData + "\n\t\tCount of OPEN Breakers: " + str(self.allBreakersData.count(chr(34) + 'OPEN' + chr(34) + ',')) + "\n\t\tCount of CLOSED Breakers: " + str(self.allBreakersData.count(chr(34) + 'CLOSED' + chr(34) + ',')) + "\n")
                 self.setDriver('PULSCNT', self.allBreakersData.count(chr(34) + 'CLOSED' + chr(34) + ','), True, True)
                 self.setDriver('GPV', self.allBreakersData.count(chr(34) + 'OPEN' + chr(34) + ','), True, True)
         
@@ -508,7 +508,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         if 'shortPoll' in polltype:
             if self.getDriver('AWAKE') == 1:
                 tokenLastTen = self.token[-10:]
-                LOGGER.info('\n\tPOLL About to query Panel Breaker controller of {}, using token ending in {}'.format(self.ipAddress,tokenLastTen))
+                LOGGER.debug('\n\tPOLL About to query Panel Breaker controller of {}, using token ending in {}'.format(self.ipAddress,tokenLastTen))
         
                 spanConnection = http.client.HTTPConnection(self.ipAddress)
                 payload = ''
@@ -526,7 +526,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                     LOGGER.warning('\n\t\tPOLL ERROR: SPAN API GET request for Panel Breaker Controller failed due to error:\t{}.\n'.format(e))
                     #self.allBreakersData = ''
 
-                LOGGER.info("\n\tPOLL Panel Breaker Controller's allBreakersData: \n\t\t" + self.allBreakersData + "\n")
+                LOGGER.debug("\n\tPOLL Panel Breaker Controller's allBreakersData: \n\t\t" + self.allBreakersData + "\n")
                
                 if "branches" in self.allBreakersData:
                     feedthroughPowerW_tuple = self.allBreakersData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
@@ -642,7 +642,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                 self.poly.addNode(node)
                 self.wait_for_node_done()
                 #node.setDriver('AWAKE', 1, True, True)
-                LOGGER.info('\n\tCreated a Breaker child node {} under Panel Breaker controller {}\n'.format(title, panelNumberPrefix))
+                LOGGER.debug('\n\tCreated a Breaker child node {} under Panel Breaker controller {}\n'.format(title, panelNumberPrefix))
             except Exception as e:
                 LOGGER.warning('\n\tFailed to create Breaker child node {} under Panel Breaker controller {} due to error: {}.\n'.format(title, panelNumberPrefix, e))
 
