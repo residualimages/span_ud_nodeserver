@@ -49,20 +49,8 @@ def getValidNodeName(s: str) -> str:
 
 '''
 This is our PanelForCircuits device node. 
-'''
-class PanelNodeForCircuits(udi_interface.Node):
-    id = 'panelForCircuits'
-    drivers = [
-            {'driver': 'ST', 'value': 0, 'uom': 73},
-            {'driver': 'FREQ', 'value': '???', 'uom': 145},
-            {'driver': 'PULSCNT', 'value': 0, 'uom': 56},
-            {'driver': 'CLIEMD', 'value': 0, 'uom': 25},
-            {'driver': 'TIME', 'value': 0, 'uom': 151},
-            {'driver': 'TIMEREM', 'value': 'Initializing...', 'uom': 145},
-            {'driver': 'AWAKE', 'value': 1, 'uom': 2}
-            ]
-            '''
-            ,{'driver': 'GV0', 'value': 0, 'uom': 73},
+Previously held Circuits in additional Status Parameters like so:
+            {'driver': 'GV0', 'value': 0, 'uom': 73},
             {'driver': 'GV1', 'value': 0, 'uom': 73},
             {'driver': 'GV2', 'value': 0, 'uom': 73},
             {'driver': 'GV3', 'value': 0, 'uom': 73},
@@ -94,8 +82,18 @@ class PanelNodeForCircuits(udi_interface.Node):
             {'driver': 'GV29', 'value': 0, 'uom': 73},
             {'driver': 'GV30', 'value': 0, 'uom': 73},
             {'driver': 'GPV', 'value': 0, 'uom': 73}
+'''
+class PanelNodeForCircuits(udi_interface.Node):
+    id = 'panelForCircuits'
+    drivers = [
+            {'driver': 'ST', 'value': 0, 'uom': 73},
+            {'driver': 'FREQ', 'value': '???', 'uom': 145},
+            {'driver': 'PULSCNT', 'value': 0, 'uom': 56},
+            {'driver': 'CLIEMD', 'value': 0, 'uom': 25},
+            {'driver': 'TIME', 'value': 0, 'uom': 151},
+            {'driver': 'TIMEREM', 'value': 'Initializing...', 'uom': 145},
+            {'driver': 'AWAKE', 'value': 1, 'uom': 2}
             ]
-            '''
 
     def __init__(self, polyglot, parent, address, name, spanIPAddress, bearerToken):
         super(PanelNodeForCircuits, self).__init__(polyglot, parent, address, name)
