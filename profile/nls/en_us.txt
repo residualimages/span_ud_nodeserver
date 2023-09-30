@@ -21,8 +21,8 @@ ND-panelForBreakers-NAME = SPAN Panel - BREAKERS Controller
 ND-panelForBreakers-ICON = Electricity
 ST-panelForBreakers-ST-NAME = Total Power Used by Panel
 ST-panelForBreakers-FREQ-NAME = IP Address of Panel
-ST-panelForBreakers-PULSCNT-NAME = Closed (Power ON) Breaker Count
-ST-panelForBreakers-GPV-NAME = Open / Tripped (Power OFF) Breaker Count
+ST-panelForBreakers-PULSCNT-NAME = Closed (Power FLOWING) Breaker Count
+ST-panelForBreakers-GPV-NAME = Open / Tripped (Power INTERRUPTED) Breaker Count
 ST-panelForBreakers-TIME-NAME = Last Successful Query
 ST-panelForBreakers-TIMEREM-NAME = Last Successful Query (String Format)
 
@@ -41,8 +41,8 @@ ST-circuit-GV2-NAME = Physical Breaker #2 Location (for du, tri, or quad plex)
 ST-circuit-GV3-NAME = Physical Breaker #3 Location (for tri or quad plex)
 ST-circuit-GV4-NAME = Physical Breaker #4 Location (for quad plex)
 IX_SPAN_CIRCUITSTATUS-0 = Unknown
-IX_SPAN_CIRCUITSTATUS-1 = Circuit Open / Tripped (Power OFF)
-IX_SPAN_CIRCUITSTATUS-2 = Circuit Closed (Power ON)
+IX_SPAN_CIRCUITSTATUS-1 = Circuit Open / Tripped (Power INTERRUPTED)
+IX_SPAN_CIRCUITSTATUS-2 = Circuit Closed (Power FLOWING)
 
 ND-breaker-NAME = SPAN Breaker
 ND-breaker-ICON = EnergyMonitor
@@ -52,6 +52,6 @@ ST-breaker-CLIEMD-NAME = Breaker Status
 ST-breaker-TIME-NAME = Last Successful Query
 ST-breaker-TIMEREM-NAME = Last Successful Query (String Format)
 IX_SPAN_BREAKERSTATUS-0 = Unknown
-IX_SPAN_BREAKERSTATUS-1 = Breaker Open / Tripped (Power OFF)
-IX_SPAN_BREAKERSTATUS-2 = Breaker Closed (Power ON)
+IX_SPAN_BREAKERSTATUS-1 = Breaker Open / Tripped (Power INTERRUPTED)
+IX_SPAN_BREAKERSTATUS-2 = Breaker Closed (Power FLOWING)
 
