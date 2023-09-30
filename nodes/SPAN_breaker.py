@@ -102,7 +102,7 @@ class BreakerNode(udi_interface.Node):
             nowEpoch = int(time.time())
             nowDT = datetime.datetime.fromtimestamp(nowEpoch)
             self.setDriver('TIME', nowEpoch, True, True)            
-            timeString = nowDT.strftime("%m/%d/%Y, %H:%M:%S")
+            timeString = nowDT.strftime("%m/%d/%Y %H:%M:%S")
             #encoded_timeString = urllib.parse.quote(timeString, safe='')
             self.setDriver('TIMEREM', chr(34) + timeString + chr(34), True, True)
 
@@ -149,7 +149,7 @@ class BreakerNode(udi_interface.Node):
             nowDT = datetime.datetime.fromtimestamp(nowEpoch)
             
             self.setDriver('TIME', nowEpoch, True, True)
-            timeString = nowDT.strftime("%m/%d/%Y, %H:%M:%S")
+            timeString = nowDT.strftime("%m/%d/%Y %H:%M:%S")
             #encoded_timeString = urllib.parse.quote(timeString, safe='')
             self.setDriver('TIMEREM', chr(34) + timeString + chr(34), True, True)
             LOGGER.debug("\n\tINIT Final for PULSCNT, TIME, and TIMEREM now complete.\n")
@@ -208,7 +208,7 @@ class BreakerNode(udi_interface.Node):
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                     LOGGER.debug("\n\tPOLL about to set TIME and ST; TIME = '" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "'.\n")
                     self.setDriver('TIME', nowEpoch, True, True)                            
-                    timeString = nowDT.strftime("%m/%d/%Y, %H:%M:%S")
+                    timeString = nowDT.strftime("%m/%d/%Y %H:%M:%S")
                     #encoded_timeString = urllib.parse.quote(timeString, safe='')
                     self.setDriver('TIMEREM', chr(34) + timeString + chr(34), True, True)
             else:
