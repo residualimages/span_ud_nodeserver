@@ -159,18 +159,26 @@ class Controller(udi_interface.Node):
         for i in range(0, how_many):
             current_IPaddress = listOfIPAddresses[i]
             current_BearerToken = listOfBearerTokens[i]
-            address = 'PanelCircuits_{}'.format(i+1)
-            address = getValidNodeAddress(address)
-            title = 'SPAN Panel #{} - Circuits'.format(i+1)
-            title = getValidNodeName(title)
+            
+            addressCircuits = 'PanelCircuits_{}'.format(i+1)
+            addressCircuits = getValidNodeAddress(addressCircuits)
+            titleCircuits = 'SPAN Panel #{} - Circuits'.format(i+1)
+            titleCircuits = getValidNodeName(titleCircuits)
+            
+            addressBreakers = 'PanelBreakers_{}'.format(i+1)
+            addressBreakers = getValidNodeAddress(addressBreakers)
+            titleBreakers = 'SPAN Panel #{} - Breakers'.format(i+1)
+            titleBreakers = getValidNodeName(titleBreakers)
+            
             try:
-                circuitController = SPAN_panel.PanelNodeForCircuits(self.poly, address, address, title, current_IPaddress, current_BearerToken)
+                circuitController = SPAN_panel.PanelNodeForCircuits(self.poly, addressCircuits, addressCircuits, titleCircuits, current_IPaddress, current_BearerToken)
                 self.poly.addNode(circuitController)
                 self.wait_for_node_done()
                 circuitController.setDriver('AWAKE', 1, True, True)
-                breakerController = SPAN_panel.PanelNodeForBreakers(self.poly, address, address, title, current_IPaddress, current_BearerToken)
-                self.poly.addNode(breakerController)
-                self.wait_for_node_done()
+                LOGGER.info("\n\t\tTHEORETICAL ADDING OF breakerController = SPAN_panel.PanelNodeForBreakers(self.poly, " + addressBreakers + ", " + addressBreakers + ", " + titleBreakers + ", " + current_IPaddress + ", " + current_BearerToken + ")\n")
+                #breakerController = SPAN_panel.PanelNodeForBreakers(self.poly, address, address, title, current_IPaddress, current_BearerToken)
+                #self.poly.addNode(breakerController)
+                #self.wait_for_node_done()
             except Exception as e:
                 LOGGER.error('Failed to create {}: {}'.format(title, e))
 
