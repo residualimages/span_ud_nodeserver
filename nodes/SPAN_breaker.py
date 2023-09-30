@@ -96,6 +96,10 @@ class BreakerNode(udi_interface.Node):
         self.n_queue.append(data['address'])        
         if self.address == data['address']:
             LOGGER.debug("\n\tWAIT FOR NODE CREATION: Fully Complete for Breaker " + self.address + "\n")
+            nowEpoch = int(time.time())
+            nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+            self.setDriver('TIME', nowEpoch, True, True)
+            self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
 
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
@@ -131,17 +135,17 @@ class BreakerNode(udi_interface.Node):
             designatedBreakerData = designatedBreakerData_tuple[2]
             designatedBreakerData_tuple = designatedBreakerData.partition('},')
             designatedBreakerData = designatedBreakerData_tuple[0] + '}'
-    
-            LOGGER.debug("\n\tAbout to search for 'name' in:\n\t\t" + designatedBreakerData + "\n")
 
             if self.getDriver('PULSCNT') == 0:
-                LOGGER.debug("\n\t\tSHOULD SET PULSCNT because it is currently 0.\n")
+                LOGGER.debug("\n\t\tSETTING PULSCNT because it is currently 0.\n")
+                self.setDriver('PULSCNT', self.breakerID, True, True)
                     
                 nowEpoch = int(time.time())
                 nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                 
                 self.setDriver('TIME', nowEpoch, True, True)
                 self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
+                LOGGER.debug("\n\tINIT Final for PULSCNT, TIME, and TIMEREM.\n")
             else:
                 LOGGER.warning("\n\tINIT Issue getting data for breaker '" + self.breakerID + "'.\n")
                 self.setDriver('TIMEREM', "INIT Error Querying" , True, True)
@@ -150,64 +154,60 @@ class BreakerNode(udi_interface.Node):
         
     def poll(self, polltype):
         if 'shortPoll' in polltype:
-            if self.getDriver('AWAKE') == 1:
-                tokenLastTen = self.token[-10:]
-                LOGGER.debug('\n\tPOLL About to parse {} Breaker node of {}, using token ending in {}'.format(self.breakerID,self.ipAddress,tokenLastTen))
-                designatedBreakerData_tuple = self.allBreakersData.partition(chr(34) + self.breakerID + chr(34) + ':')
-                designatedBreakerData = designatedBreakerData_tuple[2]
-                designatedBreakerData_tuple = designatedBreakerData.partition('},')
-                designatedBreakerData = designatedBreakerData_tuple[0] + '}'
-        
-                '''
-                spanConnection = http.client.HTTPConnection(self.ipAddress)
-                payload = ''
-                headers = {
-                    "Authorization": "Bearer " + self.token
-                }
-                spanConnection.request("GET", "/api/v1/panel/" + self.breakerID, payload, headers)
-        
-                designatedBreakerResponse = spanConnection.getresponse()
-                designatedBreakerData = designatedBreakerResponse.read()
-                designatedBreakerData = designatedBreakerData.decode("utf-8")
-                '''
-            
-                LOGGER.debug("\n\tPOLL Breaker Data: \n\t\t" + designatedBreakerData + "\n")
-            
-                if "name" in designatedBreakerData:
-                    designatedBreakerStatus_tuple = designatedBreakerData.partition(chr(34) + "relayState" + chr(34) + ":")
-                    designatedBreakerStatus = designatedBreakerStatus_tuple[2]
-                    designatedBreakerStatus_tuple = designatedBreakerStatus.partition(',')
-                    designatedBreakerStatus = designatedBreakerStatus_tuple[0]
+            tokenLastTen = self.token[-10:]
+            LOGGER.debug('\n\tPOLL About to parse {} Breaker node of {}, using token ending in {}'.format(self.breakerID,self.ipAddress,tokenLastTen))
+            designatedBreakerData_tuple = self.allBreakersData.partition(chr(34) + self.breakerID + chr(34) + ':')
+            designatedBreakerData = designatedBreakerData_tuple[2]
+            designatedBreakerData_tuple = designatedBreakerData.partition('},')
+            designatedBreakerData = designatedBreakerData_tuple[0] + '}'
     
-                    designatedBreakerInstantPowerW_tuple = designatedBreakerData.partition(chr(34) + "instantPowerW" + chr(34) + ":")
-                    designatedBreakerInstantPowerW = designatedBreakerInstantPowerW_tuple[2]
-                    designatedBreakerInstantPowerW_tuple = designatedBreakerInstantPowerW.partition(',')
-                    designatedBreakerInstantPowerW = designatedBreakerInstantPowerW_tuple[0]
-                    designatedBreakerInstantPowerW = math.ceil(float(designatedBreakerInstantPowerW)*100)/100
-                  
-                    LOGGER.debug("\n\tPOLL about to evaluate Breaker Status (" + designatedBreakerStatus + ") and set CLIEMD appropriately.\n")
-                    if "CLOSED" in designatedBreakerStatus:
-                      self.setDriver('CLIEMD', 2, True, True)
-                    elif "OPEN" in designatedBreakerStatus:
-                      self.setDriver('CLIEMD', 1, True, True)
-                    else:
-                      self.setDriver('CLIEMD', 0, True, True)
-                    
-                    LOGGER.debug("\n\tPOLL About to set ST to " + str(designatedBreakerInstantPowerW) + " for Breaker " + self.breakerID + ".\n")
-                    self.setDriver('ST', abs(designatedBreakerInstantPowerW), True, True)
+            '''
+            spanConnection = http.client.HTTPConnection(self.ipAddress)
+            payload = ''
+            headers = {
+                "Authorization": "Bearer " + self.token
+            }
+            spanConnection.request("GET", "/api/v1/panel/" + self.breakerID, payload, headers)
+    
+            designatedBreakerResponse = spanConnection.getresponse()
+            designatedBreakerData = designatedBreakerResponse.read()
+            designatedBreakerData = designatedBreakerData.decode("utf-8")
+            '''
+        
+            LOGGER.debug("\n\tPOLL Breaker Data: \n\t\t" + designatedBreakerData + "\n")
+        
+            if "name" in designatedBreakerData:
+                designatedBreakerStatus_tuple = designatedBreakerData.partition(chr(34) + "relayState" + chr(34) + ":")
+                designatedBreakerStatus = designatedBreakerStatus_tuple[2]
+                designatedBreakerStatus_tuple = designatedBreakerStatus.partition(',')
+                designatedBreakerStatus = designatedBreakerStatus_tuple[0]
 
-                    if len(str(designatedBreakerInstantPowerW)) > 0:
-                        nowEpoch = int(time.time())
-                        nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-                        LOGGER.debug("\n\tPOLL about to set TIME and ST; TIME = '" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "'.\n")
-                        self.setDriver('TIME', nowEpoch, True, True)
-                        self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y %H:%M:%S"), True, True)
-                    else:
-                        LOGGER.warning("\n\tPOLL ERROR: Unable to get designatedBreakerInstantPowerW from designatedBreakerData:\n\t\t" + designatedBreakerData + "\n")
-                        self.setDriver('TIMEREM', "POLL Error Querying" , True, True)
+                designatedBreakerInstantPowerW_tuple = designatedBreakerData.partition(chr(34) + "instantPowerW" + chr(34) + ":")
+                designatedBreakerInstantPowerW = designatedBreakerInstantPowerW_tuple[2]
+                designatedBreakerInstantPowerW_tuple = designatedBreakerInstantPowerW.partition(',')
+                designatedBreakerInstantPowerW = designatedBreakerInstantPowerW_tuple[0]
+                designatedBreakerInstantPowerW = math.ceil(float(designatedBreakerInstantPowerW)*100)/100
+              
+                LOGGER.debug("\n\tPOLL about to evaluate Breaker Status (" + designatedBreakerStatus + ") and set CLIEMD appropriately.\n")
+                if "CLOSED" in designatedBreakerStatus:
+                  self.setDriver('CLIEMD', 2, True, True)
+                elif "OPEN" in designatedBreakerStatus:
+                  self.setDriver('CLIEMD', 1, True, True)
                 else:
-                    LOGGER.warning("\n\tPOLL Issue getting data for breaker '" + self.breakerID + "'.\n")
-                    self.setDriver('TIMEREM', "Error Querying" , True, True)
+                  self.setDriver('CLIEMD', 0, True, True)
+                
+                LOGGER.debug("\n\tPOLL About to set ST to " + str(designatedBreakerInstantPowerW) + " for Breaker " + self.breakerID + ".\n")
+                self.setDriver('ST', abs(designatedBreakerInstantPowerW), True, True)
+
+                if len(str(designatedBreakerInstantPowerW)) > 0:
+                    nowEpoch = int(time.time())
+                    nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+                    LOGGER.debug("\n\tPOLL about to set TIME and ST; TIME = '" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "'.\n")
+                    self.setDriver('TIME', nowEpoch, True, True)
+                    self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y %H:%M:%S"), True, True)
+                else:
+                    LOGGER.warning("\n\tPOLL ERROR: Unable to get designatedBreakerInstantPowerW from designatedBreakerData:\n\t\t" + designatedBreakerData + "\n")
+                    self.setDriver('TIMEREM', "POLL Error Querying" , True, True)
             else:
-                LOGGER.debug("\n\t\tSkipping POLL query of Breaker node '" + self.breakerID + "' due to AWAKE=0.\n")
-                self.setDriver('TIMEREM', "Not Actively Querying" , True, True)
+                LOGGER.warning("\n\tPOLL Issue getting data for breaker '" + self.breakerID + "'.\n")
+                self.setDriver('TIMEREM', "Error Querying" , True, True)
