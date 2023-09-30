@@ -73,7 +73,7 @@ class BreakerNode(udi_interface.Node):
         parentPrefix_tuple = self.address.partition('_')
         parentPrefix = parentPrefix_tuple[0]
         parentPrefix = parentPrefix.replace('s','panelbreaker_')  
-        LOGGER.info("\n\t\tAbout to try to grab the globals()['" + parentPrefix + "_allBreakersData']\n")
+        LOGGER.debug("\n\t\tAbout to try to grab the globals()['" + parentPrefix + "_allBreakersData']\n")
         globals()[parentPrefix + '_allBreakersData']
         allBreakersData = globals()[parentPrefix + '_allBreakersData']
         '''
@@ -95,7 +95,7 @@ class BreakerNode(udi_interface.Node):
     def node_queue(self, data):
         self.n_queue.append(data['address'])        
         if self.address == data['address']:
-            LOGGER.info("\n\tWAIT FOR NODE CREATION: Fully Complete for Breaker " + self.address + "\n")
+            LOGGER.debug("\n\tWAIT FOR NODE CREATION: Fully Complete for Breaker " + self.address + "\n")
 
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
@@ -152,7 +152,7 @@ class BreakerNode(udi_interface.Node):
         if 'shortPoll' in polltype:
             if self.getDriver('AWAKE') == 1:
                 tokenLastTen = self.token[-10:]
-                LOGGER.info('\n\tPOLL About to parse {} Breaker node of {}, using token ending in {}'.format(self.breakerID,self.ipAddress,tokenLastTen))
+                LOGGER.debug('\n\tPOLL About to parse {} Breaker node of {}, using token ending in {}'.format(self.breakerID,self.ipAddress,tokenLastTen))
                 designatedBreakerData_tuple = self.allBreakersData.partition(chr(34) + self.breakerID + chr(34) + ':')
                 designatedBreakerData = designatedBreakerData_tuple[2]
                 designatedBreakerData_tuple = designatedBreakerData.partition('},')
@@ -171,7 +171,7 @@ class BreakerNode(udi_interface.Node):
                 designatedBreakerData = designatedBreakerData.decode("utf-8")
                 '''
             
-                LOGGER.info("\n\tPOLL Breaker Data: \n\t\t" + designatedBreakerData + "\n")
+                LOGGER.debug("\n\tPOLL Breaker Data: \n\t\t" + designatedBreakerData + "\n")
             
                 if "name" in designatedBreakerData:
                     designatedBreakerStatus_tuple = designatedBreakerData.partition(chr(34) + "relayState" + chr(34) + ":")
