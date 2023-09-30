@@ -460,7 +460,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         #LOGGER.info("\n\t\tSUBSCRIBED AddNodeDone under Panel Controller: Node Creation Complete for " + data['address'] + ".\n")
         if self.address == data['address']:
             LOGGER.info("\n\t\t\tPanelForBreakers Controller Creation Completed; Queue Breaker child node(s) creation.\n")
-            self.setDriver('AWAKE', 1, True, True)
+            #self.setDriver('AWAKE', 1, True, True)
             self.setDriver('FREQ', self.ipAddress, True, True)
         
             if "branches" in self.allBreakersData:
@@ -630,10 +630,10 @@ class PanelNodeForBreakers(udi_interface.Node):
             title = title + str(i)
             title = getValidNodeName(title)
             try:
-                node = SPAN_breaker.BreakerNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken)
+                node = SPAN_breaker.BreakerNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken, i)
                 self.poly.addNode(node)
                 self.wait_for_node_done()
-                node.setDriver('AWAKE', 1, True, True)
+                #node.setDriver('AWAKE', 1, True, True)
                 LOGGER.info('\n\tCreated a Breaker child node {} under Panel {}\n'.format(title, panelNumberPrefix))
             except Exception as e:
                 LOGGER.error('\n\tFailed to create Breaker child node {} under Panel {} due to error: {}.\n'.format(title, panelNumberPrefix, e))
