@@ -163,7 +163,11 @@ class PanelNodeForCircuits(udi_interface.Node):
             self.setDriver('FREQ', self.ipAddress, True, True)
         
             if "circuits" in self.allCircuitsData:
-                
+                spanConnection = http.client.HTTPConnection(self.ipAddress)
+                payload = ''
+                headers = {
+                    "Authorization": "Bearer " + self.token
+                }
                 try:
                     spanConnection.request("GET", "/api/v1/panel", payload, headers)
                     panelResponse = spanConnection.getresponse()
