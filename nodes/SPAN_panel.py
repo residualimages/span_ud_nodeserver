@@ -318,7 +318,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                         nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                         
                         self.setDriver('TIME', nowEpoch, True, True)
-                        self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
+                        self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y %H:%M:%S"), True, True)
     
                     try:
                         spanConnection.request("GET", "/api/v1/circuits", payload, headers)
@@ -636,7 +636,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                     
                     self.setDriver('TIME', nowEpoch, True, True)
-                    self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
+                    self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y %H:%M:%S"), True, True)
 
                 '''
                 for i in range(1,33):
