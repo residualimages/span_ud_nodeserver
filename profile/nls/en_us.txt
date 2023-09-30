@@ -86,3 +86,4 @@ ST-breaker-TIMEREM-NAME = Last Successful Query (String Format)
 IX_breakerstatus_0 = Unknown
 IX_breakerstatus_1 = Breaker Open / Tripped (Power OFF)
 IX_breakerstatus_2 = Breaker Closed (Power ON)
+
