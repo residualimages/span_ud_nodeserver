@@ -274,7 +274,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                     self.allCircuitsData = self.allCircuitsData.decode("utf-8")
             
                     nodes = self.poly.getNodes()
-                    currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuits_','') + "_circuit_"
+                    currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
                     LOGGER.debug("\n\tWill be looking for Circuit nodes with this as the prefix: '" + currentPanelCircuitPrefix + "'.\n")
                     for node in nodes:
                          if currentPanelCircuitPrefix in node:
@@ -316,7 +316,7 @@ class PanelNodeForCircuits(udi_interface.Node):
     def createCircuits(self):
         '''
         # delete any existing nodes but only under this panel
-        currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuits_','') + "_circuit_"
+        currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
         nodes = self.poly.getNodes()
         for node in nodes:
              if currentPanelCircuitPrefix in node:
@@ -328,7 +328,7 @@ class PanelNodeForCircuits(udi_interface.Node):
         
         allCircuitsArray = self.allCircuitsData.split(chr(34) + 'id' + chr(34) + ':')
         panelNumberPrefix = self.address
-        panelNumberPrefix = panelNumberPrefix.replace('panelcircuits_','')
+        panelNumberPrefix = panelNumberPrefix.replace('panelcircuit_','')
 
         LOGGER.debug("\n\tHere is where we'll be creating Circuit children nodes for " + self.address + ". It should be a total of " + str(how_many) + " child nodes, each with an address starting with S" + panelNumberPrefix + "_...\n")
 
@@ -377,7 +377,7 @@ class PanelNodeForCircuits(udi_interface.Node):
     TBD: is this needed on Circuit children via Panel parent?
     '''
     def stop(self):
-        currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuits_','') + "_circuit_"
+        currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
         nodes = self.poly.getNodes()
         for node in nodes:
             if currentPanelCircuitPrefix in node:
@@ -572,11 +572,11 @@ class PanelNodeForBreakers(udi_interface.Node):
     
                     '''            
                     nodes = self.poly.getNodes()
-                    currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuits_','') + "_circuit_"
-                    LOGGER.debug("\n\tWill be looking for Circuit nodes with this as the prefix: '" + currentPanelCircuitPrefix + "'.\n")
+                    currentPanelBreakerPrefix = "s" + self.address.replace('panelbreaker_','') + "_breaker_"
+                    LOGGER.debug("\n\tWill be looking for Breaker nodes with this as the prefix: '" + currentPanelBreakerPrefix + "'.\n")
                     for node in nodes:
-                         if currentPanelCircuitPrefix in node:
-                            LOGGER.debug("\n\tUpdating " + node + " (which should be a Circuit node under this Panel controller: " + self.address + ").\n")
+                         if currentPanelBreakerPrefix in node:
+                            LOGGER.debug("\n\tUpdating " + node + " (which should be a Breaker node under this Panel controller: " + self.address + ").\n")
                             try:
                                 nodes[node].updateNode(self.allBreakersData)
                             except Exception as e:
@@ -596,7 +596,7 @@ class PanelNodeForBreakers(udi_interface.Node):
     def createBreakers(self):
         '''
         # delete any existing nodes but only under this panel
-        currentPanelBreakerPrefix = "s" + self.address.replace('panelcircuits_','') + "_breaker_"
+        currentPanelBreakerPrefix = "s" + self.address.replace('panelbreaker_','') + "_breaker_"
         nodes = self.poly.getNodes()
         for node in nodes:
              if currentPanelBreakerPrefix in node:
@@ -608,7 +608,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         
         allBreakersArray = self.allBreakersData.split(chr(34) + 'id' + chr(34) + ':')
         panelNumberPrefix = self.address
-        panelNumberPrefix = panelNumberPrefix.replace('panelcircuits_','')
+        panelNumberPrefix = panelNumberPrefix.replace('panelbreaker_','')
 
         LOGGER.debug("\n\tHere is where we'll be creating Breaker children nodes for " + self.address + ". It should be a total of 32 child nodes, each with an address starting with S" + panelNumberPrefix + "_...\n")
 
@@ -643,7 +643,7 @@ class PanelNodeForBreakers(udi_interface.Node):
     TBD: is this needed on Breaker children via Panel parent?
     '''
     def stop(self):
-        currentPanelBreakerPrefix = "s" + self.address.replace('panelcircuits_','') + "_breaker_"
+        currentPanelBreakerPrefix = "s" + self.address.replace('panelbreaker_','') + "_breaker_"
         nodes = self.poly.getNodes()
         for node in nodes:
             if currentPanelbreakerPrefix in node:
