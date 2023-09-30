@@ -385,16 +385,17 @@ class PanelNodeForCircuits(udi_interface.Node):
                 LOGGER.warning('\n\tFailed to create Circuit child node {} under Panel Circuit Controller {} due to error: {}.\n'.format(title, panelNumberPrefix, e))
 
     '''
-    Change all the child node active status drivers to false
-    TBD: is this needed on Circuit children via Panel parent?
+    Change all the child node active status drivers to 0 W and disable 'AWAKE'
     '''
     def stop(self):
         currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
         nodes = self.poly.getNodes()
+        self.setDriver('ST', 0, True, True)
         for node in nodes:
             if currentPanelCircuitPrefix in node:
                 nodes[node].setDriver('AWAKE', 0, True, True)
-                LOGGER.debug("\n\tSTOP RECEIVED: Panel Circuit Controller Setting child " + node + "'s property AWAKE = 0.\n")
+                nodes[node].setDriver('ST', 0, True, True)
+                LOGGER.debug("\n\tSTOP RECEIVED: Panel Circuit Controller Setting child " + node + "'s properties AWAKE = 0 and ST = 0 W.\n")
 
 '''
 This is our PanelForBreakers device node. 
@@ -555,6 +556,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                 #LOGGER.debug("\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
                 self.setDriver('ST', (instantGridPowerW-abs(feedthroughPowerW)), True, True)
 
+                '''
                 for i in range(1,33):
                     try:
                         currentBreaker_tuple = self.allBreakersData.partition(chr(34) + 'id' + chr(34) + ':' + str(i))
@@ -574,6 +576,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                         #currentBreaker
                     except:
                         LOGGER.warning("\n\tPOLL Issue getting data from Breaker " + str(i) + " on Panel Breaker Controller " + format(self.ipAddress) + ".\n")
+                '''
                 
                 if len(str(instantGridPowerW)) > 0:
                     nowEpoch = int(time.time())
@@ -582,7 +585,6 @@ class PanelNodeForBreakers(udi_interface.Node):
                     self.setDriver('TIME', nowEpoch, True, True)
                     self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
 
-                '''            
                 nodes = self.poly.getNodes()
                 currentPanelBreakerPrefix = "s" + self.address.replace('panelbreaker_','') + "_breaker_"
                 LOGGER.debug("\n\tWill be looking for Breaker nodes with this as the prefix: '" + currentPanelBreakerPrefix + "'.\n")
@@ -593,7 +595,6 @@ class PanelNodeForBreakers(udi_interface.Node):
                             nodes[node].updateNode(self.allBreakersData)
                         except Exception as e:
                             LOGGER.debug('\n\t\tPOLL ERROR: Cannot seem to update node needed in for-loop due to error:\t{}.\n'.format(e))
-                '''
             else:
                 tokenLastTen = self.token[-10:]
                 LOGGER.warning('\n\tPOLL ERROR when querying Panel Breaker Controller at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
@@ -647,14 +648,14 @@ class PanelNodeForBreakers(udi_interface.Node):
                 LOGGER.warning('\n\tFailed to create Breaker child node {} under Panel Breaker controller {} due to error: {}.\n'.format(title, panelNumberPrefix, e))
 
     '''
-    Change all the child node active status drivers to false
-    TBD: is this needed on Breaker children via Panel parent?
+    Change all the child node active status drivers to 0 W
     '''
     def stop(self):
         currentPanelBreakerPrefix = "s" + self.address.replace('panelbreaker_','') + "_breaker_"
         nodes = self.poly.getNodes()
+        self.setDriver('ST', 0, True, True)
         for node in nodes:
             if currentPanelBreakerPrefix in node:
-                nodes[node].setDriver('AWAKE', 0, True, True)
-                LOGGER.debug("\n\tSTOP RECEIVED: Panel Breaker Controller setting " + node + "'s property AWAKE = 0.\n")
+                nodes[node].setDriver('ST', 0, True, True)
+                LOGGER.debug("\n\tSTOP RECEIVED: Panel Breaker Controller setting " + node + "'s property ST = 0 W.\n")
 
