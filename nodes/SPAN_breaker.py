@@ -15,7 +15,7 @@ from typing import Optional, Any, TYPE_CHECKING
 
 import math,time,datetime
 
-import urllib.parse
+#import urllib.parse
 
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
@@ -103,8 +103,8 @@ class BreakerNode(udi_interface.Node):
             nowDT = datetime.datetime.fromtimestamp(nowEpoch)
             self.setDriver('TIME', nowEpoch, True, True)            
             timeString = nowDT.strftime("%m/%d/%Y, %H:%M:%S")
-            encoded_timeString = urllib.parse.quote(timeString, safe='')
-            self.setDriver('TIMEREM', encoded_timeString, True, True)
+            #encoded_timeString = urllib.parse.quote(timeString, safe='')
+            self.setDriver('TIMEREM', chr(34) + timeString + chr(34), True, True)
 
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
@@ -150,8 +150,8 @@ class BreakerNode(udi_interface.Node):
             
             self.setDriver('TIME', nowEpoch, True, True)
             timeString = nowDT.strftime("%m/%d/%Y, %H:%M:%S")
-            encoded_timeString = urllib.parse.quote(timeString, safe='')
-            self.setDriver('TIMEREM', encoded_timeString, True, True)
+            #encoded_timeString = urllib.parse.quote(timeString, safe='')
+            self.setDriver('TIMEREM', chr(34) + timeString + chr(34), True, True)
             LOGGER.debug("\n\tINIT Final for PULSCNT, TIME, and TIMEREM now complete.\n")
         
         self.poll('shortPoll')
@@ -209,11 +209,11 @@ class BreakerNode(udi_interface.Node):
                     LOGGER.debug("\n\tPOLL about to set TIME and ST; TIME = '" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "'.\n")
                     self.setDriver('TIME', nowEpoch, True, True)                            
                     timeString = nowDT.strftime("%m/%d/%Y, %H:%M:%S")
-                    encoded_timeString = urllib.parse.quote(timeString, safe='')
-                    self.setDriver('TIMEREM', encoded_timeString, True, True)
+                    #encoded_timeString = urllib.parse.quote(timeString, safe='')
+                    self.setDriver('TIMEREM', chr(34) + timeString + chr(34), True, True)
             else:
                 LOGGER.warning("\n\tPOLL ERROR: Unable to get designatedBreakerInstantPowerW from designatedBreakerData:\n\t\t" + designatedBreakerData + "\n")
-                self.setDriver('TIMEREM', "POLL_Error_Querying" , True, True)
+                self.setDriver('TIMEREM', chr(34) + "POLL_Error_Querying" + chr(34), True, True)
                 
     '''
     Change self status driver to 0 W
