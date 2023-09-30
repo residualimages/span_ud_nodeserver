@@ -145,10 +145,7 @@ class BreakerNode(udi_interface.Node):
             
             self.setDriver('TIME', nowEpoch, True, True)
             self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
-            LOGGER.debug("\n\tINIT Final for PULSCNT, TIME, and TIMEREM.\n")
-        else:
-            LOGGER.warning("\n\tINIT Issue getting data for breaker '" + str(self.breakerID) + "'.\n")
-            self.setDriver('TIMEREM', "INIT Error Querying" , True, True)
+            LOGGER.debug("\n\tINIT Final for PULSCNT, TIME, and TIMEREM now complete.\n")
         
         self.poll('shortPoll')
         
