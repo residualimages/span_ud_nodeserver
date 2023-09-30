@@ -100,7 +100,8 @@ class CircuitNode(udi_interface.Node):
     '''
     def node_queue(self, data):
         self.n_queue.append(data['address'])        
-        LOGGER.info("\n\tWAIT FOR NODE CREATION: Fully Complete for Circuit " + self.address + "\n")
+        if self.address == data['address']:
+            LOGGER.info("\n\tWAIT FOR NODE CREATION: Fully Complete for Circuit " + self.address + "\n")
 
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
