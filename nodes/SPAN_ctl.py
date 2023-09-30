@@ -101,17 +101,17 @@ class Controller(udi_interface.Node):
             if len(self.Parameters['IP_Addresses']) > 6:
                 validIP_Addresses = True
             else:
-                LOGGER.error('\n\tCONFIGURATION ERROR: Invalid values for IP_Addresses parameter.')
+                LOGGER.error('\n\tCONFIGURATION INCOMPLETE OR INVALID: Invalid values for IP_Addresses parameter.')
         else:
-            LOGGER.error('\n\tCONFIGURATION ERROR: Missing IP_Addresses parameter.')
+            LOGGER.error('\n\tCONFIGURATION MISSING: Missing IP_Addresses parameter.')
 
         if self.Parameters['Access_Tokens'] is not None:
             if len(self.Parameters['Access_Tokens']) > 120:
                 validAccess_Tokens = True
             else:
-                LOGGER.error('\n\tCONFIGURATION ERROR: Invalid values for Access_Tokens parameter.')
+                LOGGER.error('\n\tCONFIGURATION INCOMPLETE OR INVALID: Invalid values for Access_Tokens parameter.')
         else:
-            LOGGER.error('\n\tCONFIGURATION ERROR: Missing Access_Tokens parameter.')
+            LOGGER.error('\n\tCONFIGURATION MISSING: Missing Access_Tokens parameter.')
         
         if validIP_Addresses and validAccess_Tokens:
             self.createPanelControllers()
