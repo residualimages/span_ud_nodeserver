@@ -162,7 +162,7 @@ class CircuitNode(udi_interface.Node):
     '''
     This is where the real work happens.  When the parent controller gets a shortPoll, do some work. 
     '''
-    def updateCircuit(self, passedAllCircuitsData):
+    def updateNode(self, passedAllCircuitsData):
         self.allCircuitsData = passedAllCircuitsData
         self.poll('shortPoll')
         
