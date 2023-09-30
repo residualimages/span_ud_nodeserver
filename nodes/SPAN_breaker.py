@@ -139,16 +139,16 @@ class BreakerNode(udi_interface.Node):
             if self.getDriver('PULSCNT') == 0:
                 LOGGER.debug("\n\t\tSETTING PULSCNT because it is currently 0.\n")
                 self.setDriver('PULSCNT', self.breakerID, True, True)
-                    
-                nowEpoch = int(time.time())
-                nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                 
-                self.setDriver('TIME', nowEpoch, True, True)
-                self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
-                LOGGER.debug("\n\tINIT Final for PULSCNT, TIME, and TIMEREM.\n")
-            else:
-                LOGGER.warning("\n\tINIT Issue getting data for breaker '" + str(self.breakerID) + "'.\n")
-                self.setDriver('TIMEREM', "INIT Error Querying" , True, True)
+            nowEpoch = int(time.time())
+            nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+            
+            self.setDriver('TIME', nowEpoch, True, True)
+            self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
+            LOGGER.debug("\n\tINIT Final for PULSCNT, TIME, and TIMEREM.\n")
+        else:
+            LOGGER.warning("\n\tINIT Issue getting data for breaker '" + str(self.breakerID) + "'.\n")
+            self.setDriver('TIMEREM', "INIT Error Querying" , True, True)
         
         self.poll('shortPoll')
         
