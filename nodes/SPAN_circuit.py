@@ -167,10 +167,10 @@ class CircuitNode(udi_interface.Node):
                 nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                 
                 self.setDriver('TIME', nowEpoch, True, True)
-                self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y %H:%M:%S"), True, True)
+                self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y %H:%M:%S"), False)
             else:
                 LOGGER.warning("\n\tINIT Issue getting data for circuit '" + self.circuitID + "'.\n")
-                self.setDriver('TIMEREM', "INIT Error Querying" , True, True)
+                self.setDriver('TIMEREM', "INIT Error Querying" , False)
         
         self.poll('shortPoll')
         
@@ -227,16 +227,16 @@ class CircuitNode(udi_interface.Node):
                         nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                         LOGGER.debug("\n\tPOLL about to set TIME and ST; TIME = '" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "'.\n")
                         self.setDriver('TIME', nowEpoch, True, True)
-                        self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y %H:%M:%S"), True, True)
+                        self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y %H:%M:%S"), False)
                     else:
                         LOGGER.warning("\n\tPOLL ERROR: Unable to get designatedCircuitInstantPowerW from designatedCircuitData:\n\t\t" + designatedCircuitData + "\n")
-                        self.setDriver('TIMEREM', "POLL Error Querying" , True, True)
+                        self.setDriver('TIMEREM', "POLL Error Querying" , False)
                 else:
                     LOGGER.warning("\n\tPOLL Issue getting data for circuit '" + self.circuitID + "'.\n")
-                    self.setDriver('TIMEREM', "Error Querying" , True, True)
+                    self.setDriver('TIMEREM', "Error Querying" , False)
             else:
                 LOGGER.debug("\n\t\tSkipping POLL query of Circuit node '" + self.circuitID + "' due to AWAKE=0.\n")
-                self.setDriver('TIMEREM', "Not Actively Querying" , True, True)
+                self.setDriver('TIMEREM', "Not Actively Querying", False)
 
     def toggle_circuit_monitoring(self,val):
         # On startup this will always go back to true which is the default, but how do we restore the previous user value?
