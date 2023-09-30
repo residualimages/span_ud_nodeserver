@@ -50,7 +50,7 @@ class BreakerNode(udi_interface.Node):
         self.allBreakersData = ''
         
         tokenLastTen = self.token[-10:]
-        LOGGER.debug("\n\tINIT IP Address for breaker:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen + "; Breaker ID: " + self.breakerID)
+        LOGGER.debug("\n\tINIT IP Address for breaker:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen + "; Breaker ID: " + str(self.breakerID))
 
         self.setDriver('GPV', self.breakerID, True, True)
 
