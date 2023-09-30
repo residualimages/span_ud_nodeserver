@@ -468,7 +468,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         
             if "branches" in self.allBreakersData:
                 allBranchesData_tuple = self.allBreakersData.partition(chr(34) + "branches" + chr(34) + ":")
-                allBranchesData = allBranchesData[2]
+                allBranchesData = allBranchesData_tuple[2]
                 LOGGER.debug("\n\tINIT Panel Breaker Controller's Branches Data: \n\t\t" + allBranchesData + "\n\t\tCount of OPEN Breakers: " + str(allBranchesData.count(chr(34) + 'OPEN' + chr(34) + ',')) + "\n\t\tCount of CLOSED Breakers: " + str(allBranchesData.count(chr(34) + 'CLOSED' + chr(34) + ',')) + "\n")
                 self.setDriver('PULSCNT', allBranchesData.count(chr(34) + 'CLOSED' + chr(34) + ','), True, True)
                 self.setDriver('GPV', allBranchesData.count(chr(34) + 'OPEN' + chr(34) + ','), True, True)
@@ -659,7 +659,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         currentPanelBreakerPrefix = "s" + self.address.replace('panelbreaker_','') + "_breaker_"
         nodes = self.poly.getNodes()
         for node in nodes:
-            if currentPanelbreakerPrefix in node:
+            if currentPanelBreakerPrefix in node:
                 nodes[node].setDriver('AWAKE', 0, True, True)
                 LOGGER.debug("\n\tSTOP RECEIVED: Panel Breaker Controller setting " + node + "'s property AWAKE = 0.\n")
 
