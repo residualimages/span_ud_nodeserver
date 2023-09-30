@@ -189,6 +189,9 @@ class PanelNodeForCircuits(udi_interface.Node):
     def parameterHandler(self, params):
         self.Parameters.load(params)
 
+    def updateNode(self, passedAllCircuitsData):
+        self.allCircuitsData = passedAllCircuitsData
+
     '''
     This is where the real work happens.  When we get a shortPoll, do some work. 
     '''
@@ -275,9 +278,9 @@ class PanelNodeForCircuits(udi_interface.Node):
                          if currentPanelCircuitPrefix in node:
                             LOGGER.debug("\n\tUpdating " + node + " (which should be a Circuit node under this Panel controller: " + self.address + ").\n")
                             try:
-                                node.updateCircuit(self.allCircuitsData)
-                            except:
-                                LOGGER.debug("\n\t\tPOLL ERROR: Cannot seem to update node needed in for-loop.\n")
+                                node.updateNode(self.allCircuitsData)
+                            except Exception as e:
+                                LOGGER.debug("\n\t\tPOLL ERROR: Cannot seem to update node needed in for-loop due to error:\t" + e + ".\n")
                 else:
                     tokenLastTen = self.token[-10:]
                     LOGGER.debug('\n\tPOLL ERROR when querying Panel node at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
