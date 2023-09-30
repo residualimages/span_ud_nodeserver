@@ -468,6 +468,31 @@ class PanelNodeForBreakers(udi_interface.Node):
             self.setDriver('FREQ', self.ipAddress, True, True)
         
             if "branches" in self.allBreakersData:
+                feedthroughPowerW_tuple = self.allBreakersData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
+                feedthroughPowerW = feedthroughPowerW_tuple[2]
+                #LOGGER.debug("\n\t\t1st level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
+                feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
+                feedthroughPowerW = feedthroughPowerW_tuple[0]
+                #LOGGER.debug("\n\t\t2nd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
+                #feedthroughPowerW_tuple = feedthroughPowerW.partition(":")
+                #feedthroughPowerW = feedthroughPowerW_tuple[2]
+                #LOGGER.debug("\n\t\t3rd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")                
+                feedthroughPowerW = math.ceil(float(feedthroughPowerW)*100)/100
+
+                instantGridPowerW_tuple = panelData.partition(chr(34) + "instantGridPowerW" + chr(34) + ":")
+                instantGridPowerW = instantGridPowerW_tuple[2]
+                #LOGGER.debug("\n\t\t1st level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
+                instantGridPowerW_tuple = instantGridPowerW.partition(",")
+                instantGridPowerW = instantGridPowerW_tuple[0]
+                #LOGGER.debug("\n\t\t2nd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
+                #instantGridPowerW_tuple = instantGridPowerW.partition(":")
+                #instantGridPowerW = instantGridPowerW_tuple[2]
+                #LOGGER.debug("\n\t\t3rd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")                
+                instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
+                #LOGGER.debug("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
+                #LOGGER.debug("\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
+                self.setDriver('ST', (instantGridPowerW-abs(feedthroughPowerW)), True, True)
+
                 allBranchesData_tuple = self.allBreakersData.partition(chr(34) + "branches" + chr(34) + ":")
                 allBranchesData = allBranchesData_tuple[2]
                 LOGGER.debug("\n\tINIT Panel Breaker Controller's Branches Data: \n\t\t" + allBranchesData + "\n\t\tCount of OPEN Breakers: " + str(allBranchesData.count(chr(34) + 'OPEN' + chr(34) + ',')) + "\n\t\tCount of CLOSED Breakers: " + str(allBranchesData.count(chr(34) + 'CLOSED' + chr(34) + ',')) + "\n")
