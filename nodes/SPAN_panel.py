@@ -508,100 +508,95 @@ class PanelNodeForBreakers(udi_interface.Node):
     '''
     def poll(self, polltype):
         if 'shortPoll' in polltype:
-            if self.getDriver('AWAKE') == 1:
-                tokenLastTen = self.token[-10:]
-                LOGGER.debug('\n\tPOLL About to query Panel Breaker controller of {}, using token ending in {}'.format(self.ipAddress,tokenLastTen))
+            tokenLastTen = self.token[-10:]
+            LOGGER.debug('\n\tPOLL About to query Panel Breaker controller of {}, using token ending in {}'.format(self.ipAddress,tokenLastTen))
+    
+            spanConnection = http.client.HTTPConnection(self.ipAddress)
+            payload = ''
+            headers = {
+                "Authorization": "Bearer " + self.token
+            }
+
+            try:
+                spanConnection.request("GET", "/api/v1/panel", payload, headers)
         
-                spanConnection = http.client.HTTPConnection(self.ipAddress)
-                payload = ''
-                headers = {
-                    "Authorization": "Bearer " + self.token
-                }
+                panelResponse = spanConnection.getresponse()
+                self.allBreakersData = panelResponse.read()
+                self.allBreakersData = self.allBreakersData.decode("utf-8")
+            except Exception as e:
+                LOGGER.warning('\n\t\tPOLL ERROR: SPAN API GET request for Panel Breaker Controller failed due to error:\t{}.\n'.format(e))
+                #self.allBreakersData = ''
 
-                try:
-                    spanConnection.request("GET", "/api/v1/panel", payload, headers)
-            
-                    panelResponse = spanConnection.getresponse()
-                    self.allBreakersData = panelResponse.read()
-                    self.allBreakersData = self.allBreakersData.decode("utf-8")
-                except Exception as e:
-                    LOGGER.warning('\n\t\tPOLL ERROR: SPAN API GET request for Panel Breaker Controller failed due to error:\t{}.\n'.format(e))
-                    #self.allBreakersData = ''
+            LOGGER.debug("\n\tPOLL Panel Breaker Controller's allBreakersData: \n\t\t" + self.allBreakersData + "\n")
+           
+            if "branches" in self.allBreakersData:
+                feedthroughPowerW_tuple = self.allBreakersData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
+                feedthroughPowerW = feedthroughPowerW_tuple[2]
+                #LOGGER.debug("\n\t\t1st level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
+                feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
+                feedthroughPowerW = feedthroughPowerW_tuple[0]
+                #LOGGER.debug("\n\t\t2nd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
+                #feedthroughPowerW_tuple = feedthroughPowerW.partition(":")
+                #feedthroughPowerW = feedthroughPowerW_tuple[2]
+                #LOGGER.debug("\n\t\t3rd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")                
+                feedthroughPowerW = math.ceil(float(feedthroughPowerW)*100)/100
 
-                LOGGER.debug("\n\tPOLL Panel Breaker Controller's allBreakersData: \n\t\t" + self.allBreakersData + "\n")
-               
-                if "branches" in self.allBreakersData:
-                    feedthroughPowerW_tuple = self.allBreakersData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
-                    feedthroughPowerW = feedthroughPowerW_tuple[2]
-                    #LOGGER.debug("\n\t\t1st level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
-                    feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
-                    feedthroughPowerW = feedthroughPowerW_tuple[0]
-                    #LOGGER.debug("\n\t\t2nd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
-                    #feedthroughPowerW_tuple = feedthroughPowerW.partition(":")
-                    #feedthroughPowerW = feedthroughPowerW_tuple[2]
-                    #LOGGER.debug("\n\t\t3rd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")                
-                    feedthroughPowerW = math.ceil(float(feedthroughPowerW)*100)/100
-    
-                    instantGridPowerW_tuple = self.allBreakersData.partition(chr(34) + "instantGridPowerW" + chr(34) + ":")
-                    instantGridPowerW = instantGridPowerW_tuple[2]
-                    #LOGGER.debug("\n\t\t1st level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
-                    instantGridPowerW_tuple = instantGridPowerW.partition(",")
-                    instantGridPowerW = instantGridPowerW_tuple[0]
-                    #LOGGER.debug("\n\t\t2nd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
-                    #instantGridPowerW_tuple = instantGridPowerW.partition(":")
-                    #instantGridPowerW = instantGridPowerW_tuple[2]
-                    #LOGGER.debug("\n\t\t3rd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")                
-                    instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
-                    #LOGGER.debug("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
-                    #LOGGER.debug("\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
-                    self.setDriver('ST', (instantGridPowerW-abs(feedthroughPowerW)), True, True)
-    
-                    for i in range(1,33):
-                        try:
-                            currentBreaker_tuple = self.allBreakersData.partition(chr(34) + 'id' + chr(34) + ':' + str(i))
-                            currentBreakerW = currentBreaker_tuple[2]
-                            currentBreakerID_tuple = currentBreakerW.partition(',')
-                            currentBreakerID = currentBreakerID_tuple[0]
-                            LOGGER.debug("\n\t\tfor-loop 'i' should be equal to currentBreakerID:\ti=" + str(i) + " ?=? currentBreakerID=" + currentBreakerID + ".\n")
-                            #LOGGER.debug("\n\t\t1st level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
-                            currentBreaker_tuple = currentBreakerW.partition(chr(34) + 'instantPowerW' + chr(34) + ':')
-                            currentBreakerW = currentBreaker_tuple[2]
-                            #LOGGER.debug("\n\t\t2nd level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
-                            currentBreaker_tuple = currentBreakerW.partition(',')
-                            currentBreakerW = currentBreaker_tuple[0]
-                            #LOGGER.debug("\n\t\t3rd level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
-                            currentBreakerW = abs(math.ceil(float(currentBreakerW)*100)/100)
-                            #LOGGER.debug("\n\t\tFinal Level Parsed for Breaker " + str(i) + ":\t" + str(currentBreakerW) + "\n")
-                            #currentBreaker
-                        except:
-                            LOGGER.warning("\n\tPOLL Issue getting data from Breaker " + str(i) + " on Panel Breaker Controller " + format(self.ipAddress) + ".\n")
+                instantGridPowerW_tuple = self.allBreakersData.partition(chr(34) + "instantGridPowerW" + chr(34) + ":")
+                instantGridPowerW = instantGridPowerW_tuple[2]
+                #LOGGER.debug("\n\t\t1st level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
+                instantGridPowerW_tuple = instantGridPowerW.partition(",")
+                instantGridPowerW = instantGridPowerW_tuple[0]
+                #LOGGER.debug("\n\t\t2nd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
+                #instantGridPowerW_tuple = instantGridPowerW.partition(":")
+                #instantGridPowerW = instantGridPowerW_tuple[2]
+                #LOGGER.debug("\n\t\t3rd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")                
+                instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
+                #LOGGER.debug("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
+                #LOGGER.debug("\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
+                self.setDriver('ST', (instantGridPowerW-abs(feedthroughPowerW)), True, True)
+
+                for i in range(1,33):
+                    try:
+                        currentBreaker_tuple = self.allBreakersData.partition(chr(34) + 'id' + chr(34) + ':' + str(i))
+                        currentBreakerW = currentBreaker_tuple[2]
+                        currentBreakerID_tuple = currentBreakerW.partition(',')
+                        currentBreakerID = currentBreakerID_tuple[0]
+                        LOGGER.debug("\n\t\tfor-loop 'i' should be equal to currentBreakerID:\ti=" + str(i) + " ?=? currentBreakerID=" + currentBreakerID + ".\n")
+                        #LOGGER.debug("\n\t\t1st level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
+                        currentBreaker_tuple = currentBreakerW.partition(chr(34) + 'instantPowerW' + chr(34) + ':')
+                        currentBreakerW = currentBreaker_tuple[2]
+                        #LOGGER.debug("\n\t\t2nd level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
+                        currentBreaker_tuple = currentBreakerW.partition(',')
+                        currentBreakerW = currentBreaker_tuple[0]
+                        #LOGGER.debug("\n\t\t3rd level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
+                        currentBreakerW = abs(math.ceil(float(currentBreakerW)*100)/100)
+                        #LOGGER.debug("\n\t\tFinal Level Parsed for Breaker " + str(i) + ":\t" + str(currentBreakerW) + "\n")
+                        #currentBreaker
+                    except:
+                        LOGGER.warning("\n\tPOLL Issue getting data from Breaker " + str(i) + " on Panel Breaker Controller " + format(self.ipAddress) + ".\n")
+                
+                if len(str(instantGridPowerW)) > 0:
+                    nowEpoch = int(time.time())
+                    nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                     
-                    if len(str(instantGridPowerW)) > 0:
-                        nowEpoch = int(time.time())
-                        nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-                        
-                        self.setDriver('TIME', nowEpoch, True, True)
-                        self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
-    
-                    '''            
-                    nodes = self.poly.getNodes()
-                    currentPanelBreakerPrefix = "s" + self.address.replace('panelbreaker_','') + "_breaker_"
-                    LOGGER.debug("\n\tWill be looking for Breaker nodes with this as the prefix: '" + currentPanelBreakerPrefix + "'.\n")
-                    for node in nodes:
-                         if currentPanelBreakerPrefix in node:
-                            LOGGER.debug("\n\tUpdating " + node + " (which should be a Breaker node under this Panel controller: " + self.address + ").\n")
-                            try:
-                                nodes[node].updateNode(self.allBreakersData)
-                            except Exception as e:
-                                LOGGER.debug('\n\t\tPOLL ERROR: Cannot seem to update node needed in for-loop due to error:\t{}.\n'.format(e))
-                    '''
-                else:
-                    tokenLastTen = self.token[-10:]
-                    LOGGER.warning('\n\tPOLL ERROR when querying Panel Breaker Controller at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
+                    self.setDriver('TIME', nowEpoch, True, True)
+                    self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
+
+                '''            
+                nodes = self.poly.getNodes()
+                currentPanelBreakerPrefix = "s" + self.address.replace('panelbreaker_','') + "_breaker_"
+                LOGGER.debug("\n\tWill be looking for Breaker nodes with this as the prefix: '" + currentPanelBreakerPrefix + "'.\n")
+                for node in nodes:
+                     if currentPanelBreakerPrefix in node:
+                        LOGGER.debug("\n\tUpdating " + node + " (which should be a Breaker node under this Panel controller: " + self.address + ").\n")
+                        try:
+                            nodes[node].updateNode(self.allBreakersData)
+                        except Exception as e:
+                            LOGGER.debug('\n\t\tPOLL ERROR: Cannot seem to update node needed in for-loop due to error:\t{}.\n'.format(e))
+                '''
             else:
                 tokenLastTen = self.token[-10:]
-                LOGGER.debug('\n\tSkipping POLL query of Panel Breaker Controller at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
-                self.setDriver('TIMEREM', "Not Actively Querying" , True, True)
+                LOGGER.warning('\n\tPOLL ERROR when querying Panel Breaker Controller at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
             
     '''
     Create the breaker nodes.
