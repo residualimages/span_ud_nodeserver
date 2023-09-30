@@ -153,6 +153,12 @@ class PanelNodeForCircuits(udi_interface.Node):
     '''
     def node_queue_panelFinished(self, data):
         self.n_queue.append(data['address'])
+
+    def wait_for_node_done(self):
+        while len(self.n_queue) == 0:
+            time.sleep(0.1)
+        self.n_queue.pop()
+        
         LOGGER.info("\n\tWAIT FOR NODE CREATION: Fully Complete for Panel " + self.address + "\n")
 
         self.setDriver('FREQ', self.ipAddress, True, True)
@@ -166,10 +172,6 @@ class PanelNodeForCircuits(udi_interface.Node):
         else:
             LOGGER.warning("\n\tINIT Issue getting Circuits Data for Panel @ " + self.ipAddress + ".\n")
 
-    def wait_for_node_done(self):
-        while len(self.n_queue) == 0:
-            time.sleep(0.1)
-        self.n_queue.pop()
 
     # called by the interface after the node data has been put in the Polyglot DB
     # and the node created/updated in the ISY
