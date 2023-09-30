@@ -476,7 +476,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         
                 self.createBreakers()
             else:
-                LOGGER.warning("\n\tINIT Issue getting Breakers Data for Panel  Breaker Controller @ " + self.ipAddress + ".\n")
+                LOGGER.warning("\n\tINIT Issue getting Breakers Data for Panel Breaker Controller @ " + self.ipAddress + ".\n")
 
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
@@ -556,6 +556,19 @@ class PanelNodeForBreakers(udi_interface.Node):
                 #LOGGER.debug("\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
                 self.setDriver('ST', (instantGridPowerW-abs(feedthroughPowerW)), True, True)
 
+                allBranchesData_tuple = self.allBreakersData.partition(chr(34) + "branches" + chr(34) + ":")
+                allBranchesData = allBranchesData_tuple[2]
+                LOGGER.debug("\n\tSHORT POLL Panel Breaker Controller's Branches Data: \n\t\t" + allBranchesData + "\n\t\tCount of OPEN Breakers: " + str(allBranchesData.count(chr(34) + 'OPEN' + chr(34) + ',')) + "\n\t\tCount of CLOSED Breakers: " + str(allBranchesData.count(chr(34) + 'CLOSED' + chr(34) + ',')) + "\n")
+                self.setDriver('PULSCNT', allBranchesData.count(chr(34) + 'CLOSED' + chr(34) + ','), True, True)
+                self.setDriver('GPV', allBranchesData.count(chr(34) + 'OPEN' + chr(34) + ','), True, True)
+                
+                if len(str(instantGridPowerW)) > 0:
+                    nowEpoch = int(time.time())
+                    nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+                    
+                    self.setDriver('TIME', nowEpoch, True, True)
+                    self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
+
                 '''
                 for i in range(1,33):
                     try:
@@ -577,14 +590,6 @@ class PanelNodeForBreakers(udi_interface.Node):
                     except:
                         LOGGER.warning("\n\tPOLL Issue getting data from Breaker " + str(i) + " on Panel Breaker Controller " + format(self.ipAddress) + ".\n")
                 '''
-                
-                if len(str(instantGridPowerW)) > 0:
-                    nowEpoch = int(time.time())
-                    nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-                    
-                    self.setDriver('TIME', nowEpoch, True, True)
-                    self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
-
                 nodes = self.poly.getNodes()
                 currentPanelBreakerPrefix = "s" + self.address.replace('panelbreaker_','') + "_breaker_"
                 LOGGER.debug("\n\tWill be looking for Breaker nodes with this as the prefix: '" + currentPanelBreakerPrefix + "'.\n")
