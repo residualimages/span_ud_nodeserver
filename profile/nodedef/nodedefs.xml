@@ -88,4 +88,33 @@
       </accepts>
     </cmds>  
   </nodeDef>
+	
+  <nodeDef id="panelForBreakers" nls="panelForBreakers">
+    <sts>
+      <st id="ST" editor="watt" />
+      <st id="FREQ" editor="string" />
+      <st id="PULSCNT" editor="raw" />
+      <st id="GPV" editor="raw" />
+      <st id="TIME" editor="timestamp" />
+      <st id="TIMEREM" editor="string" />
+	  </sts>
+    <cmds>
+      <sends />
+	    <accepts>
+        <cmd id="TOGGLE_MONITORING">
+          <p id="" editor="bool" init="AWAKE" />
+        </cmd>
+      </accepts>
+    </cmds>
+  </nodeDef>
+	
+  <nodeDef id="breaker" nls="breaker">
+    <sts>
+      <st id="ST" editor="watt" />
+      <st id="PULSCNT" editor="raw" />
+      <st id="CLIEMD" editor="breakerstatus" />
+      <st id="TIME" editor="timestamp" />
+      <st id="TIMEREM" editor="string" />
+	  </sts>
+  </nodeDef>
 </nodeDefs>
