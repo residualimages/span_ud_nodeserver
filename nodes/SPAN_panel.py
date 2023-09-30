@@ -153,30 +153,24 @@ class PanelNodeForCircuits(udi_interface.Node):
     '''
     def node_queue_panelFinished(self, data):
         self.n_queue.append(data['address'])
-        LOGGER.info("\n\t\tSUBSCRIBED AddNodeDone under Panel Controller: Node Creation Complete for " + data['address'] + ".\n")
+        #LOGGER.info("\n\t\tSUBSCRIBED AddNodeDone under Panel Controller: Node Creation Complete for " + data['address'] + ".\n")
         if self.address == data['address']:
-            LOGGER.info("\n\t\t\tTHIS IS SELF. DO THE CHILD NODE CREATION NOAW.\n")
-        else:
-            LOGGER.info("\n\t\t\tIGNORE. This is not self. This is some other controller.\n")
+            LOGGER.info("\n\t\t\tPanelForCircuits Controller Creation Completed; Queue Circuit child node(s) creation.\n")
+            self.setDriver('FREQ', self.ipAddress, True, True)
+        
+            if "circuits" in self.allCircuitsData:
+                LOGGER.info("\n\tINIT Panel node's Circuits Data: \n\t\t" + self.allCircuitsData + "\n\t\tCount of circuits: " + str(self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
+                self.setDriver('PULSCNT', self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':'), True, True)
+                self.setDriver('CLIEMD', 1, True, True)
+        
+                self.createCircuits()
+            else:
+                LOGGER.warning("\n\tINIT Issue getting Circuits Data for Panel @ " + self.ipAddress + ".\n")
 
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
             time.sleep(0.1)
         self.n_queue.pop()
-        
-        LOGGER.info("\n\tWAIT FOR NODE CREATION: Fully Complete for Panel " + self.address + "\n")
-
-        self.setDriver('FREQ', self.ipAddress, True, True)
-        
-        if "circuits" in self.allCircuitsData:
-            LOGGER.info("\n\tINIT Panel node's Circuits Data: \n\t\t" + self.allCircuitsData + "\n\t\tCount of circuits: " + str(self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
-            self.setDriver('PULSCNT', self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':'), True, True)
-            self.setDriver('CLIEMD', 1, True, True)
-    
-            self.createCircuits()
-        else:
-            LOGGER.warning("\n\tINIT Issue getting Circuits Data for Panel @ " + self.ipAddress + ".\n")
-
 
     # called by the interface after the node data has been put in the Polyglot DB
     # and the node created/updated in the ISY
