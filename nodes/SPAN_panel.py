@@ -59,8 +59,10 @@ class PanelNodeForCircuits(udi_interface.Node):
             {'driver': 'CLIEMD', 'value': 0, 'uom': 25},
             {'driver': 'TIME', 'value': 0, 'uom': 151},
             {'driver': 'TIMEREM', 'value': 'Initializing...', 'uom': 145},
-            {'driver': 'AWAKE', 'value': 1, 'uom': 2},
-            {'driver': 'GV0', 'value': 0, 'uom': 73},
+            {'driver': 'AWAKE', 'value': 1, 'uom': 2}
+            ]
+            '''
+            ,{'driver': 'GV0', 'value': 0, 'uom': 73},
             {'driver': 'GV1', 'value': 0, 'uom': 73},
             {'driver': 'GV2', 'value': 0, 'uom': 73},
             {'driver': 'GV3', 'value': 0, 'uom': 73},
@@ -93,6 +95,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             {'driver': 'GV30', 'value': 0, 'uom': 73},
             {'driver': 'GPV', 'value': 0, 'uom': 73}
             ]
+            '''
 
     def __init__(self, polyglot, parent, address, name, spanIPAddress, bearerToken):
         super(PanelNodeForCircuits, self).__init__(polyglot, parent, address, name)
@@ -289,7 +292,8 @@ class PanelNodeForCircuits(udi_interface.Node):
                     #LOGGER.debug("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
                     #LOGGER.debug("\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
                     self.setDriver('ST', (instantGridPowerW-abs(feedthroughPowerW)), True, True)
-    
+
+                    '''
                     for i in range(1,33):
                         try:
                             currentBreaker_tuple = panelData.partition(chr(34) + 'id' + chr(34) + ':' + str(i))
@@ -309,6 +313,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                                 self.setDriver('GPV', currentBreakerW, True, True)
                         except:
                             LOGGER.warning("\n\tPOLL Issue for Panel Circuits controller getting data from Breaker " + str(i) + " on Panel node " + format(self.ipAddress) + ".\n")
+                    '''
                     
                     if len(str(instantGridPowerW)) > 0:
                         nowEpoch = int(time.time())
