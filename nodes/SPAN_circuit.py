@@ -37,7 +37,7 @@ class CircuitNode(udi_interface.Node):
             {'driver': 'GV4', 'value': 'N/A', 'uom': 56}
             ]
 
-    def __init__(self, polyglot, parent, address, name, spanIPAddress, bearerToken, spanCircuitID, passedAllCircuitsData):
+    def __init__(self, polyglot, parent, address, name, spanIPAddress, bearerToken, spanCircuitID):
         super(CircuitNode, self).__init__(polyglot, parent, address, name)
 
         # set a flag to short circuit setDriver() until the node has been fully
@@ -53,7 +53,7 @@ class CircuitNode(udi_interface.Node):
         self.ipAddress = spanIPAddress
         self.token = bearerToken
         self.circuitID = spanCircuitID
-        self.allCircuitsData = passedAllCircuitsData
+        self.allCircuitsData = ''
         
         tokenLastTen = self.token[-10:]
         LOGGER.debug("\n\tINIT IP Address for circuit:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen + "; Circuit ID: " + self.circuitID)
@@ -83,41 +83,6 @@ class CircuitNode(udi_interface.Node):
         globals()[parentPrefix + '_allCircuitsData']
         allCircuitsData = globals()[parentPrefix + '_allCircuitsData']
         '''
-        designatedCircuitData_tuple = self.allCircuitsData.partition(chr(34) + self.circuitID + chr(34) + ':')
-        designatedCircuitData = designatedCircuitData_tuple[2]
-        designatedCircuitData_tuple = designatedCircuitData.partition('},')
-        designatedCircuitData = designatedCircuitData_tuple[0] + '}'
-
-        LOGGER.debug("\n\tAbout to search for 'name' in:\n\t\t" + designatedCircuitData + "\n")
-
-        if "name" in designatedCircuitData:
-            designatedCircuitTabs_tuple = designatedCircuitData.partition(chr(34) + "tabs" + chr(34) + ":")
-            designatedCircuitTabs = designatedCircuitTabs_tuple[2]
-            designatedCircuitTabs_tuple = designatedCircuitTabs.partition("],")
-            designatedCircuitTabs = designatedCircuitTabs_tuple[0]
-          
-            LOGGER.info("\n\tINIT Designated Circuit Data: \n\t\t" + designatedCircuitData + "\n\t\tCount of Circuit Breakers In Circuit: " + str(designatedCircuitTabs.count(',')+1) + "\n")
-            self.setDriver('PULSCNT', (designatedCircuitTabs.count(',')+1), True, True)
-
-            designatedCircuitTabs = designatedCircuitTabs.replace('[','')
-            designatedCircuitTabsArray = designatedCircuitTabs.split(',')
-            designatedCircuitTabsCount = len(designatedCircuitTabsArray)
-    
-            for i in range(0,designatedCircuitTabsCount):
-                LOGGER.debug("\n\t\tIn Circuit " + self.circuitID + ", Tab # " + str(i) + " corresponds to breaker number:\n\t\t\t" + designatedCircuitTabsArray[i] + "\n")
-                try:
-                    self.setDriver('GV' + str(i+1), designatedCircuitTabsArray[i], True, True)
-                except:
-                    LOGGER.warning("\n\t\tERROR Setting Tab (Physical Breaker #" + str(i+1) + ") for " + self.circuitID + ".\n")
-            
-            nowEpoch = int(time.time())
-            nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-            
-            self.setDriver('TIME', nowEpoch, True, True)
-            self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
-        else:
-            LOGGER.warning("\n\tINIT Issue getting data for circuit '" + self.circuitID + "'.\n")
-            self.setDriver('TIMEREM', "INIT Error Querying" , True, True)
             
         # subscribe to the events we want
         #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
@@ -164,6 +129,44 @@ class CircuitNode(udi_interface.Node):
     '''
     def updateNode(self, passedAllCircuitsData):
         self.allCircuitsData = passedAllCircuitsData
+
+        if 'Initializing...' in self.getDriver('TIMEREM'):
+            designatedCircuitData_tuple = self.allCircuitsData.partition(chr(34) + self.circuitID + chr(34) + ':')
+            designatedCircuitData = designatedCircuitData_tuple[2]
+            designatedCircuitData_tuple = designatedCircuitData.partition('},')
+            designatedCircuitData = designatedCircuitData_tuple[0] + '}'
+    
+            LOGGER.debug("\n\tAbout to search for 'name' in:\n\t\t" + designatedCircuitData + "\n")
+    
+            if "name" in designatedCircuitData:
+                designatedCircuitTabs_tuple = designatedCircuitData.partition(chr(34) + "tabs" + chr(34) + ":")
+                designatedCircuitTabs = designatedCircuitTabs_tuple[2]
+                designatedCircuitTabs_tuple = designatedCircuitTabs.partition("],")
+                designatedCircuitTabs = designatedCircuitTabs_tuple[0]
+              
+                LOGGER.info("\n\tINIT Designated Circuit Data: \n\t\t" + designatedCircuitData + "\n\t\tCount of Circuit Breakers In Circuit: " + str(designatedCircuitTabs.count(',')+1) + "\n")
+                self.setDriver('PULSCNT', (designatedCircuitTabs.count(',')+1), True, True)
+    
+                designatedCircuitTabs = designatedCircuitTabs.replace('[','')
+                designatedCircuitTabsArray = designatedCircuitTabs.split(',')
+                designatedCircuitTabsCount = len(designatedCircuitTabsArray)
+        
+                for i in range(0,designatedCircuitTabsCount):
+                    LOGGER.debug("\n\t\tIn Circuit " + self.circuitID + ", Tab # " + str(i) + " corresponds to breaker number:\n\t\t\t" + designatedCircuitTabsArray[i] + "\n")
+                    try:
+                        self.setDriver('GV' + str(i+1), designatedCircuitTabsArray[i], True, True)
+                    except:
+                        LOGGER.warning("\n\t\tERROR Setting Tab (Physical Breaker #" + str(i+1) + ") for " + self.circuitID + ".\n")
+                
+                nowEpoch = int(time.time())
+                nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+                
+                self.setDriver('TIME', nowEpoch, True, True)
+                self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
+            else:
+                LOGGER.warning("\n\tINIT Issue getting data for circuit '" + self.circuitID + "'.\n")
+                self.setDriver('TIMEREM', "INIT Error Querying" , True, True)
+        
         self.poll('shortPoll')
         
     def poll(self, polltype):
