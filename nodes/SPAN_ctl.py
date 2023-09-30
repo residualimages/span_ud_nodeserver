@@ -160,12 +160,12 @@ class Controller(udi_interface.Node):
             current_IPaddress = listOfIPAddresses[i]
             current_BearerToken = listOfBearerTokens[i]
             
-            addressCircuits = 'PanelCircuits_{}'.format(i+1)
+            addressCircuits = 'PanelCircuit_{}'.format(i+1)
             addressCircuits = getValidNodeAddress(addressCircuits)
             titleCircuits = 'SPAN Panel #{} - Circuits'.format(i+1)
             titleCircuits = getValidNodeName(titleCircuits)
             
-            addressBreakers = 'PanelBreakers_{}'.format(i+1)
+            addressBreakers = 'PanelBreaker_{}'.format(i+1)
             addressBreakers = getValidNodeAddress(addressBreakers)
             titleBreakers = 'SPAN Panel #{} - Breakers'.format(i+1)
             titleBreakers = getValidNodeName(titleBreakers)
