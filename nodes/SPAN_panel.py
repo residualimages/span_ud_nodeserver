@@ -479,7 +479,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                 #LOGGER.debug("\n\t\t3rd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")                
                 feedthroughPowerW = math.ceil(float(feedthroughPowerW)*100)/100
 
-                instantGridPowerW_tuple = panelData.partition(chr(34) + "instantGridPowerW" + chr(34) + ":")
+                instantGridPowerW_tuple = self.allBreakersData.partition(chr(34) + "instantGridPowerW" + chr(34) + ":")
                 instantGridPowerW = instantGridPowerW_tuple[2]
                 #LOGGER.debug("\n\t\t1st level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
                 instantGridPowerW_tuple = instantGridPowerW.partition(",")
