@@ -131,7 +131,7 @@ class BreakerNode(udi_interface.Node):
         self.allBreakersData = passedAllBreakersData
 
         if 'Initializing...' in self.getDriver('TIMEREM'):
-            designatedBreakerData_tuple = self.allBreakersData.partition(chr(34) + self.breakerID + chr(34) + ':')
+            designatedBreakerData_tuple = self.allBreakersData.partition(chr(34) + str(self.breakerID) + chr(34) + ':')
             designatedBreakerData = designatedBreakerData_tuple[2]
             designatedBreakerData_tuple = designatedBreakerData.partition('},')
             designatedBreakerData = designatedBreakerData_tuple[0] + '}'
@@ -147,7 +147,7 @@ class BreakerNode(udi_interface.Node):
                 self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
                 LOGGER.debug("\n\tINIT Final for PULSCNT, TIME, and TIMEREM.\n")
             else:
-                LOGGER.warning("\n\tINIT Issue getting data for breaker '" + self.breakerID + "'.\n")
+                LOGGER.warning("\n\tINIT Issue getting data for breaker '" + str(self.breakerID) + "'.\n")
                 self.setDriver('TIMEREM', "INIT Error Querying" , True, True)
         
         self.poll('shortPoll')
@@ -156,7 +156,7 @@ class BreakerNode(udi_interface.Node):
         if 'shortPoll' in polltype:
             tokenLastTen = self.token[-10:]
             LOGGER.debug('\n\tPOLL About to parse {} Breaker node of {}, using token ending in {}'.format(self.breakerID,self.ipAddress,tokenLastTen))
-            designatedBreakerData_tuple = self.allBreakersData.partition(chr(34) + self.breakerID + chr(34) + ':')
+            designatedBreakerData_tuple = self.allBreakersData.partition(chr(34) + 'id' + chr(34) + ':' + str(self.breakerID) + ',')
             designatedBreakerData = designatedBreakerData_tuple[2]
             designatedBreakerData_tuple = designatedBreakerData.partition('},')
             designatedBreakerData = designatedBreakerData_tuple[0] + '}'
