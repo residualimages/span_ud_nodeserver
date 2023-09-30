@@ -72,7 +72,8 @@ class CircuitNode(udi_interface.Node):
         designatedCircuitData = designatedCircuitResponse.read()
         designatedCircuitData = designatedCircuitData.decode("utf-8")
         '''
-        parentPrefix = self.address.partition('_')
+        parentPrefix_tuple = self.address.partition('_')
+        parentPrefix = parentPrefix_tuple[0]
         parentPrefix = parentPrefix.replace('s','panel_')        
         allCircuitsData = globals()[parentPrefix + '_allCircuitsData']
         designatedCircuitData_tuple = allCircuitsData.partition(chr(34) + self.circuitID + chr(34) + ':')
@@ -153,7 +154,8 @@ class CircuitNode(udi_interface.Node):
     This is where the real work happens.  When we get a shortPoll, do some work. 
     '''
     def poll(self, polltype):
-        parentPrefix = self.address.partition('_')
+        parentPrefix_tuple = self.address.partition('_')
+        parentPrefix = parentPrefix_tuple[0]
         parentPrefix = parentPrefix.replace('s','panel_')
         
         while globals()[parentPrefix + '_allCircuitsDataUpdated'] == 0:
