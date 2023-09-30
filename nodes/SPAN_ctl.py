@@ -141,13 +141,6 @@ class Controller(udi_interface.Node):
     '''
     def createPanelControllers(self):
         
-        # delete any existing nodes
-        nodes = self.poly.getNodes()
-        for node in nodes:
-            if node != 'controller':   # but not the controller node
-                LOGGER.debug("\n\tINIT Controller - deleting " + node + " when creating base NodeServer controller.\n")
-                self.poly.delNode(node)
-
         ipAddresses = self.Parameters['IP_Addresses']
         accessTokens = self.Parameters['Access_Tokens']
 
@@ -204,10 +197,18 @@ class Controller(udi_interface.Node):
 
 
     '''
-    Just to show how commands are implemented. The commands here need to
-    match what is in the nodedef profile file. 
+    Delete and Reset Nodes:
     '''
-    def noop(self):
-        LOGGER.info('\n\tNOTE: Discover not implemented')
+    def reset(self):
+        LOGGER.info('\n\t\tRESET: Will Delete and Recreate All Sub-Nodes.\n')
+        
+        # delete any existing nodes
+        nodes = self.poly.getNodes()
+        self.setDriver('GV0', 0, True, True)
+        for node in nodes:
+            if node != 'controller':   # but not the controller node
+                LOGGER.debug("\n\tINIT Controller - deleting " + node + " when creating base NodeServer controller.\n")
+                self.poly.delNode(node)
+        self.start()
 
-    commands = {'DISCOVER': noop}
+    commands = {'DELETE AND RESET ALL NODES': reset}
