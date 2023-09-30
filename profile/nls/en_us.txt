@@ -2,7 +2,7 @@ ND-ctl-NAME = SPAN Smart Panel NodeServer Controller
 ND-ctl-ICON = Electricity
 ST-ctl-ST-NAME = NodeServer Online
 ST-ctl-GV0-NAME = Number of SPAN Panels
-CMD-ctl-DISCOVER-NAME = Re-Discover (Not Implemented)
+CMD-ctl-RESET-NAME = Delete And Reset All Panel, Circuit, and Breaker Nodes (WARNING: NO Confirmation)
 
 ND-panelForCircuits-NAME = SPAN Panel - CIRCUITS Controller
 ND-panelForCircuits-ICON = Electricity
