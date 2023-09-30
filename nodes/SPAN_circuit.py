@@ -58,7 +58,7 @@ class CircuitNode(udi_interface.Node):
         tokenLastTen = self.token[-10:]
         LOGGER.debug("\n\tINIT IP Address for circuit:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen + "; Circuit ID: " + self.circuitID)
 
-        self.setDriver('GPV', self.circuitID, True, True)
+        self.setDriver('GPV', self.circuitID, False)
 
         '''
         spanConnection = http.client.HTTPConnection(self.ipAddress)
@@ -141,7 +141,8 @@ class CircuitNode(udi_interface.Node):
             LOGGER.debug("\n\tAbout to search for 'name' in:\n\t\t" + designatedCircuitData + "\n")
 
             if "???" in self.getDriver('GPV'):
-                LOGGER.debug("\n\t\tSHOULD SET GPV because it is currently ???.\n")
+                LOGGER.debug("\n\t\tSetting GPV because it is currently ???.\n")
+                self.setDriver('GPV', self.circuitID, False)
     
             if "name" in designatedCircuitData:
                 designatedCircuitTabs_tuple = designatedCircuitData.partition(chr(34) + "tabs" + chr(34) + ":")
