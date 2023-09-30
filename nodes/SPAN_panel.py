@@ -318,7 +318,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                         nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                         
                         self.setDriver('TIME', nowEpoch, True, True)
-                        self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y %H:%M:%S"), False)
+                        self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y %H:%M:%S"), True, True)
     
                     try:
                         spanConnection.request("GET", "/api/v1/circuits", payload, headers)
@@ -345,7 +345,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             else:
                 tokenLastTen = self.token[-10:]
                 LOGGER.debug('\n\tSkipping POLL query of Panel Circuit Controller at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
-                self.setDriver('TIMEREM', "Not Actively Querying due to 'AWAKE' being set to 0." , False)
+                self.setDriver('TIMEREM', "Not Actively Querying due to 'AWAKE' being set to 0." , True, True)
             
     def toggle_monitoring(self,val):
         # On startup this will always go back to true which is the default, but how do we restore the previous user value?
@@ -636,7 +636,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                     
                     self.setDriver('TIME', nowEpoch, True, True)
-                    self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y %H:%M:%S"), False)
+                    self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y %H:%M:%S"), False, True)
 
                 '''
                 for i in range(1,33):
