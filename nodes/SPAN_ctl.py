@@ -58,7 +58,7 @@ class Controller(udi_interface.Node):
         self.poly = polyglot
         self.n_queue = []
 
-        LOGGER.debug("\n\tController's parent is '" + parent + "' when INIT'ing.\n")
+        #LOGGER.debug("\n\tController's parent is '" + parent + "' when INIT'ing.\n")
 
         self.Parameters = Custom(polyglot, 'customparams')
 
