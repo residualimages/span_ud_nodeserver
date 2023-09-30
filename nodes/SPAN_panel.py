@@ -153,9 +153,6 @@ class PanelNodeForCircuits(udi_interface.Node):
     '''
     def node_queue_panelFinished(self, data):
         self.n_queue.append(data['address'])
-        globals()[self.address + '_allCircuitsData'] = self.allCircuitsData
-        globals()[self.address + '_allCircuitsDataUpdated'] = 1
-
         LOGGER.info("\n\tWAIT FOR NODE CREATION: Fully Complete for Panel " + self.address + "\n")
 
         self.setDriver('FREQ', self.ipAddress, True, True)
@@ -197,8 +194,6 @@ class PanelNodeForCircuits(udi_interface.Node):
     '''
     def poll(self, polltype):
         if 'shortPoll' in polltype:
-            globals()[self.address + '_allCircuitsData'] = ''
-            globals()[self.address + '_allCircuitsDataUpdated'] = 0
             if self.getDriver('AWAKE') == 1:
                 tokenLastTen = self.token[-10:]
                 LOGGER.info('\n\tPOLL About to query Panel node of {}, using token ending in {}'.format(self.ipAddress,tokenLastTen))
@@ -272,10 +267,14 @@ class PanelNodeForCircuits(udi_interface.Node):
                     circuitsResponse = spanConnection.getresponse()
                     self.allCircuitsData = circuitsResponse.read()
                     self.allCircuitsData = self.allCircuitsData.decode("utf-8")
-                    
-                    globals()[self.address + '_allCircuitsData'] = self.allCircuitsData
-                    globals()[self.address + '_allCircuitsDataUpdated'] = 1
-        
+            
+                    nodes = self.poly.getNodes()
+                    currentPanelCircuitPrefix = "s" + self.address.replace('panel_','') + "_circuit_"
+                    LOGGER.debug("\n\tWill be looking for Circuit nodes with this as the prefix: '" + currentPanelCircuitPrefix + "'.\n")
+                    for node in nodes:
+                         if currentPanelCircuitPrefix in node:
+                            LOGGER.debug("\n\tUpdating " + node + " (which should be a Circuit node under this Panel controller: " + self.address + ").\n")
+                            node.updateCircuit(self.allCircuitsData)
                 else:
                     tokenLastTen = self.token[-10:]
                     LOGGER.debug('\n\tPOLL ERROR when querying Panel node at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
@@ -357,7 +356,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             #    title = title + ' (' + current_circuitID[-(26-len(title)):] + ')'
             title = getValidNodeName(title)
             try:
-                node = SPAN_circuit.CircuitNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken,current_circuitID)
+                node = SPAN_circuit.CircuitNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken, current_circuitID, self.allCircuitsData)
                 self.poly.addNode(node)
                 #self.wait_for_node_done()
                 node.setDriver('AWAKE', 1, True, True)
