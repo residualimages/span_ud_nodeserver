@@ -15,15 +15,15 @@
 
   <nodeDef id="panelForCircuits" nls="panelForCircuits">
 	  <editors>
-		<editor id="panelgridstatus">
-			<range uom="25" subset="1-3" nls="IX_SPAN_panelgridstatus" />
+		<editor id="SPAN_PANELGRIDSTATUS">
+			<range uom="25" subset="1-3" nls="IX_SPAN_PANELGRIDSTATUS" />
 		</editor>
 	  </editors>
     <sts>
       <st id="ST" editor="watt" />
       <st id="FREQ" editor="string" />
       <st id="PULSCNT" editor="raw" />
-      <st id="CLIEMD" editor="panelgridstatus" />
+      <st id="CLIEMD" editor="SPAN_PANELGRIDSTATUS" />
       <st id="TIME" editor="timestamp" />
       <st id="TIMEREM" editor="string" />
       <st id="AWAKE" editor="bool" />
@@ -40,14 +40,14 @@
 	
   <nodeDef id="circuit" nls="circuit">
 	  <editors>
-		<editor id="circuitstatus">
-			<range uom="25" subset="0-3" nls="IX_SPAN_circuitstatus" />
+		<editor id="SPAN_CIRCUITSTATUS">
+			<range uom="25" subset="0-3" nls="IX_SPAN_CIRCUITSTATUS" />
 		</editor>
 	  </editors>
     <sts>
       <st id="ST" editor="watt" />
       <st id="PULSCNT" editor="raw" />
-      <st id="CLIEMD" editor="circuitstatus" />
+      <st id="CLIEMD" editor="SPAN_CIRCUITSTATUS" />
       <st id="TIME" editor="timestamp" />
       <st id="TIMEREM" editor="string" />
       <st id="AWAKE" editor="bool" />
@@ -80,14 +80,14 @@
 	
   <nodeDef id="breaker" nls="breaker">
 	  <editor>
-		<editor id="breakerstatus">
-			<range uom="25" subset="0-3" nls="IX_SPAN_breakerstatus" />
+		<editor id="SPAN_BREAKERSTATUS">
+			<range uom="25" subset="0-3" nls="IX_SPAN_BREAKERSTATUS" />
 		</editor>
 	  </editors>
     <sts>
       <st id="ST" editor="watt" />
       <st id="PULSCNT" editor="raw" />
-      <st id="CLIEMD" editor="breakerstatus" />
+      <st id="CLIEMD" editor="SPAN_BREAKERSTATUS" />
       <st id="TIME" editor="timestamp" />
       <st id="TIMEREM" editor="string" />
 	  </sts>
