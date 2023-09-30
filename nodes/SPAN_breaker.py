@@ -134,7 +134,7 @@ class BreakerNode(udi_interface.Node):
     
             LOGGER.debug("\n\tAbout to search for 'name' in:\n\t\t" + designatedBreakerData + "\n")
 
-            if self.getDriver('PULSCNT') = 0:
+            if self.getDriver('PULSCNT') == 0:
                 LOGGER.debug("\n\t\tSHOULD SET PULSCNT because it is currently 0.\n")
                     
                 nowEpoch = int(time.time())
