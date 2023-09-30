@@ -87,8 +87,10 @@ class CircuitNode(udi_interface.Node):
         # subscribe to the events we want
         #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
         #polyglot.subscribe(polyglot.POLL, self.poll)
-        polyglot.subscribe(polyglot.START, self.start, address)
+        #polyglot.subscribe(polyglot.START, self.start, address)
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
+        
+        self.initialized = True
         
     '''
     node_queue() and wait_for_node_event() create a simple way to wait
@@ -107,15 +109,15 @@ class CircuitNode(udi_interface.Node):
         
     # called by the interface after the node data has been put in the Polyglot DB
     # and the node created/updated in the ISY
-    def start(self):
+    #def start(self):
         # set the initlized flag to allow setDriver to work
-        self._initialized = True
+        #self._initialized = True
     
     # overload the setDriver() of the parent class to short circuit if 
     # node not initialized
-    def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None):
-        if self._initialized:
-            super().setDriver(driver, value, report, force, uom)
+    #def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None):
+    #    if self._initialized:
+    #        super().setDriver(driver, value, report, force, uom)
 
     '''
     Read the user entered custom parameters.
@@ -136,6 +138,9 @@ class CircuitNode(udi_interface.Node):
             designatedCircuitData = designatedCircuitData_tuple[0] + '}'
     
             LOGGER.debug("\n\tAbout to search for 'name' in:\n\t\t" + designatedCircuitData + "\n")
+
+            if "???" in self.getDriver('GPV'):
+                LOGGER.debug("\n\t\tSHOULD SET GPV because it is currently ???.\n")
     
             if "name" in designatedCircuitData:
                 designatedCircuitTabs_tuple = designatedCircuitData.partition(chr(34) + "tabs" + chr(34) + ":")
