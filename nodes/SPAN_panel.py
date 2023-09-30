@@ -326,28 +326,28 @@ class PanelNodeForCircuits(udi_interface.Node):
             LOGGER.debug("\n\tHere is the currentCircuitData:\n\t\t" + allCircuitsArray[i] + "\n")
             
             current_IPaddress = self.ipAddress
-            LOGGER.debug("\n\t\t'current_IPaddress':\t" + current_IPaddress + "\n")
+            #LOGGER.debug("\n\t\t'current_IPaddress':\t" + current_IPaddress + "\n")
             current_BearerToken = self.token
-            LOGGER.debug("\n\t\t'current_BearerToken':\t" + current_BearerToken + "\n")
+            #LOGGER.debug("\n\t\t'current_BearerToken':\t" + current_BearerToken + "\n")
             
             address = 'S' + panelNumberPrefix + '_Circuit_' + str(i)
             address = getValidNodeAddress(address)
-            LOGGER.debug("\n\t\tCalculated 'address':\t" + address + "\n")
+            #LOGGER.debug("\n\t\tCalculated 'address':\t" + address + "\n")
             
             current_circuitID_tuple = allCircuitsArray[i].partition(',')
             current_circuitID = current_circuitID_tuple[0]
-            LOGGER.debug("\n\t\tCalculated 'current_CircuitID':\t" + current_circuitID + "\n")
+            #LOGGER.debug("\n\t\tCalculated 'current_CircuitID':\t" + current_circuitID + "\n")
             current_circuitID = current_circuitID.replace(chr(34),'')
-            LOGGER.debug("\n\t\tCalculated 'current_CircuitID':\t" + current_circuitID + "\n")
+            #LOGGER.debug("\n\t\tCalculated 'current_CircuitID':\t" + current_circuitID + "\n")
             
             current_circuitName_tuple = allCircuitsArray[i].partition(chr(34) + 'name' + chr(34) + ':')
             current_circuitName = current_circuitName_tuple[2]
-            LOGGER.debug("\n\t\tCalculated 'current_CircuitName':\t" + current_circuitName + "\n")
+            #LOGGER.debug("\n\t\tCalculated 'current_CircuitName':\t" + current_circuitName + "\n")
             current_circuitName_tuple = current_circuitName.partition(',')
             current_circuitName = current_circuitName_tuple[0]
-            LOGGER.debug("\n\t\tCalculated 'current_CircuitName':\t" + current_circuitName + "\n")
+            #LOGGER.debug("\n\t\tCalculated 'current_CircuitName':\t" + current_circuitName + "\n")
             current_circuitName = current_circuitName.replace(chr(34),'')
-            LOGGER.debug("\n\t\tCalculated 'current_CircuitName':\t" + current_circuitName + "\n")
+            #LOGGER.debug("\n\t\tCalculated 'current_CircuitName':\t" + current_circuitName + "\n")
             
             title = current_circuitName
             #if len(title)<25:
