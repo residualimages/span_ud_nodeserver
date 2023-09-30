@@ -101,17 +101,17 @@ class Controller(udi_interface.Node):
             if len(self.Parameters['IP_Addresses']) > 6:
                 validIP_Addresses = True
             else:
-                LOGGER.error('\n\tCONFIGURATION INCOMPLETE OR INVALID: Invalid values for IP_Addresses parameter.')
+                LOGGER.warning('\n\tCONFIGURATION INCOMPLETE OR INVALID: Invalid values for IP_Addresses parameter.')
         else:
-            LOGGER.error('\n\tCONFIGURATION MISSING: Missing IP_Addresses parameter.')
+            LOGGER.warning('\n\tCONFIGURATION MISSING: Missing IP_Addresses parameter.')
 
         if self.Parameters['Access_Tokens'] is not None:
             if len(self.Parameters['Access_Tokens']) > 120:
                 validAccess_Tokens = True
             else:
-                LOGGER.error('\n\tCONFIGURATION INCOMPLETE OR INVALID: Invalid values for Access_Tokens parameter.')
+                LOGGER.warning('\n\tCONFIGURATION INCOMPLETE OR INVALID: Invalid values for Access_Tokens parameter.')
         else:
-            LOGGER.error('\n\tCONFIGURATION MISSING: Missing Access_Tokens parameter.')
+            LOGGER.warning('\n\tCONFIGURATION MISSING: Missing Access_Tokens parameter.')
         
         if validIP_Addresses and validAccess_Tokens:
             self.createPanelControllers()
@@ -155,7 +155,7 @@ class Controller(udi_interface.Node):
         listOfBearerTokens = accessTokens.split(";")
         how_many = len(listOfIPAddresses)
 
-        LOGGER.info('\n\tCreating {} Panel nodes (which will be controllers for Circuit nodes)'.format(how_many))
+        LOGGER.debug('\n\tCreating {} Panel nodes (which will be controllers for Circuit nodes)'.format(how_many))
         for i in range(0, how_many):
             current_IPaddress = listOfIPAddresses[i]
             current_BearerToken = listOfBearerTokens[i]
@@ -176,18 +176,15 @@ class Controller(udi_interface.Node):
                 self.wait_for_node_done()
                 circuitController.setDriver('AWAKE', 1, True, True)
             except Exception as e:
-                LOGGER.error('Failed to create {}: {}'.format(titleCircuits, e))
+                LOGGER.warning('Failed to create Panel Circuits Controller {}: {}'.format(titleCircuits, e))
 
             try:
-                LOGGER.info("\n\t\tTHEORETICAL ADDING OF breakerController = SPAN_panel.PanelNodeForBreakers(self.poly, " + addressBreakers + ", " + addressBreakers + ", " + titleBreakers + ", " + current_IPaddress + ", " + current_BearerToken + ")\n")
+                LOGGER.debug("\n\t\ADD breakerController = SPAN_panel.PanelNodeForBreakers(self.poly, " + addressBreakers + ", " + addressBreakers + ", " + titleBreakers + ", " + current_IPaddress + ", " + current_BearerToken + ")\n")
                 breakerController = SPAN_panel.PanelNodeForBreakers(self.poly, addressBreakers, addressBreakers, titleBreakers, current_IPaddress, current_BearerToken)
                 self.poly.addNode(breakerController)
                 self.wait_for_node_done()
             except Exception as e:
-                LOGGER.error('Failed to create {}: {}'.format(titleBreakers, e))
-
-
-
+                LOGGER.warning('Failed to create Panel Breakers Controller {}: {}'.format(titleBreakers, e))
         
         self.setDriver('GV0', how_many, True, True)
 
