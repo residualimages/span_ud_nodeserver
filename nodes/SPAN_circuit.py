@@ -37,7 +37,7 @@ class CircuitNode(udi_interface.Node):
             {'driver': 'GV4', 'value': 'N/A', 'uom': 56}
             ]
 
-    def __init__(self, polyglot, parent, address, name, spanIPAddress, bearerToken, spanCircuitID):
+    def __init__(self, polyglot, parent, address, name, spanIPAddress, bearerToken, spanCircuitID, passedAllCircuitsData):
         super(CircuitNode, self).__init__(polyglot, parent, address, name)
 
         # set a flag to short circuit setDriver() until the node has been fully
@@ -53,12 +53,12 @@ class CircuitNode(udi_interface.Node):
         self.ipAddress = spanIPAddress
         self.token = bearerToken
         self.circuitID = spanCircuitID
+        self.allCircuitsData = passedAllCircuitsData
+        
         tokenLastTen = self.token[-10:]
         LOGGER.debug("\n\tINIT IP Address for circuit:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen + "; Circuit ID: " + self.circuitID)
 
         self.setDriver('GPV', self.circuitID, True, True)
-
-        LOGGER.debug("\n\tINIT - Circuit trying to use super(). [address: '" + super().address + "'] as the access point for allCircuitsData / allCircuitsDataUpdated: " + str(super().allCircuitsDataUpdated) + "\n")
 
         '''
         spanConnection = http.client.HTTPConnection(self.ipAddress)
@@ -74,13 +74,16 @@ class CircuitNode(udi_interface.Node):
         designatedCircuitData = designatedCircuitResponse.read()
         designatedCircuitData = designatedCircuitData.decode("utf-8")
         '''
+
+        '''
         parentPrefix_tuple = self.address.partition('_')
         parentPrefix = parentPrefix_tuple[0]
         parentPrefix = parentPrefix.replace('s','panel_')  
         LOGGER.info("\n\t\tAbout to try to grab the globals()['" + parentPrefix + "_allCircuitsData']\n")
         globals()[parentPrefix + '_allCircuitsData']
         allCircuitsData = globals()[parentPrefix + '_allCircuitsData']
-        designatedCircuitData_tuple = allCircuitsData.partition(chr(34) + self.circuitID + chr(34) + ':')
+        '''
+        designatedCircuitData_tuple = self.allCircuitsData.partition(chr(34) + self.circuitID + chr(34) + ':')
         designatedCircuitData = designatedCircuitData_tupple[2]
         designatedCircuitData_tuple = designatedCircuitData.partition('},')
         designatedCircuitData = designatedCircuitData_tuple[0] + '}'
@@ -118,7 +121,7 @@ class CircuitNode(udi_interface.Node):
             
         # subscribe to the events we want
         #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
-        polyglot.subscribe(polyglot.POLL, self.poll)
+        #polyglot.subscribe(polyglot.POLL, self.poll)
         polyglot.subscribe(polyglot.START, self.start, address)
         #polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
         
@@ -157,23 +160,18 @@ class CircuitNode(udi_interface.Node):
         self.Parameters.load(params)
 
     '''
-    This is where the real work happens.  When we get a shortPoll, do some work. 
+    This is where the real work happens.  When the parent controller gets a shortPoll, do some work. 
     '''
-    def poll(self, polltype):
-        parentPrefix_tuple = self.address.partition('_')
-        parentPrefix = parentPrefix_tuple[0]
-        parentPrefix = parentPrefix.replace('s','panel_')
+    def updateCircuit(self, passedAllCircuitsData):
+        self.allCircuitsData = passedAllCircuitsData
+        self.poll('shortPoll')
         
-        while globals()[parentPrefix + '_allCircuitsDataUpdated'] == 0:
-            time.sleep(0.1)
-        
-        allCircuitsData = globals()[parentPrefix + '_allCircuitsData']
-            
+    def poll(self, polltype)        
         if 'shortPoll' in polltype:
             if self.getDriver('AWAKE') == 1:
                 tokenLastTen = self.token[-10:]
                 LOGGER.info('\n\tPOLL About to parse {} Circuit node of {}, using token ending in {}'.format(self.circuitID,self.ipAddress,tokenLastTen))
-                designatedCircuitData_tuple = allCircuitsData.partition(chr(34) + self.circuitID + chr(34) + ':')
+                designatedCircuitData_tuple = self.allCircuitsData.partition(chr(34) + self.circuitID + chr(34) + ':')
                 designatedCircuitData = designatedCircuitData_tupple[2]
                 designatedCircuitData_tuple = designatedCircuitData.partition('},')
                 designatedCircuitData = designatedCircuitData_tuple[0] + '}'
