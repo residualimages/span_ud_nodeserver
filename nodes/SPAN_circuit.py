@@ -74,12 +74,16 @@ class CircuitNode(udi_interface.Node):
         '''
         parentPrefix_tuple = self.address.partition('_')
         parentPrefix = parentPrefix_tuple[0]
-        parentPrefix = parentPrefix.replace('s','panel_')        
+        parentPrefix = parentPrefix.replace('s','panel_')  
+        LOGGER.info("\n\t\tAbout to try to grab the globals()['" + parentPrefix + "_allCircuitsData']\n")
+        globals()[parentPrefix + '_allCircuitsData']
         allCircuitsData = globals()[parentPrefix + '_allCircuitsData']
         designatedCircuitData_tuple = allCircuitsData.partition(chr(34) + self.circuitID + chr(34) + ':')
         designatedCircuitData = designatedCircuitData_tupple[2]
         designatedCircuitData_tuple = designatedCircuitData.partition('},')
         designatedCircuitData = designatedCircuitData_tuple[0] + '}'
+
+        LOGGER.debug("\n\tAbout to search for 'name' in:\n\t\t" + designatedCircuitData + "\n")
 
         if "name" in designatedCircuitData:
             designatedCircuitTabs_tuple = designatedCircuitData.partition(chr(34) + "tabs" + chr(34) + ":")
