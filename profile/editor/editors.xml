@@ -21,4 +21,7 @@
 	<editor id="circuitstatus">
 		<range uom="25" subset="0-3" nls="IX_circuitstatus_" />
 	</editor>
+	<editor id="breakerstatus">
+		<range uom="25" subset="0-3" nls="IX_breakerstatus_" />
+	</editor>
 </editors>
