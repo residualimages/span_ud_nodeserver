@@ -118,32 +118,35 @@ class PanelNodeForCircuits(udi_interface.Node):
         headers = {
             "Authorization": "Bearer " + self.token
         }
-        spanConnection.request("GET", "/api/v1/status", payload, headers)
-
-        statusResponse = spanConnection.getresponse()
-        statusData = statusResponse.read()
-        statusData = statusData.decode("utf-8")
+        try:
+            spanConnection.request("GET", "/api/v1/status", payload, headers)
+    
+            statusResponse = spanConnection.getresponse()
+            statusData = statusResponse.read()
+            statusData = statusData.decode("utf-8")
+        except Exception as e:
+            LOGGER.debug('\n\t\tINIT ERROR: SPAN API GET request failed in Panel Circuit Controller due to error:\t{}.\n'.format(e))
+            statusData = ''
+        
         self.allCircuitsData = ''
-        self.allCircuitsDataUpdated = 0
 
         if "system" in statusData:
-            LOGGER.info("\n\tINIT Panel node's Status Data: \n\t\t" + statusData + "\n")
+            LOGGER.info("\n\tINIT Panel Circuit Controller's Status Data: \n\t\t" + statusData + "\n")
 
             spanConnection.request("GET", "/api/v1/circuits", payload, headers)
     
             circuitsResponse = spanConnection.getresponse()
             self.allCircuitsData = circuitsResponse.read()
             self.allCircuitsData = self.allCircuitsData.decode("utf-8")
-            self.allCircuitsDataUpdated = 1
         else:
-            LOGGER.warning("\n\tINIT Issue getting Status Data for Panel @ " + self.ipAddress + ".\n")
+            LOGGER.warning("\n\tINIT Issue getting Status Data for Panel Circuit Controller @ " + self.ipAddress + ".\n")
         
         # subscribe to the events we want
         #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
         polyglot.subscribe(polyglot.POLL, self.poll)
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.START, self.start, address)
-        polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue_panelFinished)
+        polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue_panelCircuitsFinished)
 
     '''
     node_queue() and wait_for_node_event() create a simple way to wait
@@ -151,22 +154,22 @@ class PanelNodeForCircuits(udi_interface.Node):
     will return before the node is fully created. Using this, we can wait
     until it is fully created before we try to use it.
     '''
-    def node_queue_panelFinished(self, data):
+    def node_queue_panelCircuitsFinished(self, data):
         self.n_queue.append(data['address'])
-        #LOGGER.info("\n\t\tSUBSCRIBED AddNodeDone under Panel Controller: Node Creation Complete for " + data['address'] + ".\n")
+        #LOGGER.info("\n\t\tSUBSCRIBED AddNodeDone under Panel Circuits Controller: Node Creation Complete for " + data['address'] + ".\n")
         if self.address == data['address']:
             LOGGER.info("\n\t\t\tPanelForCircuits Controller Creation Completed; Queue Circuit child node(s) creation.\n")
             self.setDriver('AWAKE', 1, True, True)
             self.setDriver('FREQ', self.ipAddress, True, True)
         
             if "circuits" in self.allCircuitsData:
-                LOGGER.info("\n\tINIT Panel node's Circuits Data: \n\t\t" + self.allCircuitsData + "\n\t\tCount of circuits: " + str(self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
+                LOGGER.info("\n\tINIT Panel Circuit Controller's Circuits Data: \n\t\t" + self.allCircuitsData + "\n\t\tCount of circuits: " + str(self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
                 self.setDriver('PULSCNT', self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':'), True, True)
                 self.setDriver('CLIEMD', 1, True, True)
         
                 self.createCircuits()
             else:
-                LOGGER.warning("\n\tINIT Issue getting Circuits Data for Panel @ " + self.ipAddress + ".\n")
+                LOGGER.warning("\n\tINIT Issue getting Circuits Data for Panel Circuits Controller @ " + self.ipAddress + ".\n")
 
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
@@ -201,19 +204,24 @@ class PanelNodeForCircuits(udi_interface.Node):
         if 'shortPoll' in polltype:
             if self.getDriver('AWAKE') == 1:
                 tokenLastTen = self.token[-10:]
-                LOGGER.info('\n\tPOLL About to query Panel node of {}, using token ending in {}'.format(self.ipAddress,tokenLastTen))
+                LOGGER.info('\n\tPOLL About to query Panel Circuits Controller of {}, using token ending in {}'.format(self.ipAddress,tokenLastTen))
         
                 spanConnection = http.client.HTTPConnection(self.ipAddress)
                 payload = ''
                 headers = {
                     "Authorization": "Bearer " + self.token
                 }
-                spanConnection.request("GET", "/api/v1/panel", payload, headers)
-        
-                panelResponse = spanConnection.getresponse()
-                panelData = panelResponse.read()
-                panelData = panelData.decode("utf-8")
-                LOGGER.info("\n\tPOLL Panel node's Panel Data: \n\t\t" + panelData + "\n")
+
+                try:
+                    spanConnection.request("GET", "/api/v1/panel", payload, headers)
+            
+                    panelResponse = spanConnection.getresponse()
+                    panelData = panelResponse.read()
+                    panelData = panelData.decode("utf-8")
+                    LOGGER.info("\n\tPOLL Panel Circuit Controller's Panel Data: \n\t\t" + panelData + "\n")
+                except Exception as e:
+                    LOGGER.warning('\n\t\tPOLL ERROR: SPAN API GET request for Panel Circuits Controller failed due to error:\t{}.\n'.format(e))
+                    panelData = ''
                
                 if "branches" in panelData:
                     feedthroughPowerW_tuple = panelData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
@@ -259,7 +267,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                             else:
                                 self.setDriver('GPV', currentBreakerW, True, True)
                         except:
-                            LOGGER.warning("\n\tPOLL Issue getting data from Breaker " + str(i) + " on Panel node " + format(self.ipAddress) + ".\n")
+                            LOGGER.warning("\n\tPOLL Issue for Panel Circuits controller getting data from Breaker " + str(i) + " on Panel node " + format(self.ipAddress) + ".\n")
                     
                     if len(str(instantGridPowerW)) > 0:
                         nowEpoch = int(time.time())
@@ -268,11 +276,15 @@ class PanelNodeForCircuits(udi_interface.Node):
                         self.setDriver('TIME', nowEpoch, True, True)
                         self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
     
-                    spanConnection.request("GET", "/api/v1/circuits", payload, headers)
-                    circuitsResponse = spanConnection.getresponse()
-                    self.allCircuitsData = circuitsResponse.read()
-                    self.allCircuitsData = self.allCircuitsData.decode("utf-8")
-            
+                    try:
+                        spanConnection.request("GET", "/api/v1/circuits", payload, headers)
+                        circuitsResponse = spanConnection.getresponse()
+                        self.allCircuitsData = circuitsResponse.read()
+                        self.allCircuitsData = self.allCircuitsData.decode("utf-8")
+                    except Exception as e:
+                        LOGGER.warning('\n\t\tPOLL ERROR: SPAN API GET request for Panel Circuits Controller failed due to error:\t{}.\n'.format(e))
+                        #self.allCircuitsData = ''
+                    
                     nodes = self.poly.getNodes()
                     currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
                     LOGGER.debug("\n\tWill be looking for Circuit nodes with this as the prefix: '" + currentPanelCircuitPrefix + "'.\n")
@@ -282,14 +294,14 @@ class PanelNodeForCircuits(udi_interface.Node):
                             try:
                                 nodes[node].updateNode(self.allCircuitsData)
                             except Exception as e:
-                                LOGGER.debug('\n\t\tPOLL ERROR: Cannot seem to update node needed in for-loop due to error:\t{}.\n'.format(e))
+                                LOGGER.warning('\n\t\tPOLL ERROR in Panel Circuits: Cannot seem to update node needed in for-loop due to error:\t{}.\n'.format(e))
                 else:
                     tokenLastTen = self.token[-10:]
-                    LOGGER.debug('\n\tPOLL ERROR when querying Panel node at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
+                    LOGGER.warning('\n\tPOLL ERROR when querying Panel Circuit Controller at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
             else:
                 tokenLastTen = self.token[-10:]
-                LOGGER.debug('\n\tSkipping POLL query of Panel node at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
-                self.setDriver('TIMEREM', "Not Actively Querying" , True, True)
+                LOGGER.debug('\n\tSkipping POLL query of Panel Circuit Controller at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
+                self.setDriver('TIMEREM', "Not Actively Querying due to 'AWAKE' being set to 0." , True, True)
             
     def toggle_monitoring(self,val):
         # On startup this will always go back to true which is the default, but how do we restore the previous user value?
@@ -320,7 +332,7 @@ class PanelNodeForCircuits(udi_interface.Node):
         nodes = self.poly.getNodes()
         for node in nodes:
              if currentPanelCircuitPrefix in node:
-                LOGGER.debug("\n\tDeleting " + node + " when creating child Circuit nodes for " + self.address + ".\n")
+                LOGGER.debug("\n\tDeleting " + node + " when creating child Circuit nodes for Panel Circuits controller at " + self.address + ".\n")
                 self.poly.delNode(node)
         '''
 
@@ -330,7 +342,7 @@ class PanelNodeForCircuits(udi_interface.Node):
         panelNumberPrefix = self.address
         panelNumberPrefix = panelNumberPrefix.replace('panelcircuit_','')
 
-        LOGGER.debug("\n\tHere is where we'll be creating Circuit children nodes for " + self.address + ". It should be a total of " + str(how_many) + " child nodes, each with an address starting with S" + panelNumberPrefix + "_...\n")
+        LOGGER.debug("\n\tHere is where we'll be creating Circuit children nodes for Panel Circuits controller " + self.address + ". It should be a total of " + str(how_many) + " child nodes, each with an address starting with s" + panelNumberPrefix + "_circuit_...\n")
 
         for i in range(1, how_many+1):
             LOGGER.debug("\n\tHere is the currentCircuitData:\n\t\t" + allCircuitsArray[i] + "\n")
@@ -368,9 +380,9 @@ class PanelNodeForCircuits(udi_interface.Node):
                 self.poly.addNode(node)
                 self.wait_for_node_done()
                 node.setDriver('AWAKE', 1, True, True)
-                LOGGER.info('\n\tCreated a Circuit child node {} under Panel {}\n'.format(title, panelNumberPrefix))
+                LOGGER.info('\n\tCreated a Circuit child node {} under Panel Circuit Controller {}\n'.format(title, panelNumberPrefix))
             except Exception as e:
-                LOGGER.error('\n\tFailed to create Circuit child node {} under Panel {} due to error: {}.\n'.format(title, panelNumberPrefix, e))
+                LOGGER.error('\n\tFailed to create Circuit child node {} under Panel Circuit Controller {} due to error: {}.\n'.format(title, panelNumberPrefix, e))
 
     '''
     Change all the child node active status drivers to false
@@ -382,7 +394,7 @@ class PanelNodeForCircuits(udi_interface.Node):
         for node in nodes:
             if currentPanelCircuitPrefix in node:
                 nodes[node].setDriver('AWAKE', 0, True, True)
-                LOGGER.debug("\n\tSetting " + node + "'s property AWAKE = 0.\n")
+                LOGGER.debug("\n\tSTOP RECEIVED: Panel Circuit Controller Setting child " + node + "'s property AWAKE = 0.\n")
 
 '''
 This is our PanelForBreakers device node. 
@@ -422,25 +434,16 @@ class PanelNodeForBreakers(udi_interface.Node):
         headers = {
             "Authorization": "Bearer " + self.token
         }
-        spanConnection.request("GET", "/api/v1/status", payload, headers)
 
-        statusResponse = spanConnection.getresponse()
-        statusData = statusResponse.read()
-        statusData = statusData.decode("utf-8")
-        self.allBreakersData = ''
-        self.allBreakersDataUpdated = 0
-
-        if "system" in statusData:
-            LOGGER.info("\n\tINIT Panel Breaker Controller's Status Data: \n\t\t" + statusData + "\n")
-
+        try:
             spanConnection.request("GET", "/api/v1/panel", payload, headers)
-    
+
             panelResponse = spanConnection.getresponse()
             self.allBreakersData = panelResponse.read()
             self.allBreakersData = self.allBreakersData.decode("utf-8")
-            self.allBreakersDataUpdated = 1
-        else:
-            LOGGER.warning("\n\tINIT Issue getting Status Data for Panel @ " + self.ipAddress + ".\n")
+        except Exception as e:
+            LOGGER.warning('\n\t\tINIT ERROR: SPAN API GET request for Panel Breakers Controller failed due to error:\t{}.\n'.format(e))
+            self.allBreakersData = ''
         
         # subscribe to the events we want
         #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
@@ -457,7 +460,7 @@ class PanelNodeForBreakers(udi_interface.Node):
     '''
     def node_queue_panelFinished(self, data):
         self.n_queue.append(data['address'])
-        #LOGGER.info("\n\t\tSUBSCRIBED AddNodeDone under Panel Controller: Node Creation Complete for " + data['address'] + ".\n")
+        #LOGGER.info("\n\t\tSUBSCRIBED AddNodeDone under Panel Breaker Controller: Node Creation Complete for " + data['address'] + ".\n")
         if self.address == data['address']:
             LOGGER.info("\n\t\t\tPanelForBreakers Controller Creation Completed; Queue Breaker child node(s) creation.\n")
             #self.setDriver('AWAKE', 1, True, True)
@@ -470,7 +473,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         
                 self.createBreakers()
             else:
-                LOGGER.warning("\n\tINIT Issue getting Breakers Data for Panel @ " + self.ipAddress + ".\n")
+                LOGGER.warning("\n\tINIT Issue getting Breakers Data for Panel  Breaker Controller @ " + self.ipAddress + ".\n")
 
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
@@ -505,20 +508,25 @@ class PanelNodeForBreakers(udi_interface.Node):
         if 'shortPoll' in polltype:
             if self.getDriver('AWAKE') == 1:
                 tokenLastTen = self.token[-10:]
-                LOGGER.info('\n\tPOLL About to query Panel node of {}, using token ending in {}'.format(self.ipAddress,tokenLastTen))
+                LOGGER.info('\n\tPOLL About to query Panel Breaker controller of {}, using token ending in {}'.format(self.ipAddress,tokenLastTen))
         
                 spanConnection = http.client.HTTPConnection(self.ipAddress)
                 payload = ''
                 headers = {
                     "Authorization": "Bearer " + self.token
                 }
-                spanConnection.request("GET", "/api/v1/panel", payload, headers)
-        
-                panelResponse = spanConnection.getresponse()
-                self.allBreakersData = panelResponse.read()
-                self.allBreakersData = self.allBreakersData.decode("utf-8")
 
-                LOGGER.info("\n\tPOLL Panel node's allBreakersData: \n\t\t" + self.allBreakersData + "\n")
+                try:
+                    spanConnection.request("GET", "/api/v1/panel", payload, headers)
+            
+                    panelResponse = spanConnection.getresponse()
+                    self.allBreakersData = panelResponse.read()
+                    self.allBreakersData = self.allBreakersData.decode("utf-8")
+                except Exception as e:
+                    LOGGER.warning('\n\t\tPOLL ERROR: SPAN API GET request for Panel Breaker Controller failed due to error:\t{}.\n'.format(e))
+                    #self.allBreakersData = ''
+
+                LOGGER.info("\n\tPOLL Panel Breaker Controller's allBreakersData: \n\t\t" + self.allBreakersData + "\n")
                
                 if "branches" in self.allBreakersData:
                     feedthroughPowerW_tuple = self.allBreakersData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
@@ -561,7 +569,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                             #LOGGER.debug("\n\t\tFinal Level Parsed for Breaker " + str(i) + ":\t" + str(currentBreakerW) + "\n")
                             currentBreaker
                         except:
-                            LOGGER.warning("\n\tPOLL Issue getting data from Breaker " + str(i) + " on Panel node " + format(self.ipAddress) + ".\n")
+                            LOGGER.warning("\n\tPOLL Issue getting data from Breaker " + str(i) + " on Panel Breaker Controller " + format(self.ipAddress) + ".\n")
                     
                     if len(str(instantGridPowerW)) > 0:
                         nowEpoch = int(time.time())
@@ -584,10 +592,10 @@ class PanelNodeForBreakers(udi_interface.Node):
                     '''
                 else:
                     tokenLastTen = self.token[-10:]
-                    LOGGER.debug('\n\tPOLL ERROR when querying Panel node at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
+                    LOGGER.warning('\n\tPOLL ERROR when querying Panel Breaker Controller at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
             else:
                 tokenLastTen = self.token[-10:]
-                LOGGER.debug('\n\tSkipping POLL query of Panel node at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
+                LOGGER.debug('\n\tSkipping POLL query of Panel Breaker Controller at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
                 self.setDriver('TIMEREM', "Not Actively Querying" , True, True)
             
     '''
@@ -610,7 +618,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         panelNumberPrefix = self.address
         panelNumberPrefix = panelNumberPrefix.replace('panelbreaker_','')
 
-        LOGGER.debug("\n\tHere is where we'll be creating Breaker children nodes for " + self.address + ". It should be a total of 32 child nodes, each with an address starting with S" + panelNumberPrefix + "_...\n")
+        LOGGER.debug("\n\tHere is where we'll be creating Breaker children nodes for " + self.address + ". It should be a total of 32 child nodes, each with an address starting with s" + panelNumberPrefix + "_breaker_...\n")
 
         for i in range(1, 33):
             LOGGER.debug("\n\tHere is the currentBreakersData:\n\t\t" + allBreakersArray[i] + "\n")
@@ -634,9 +642,9 @@ class PanelNodeForBreakers(udi_interface.Node):
                 self.poly.addNode(node)
                 self.wait_for_node_done()
                 #node.setDriver('AWAKE', 1, True, True)
-                LOGGER.info('\n\tCreated a Breaker child node {} under Panel {}\n'.format(title, panelNumberPrefix))
+                LOGGER.info('\n\tCreated a Breaker child node {} under Panel Breaker controller {}\n'.format(title, panelNumberPrefix))
             except Exception as e:
-                LOGGER.error('\n\tFailed to create Breaker child node {} under Panel {} due to error: {}.\n'.format(title, panelNumberPrefix, e))
+                LOGGER.warning('\n\tFailed to create Breaker child node {} under Panel Breaker controller {} due to error: {}.\n'.format(title, panelNumberPrefix, e))
 
     '''
     Change all the child node active status drivers to false
@@ -648,5 +656,5 @@ class PanelNodeForBreakers(udi_interface.Node):
         for node in nodes:
             if currentPanelbreakerPrefix in node:
                 nodes[node].setDriver('AWAKE', 0, True, True)
-                LOGGER.debug("\n\tSetting " + node + "'s property AWAKE = 0.\n")
+                LOGGER.debug("\n\tSTOP RECEIVED: Panel Breaker Controller setting " + node + "'s property AWAKE = 0.\n")
 
