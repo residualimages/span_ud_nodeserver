@@ -163,6 +163,43 @@ class PanelNodeForCircuits(udi_interface.Node):
             self.setDriver('FREQ', self.ipAddress, True, True)
         
             if "circuits" in self.allCircuitsData:
+                
+                try:
+                    spanConnection.request("GET", "/api/v1/panel", payload, headers)
+                    panelResponse = spanConnection.getresponse()
+                    panelData = panelResponse.read()
+                    panelData = panelData.decode("utf-8")
+                    LOGGER.debug("\n\tINIT Panel Circuit Controller's Panel Data: \n\t\t" + panelData + "\n")
+                except Exception as e:
+                    LOGGER.warning('\n\t\tINIT ERROR: SPAN API GET request for Panel Circuits Controller failed due to error:\t{}.\n'.format(e))
+                    panelData = ''
+                    
+                if "branches" in panelData:
+                    feedthroughPowerW_tuple = panelData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
+                    feedthroughPowerW = feedthroughPowerW_tuple[2]
+                    #LOGGER.debug("\n\t\t1st level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
+                    feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
+                    feedthroughPowerW = feedthroughPowerW_tuple[0]
+                    #LOGGER.debug("\n\t\t2nd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
+                    #feedthroughPowerW_tuple = feedthroughPowerW.partition(":")
+                    #feedthroughPowerW = feedthroughPowerW_tuple[2]
+                    #LOGGER.debug("\n\t\t3rd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")                
+                    feedthroughPowerW = math.ceil(float(feedthroughPowerW)*100)/100
+    
+                    instantGridPowerW_tuple = panelData.partition(chr(34) + "instantGridPowerW" + chr(34) + ":")
+                    instantGridPowerW = instantGridPowerW_tuple[2]
+                    #LOGGER.debug("\n\t\t1st level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
+                    instantGridPowerW_tuple = instantGridPowerW.partition(",")
+                    instantGridPowerW = instantGridPowerW_tuple[0]
+                    #LOGGER.debug("\n\t\t2nd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
+                    #instantGridPowerW_tuple = instantGridPowerW.partition(":")
+                    #instantGridPowerW = instantGridPowerW_tuple[2]
+                    #LOGGER.debug("\n\t\t3rd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")                
+                    instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
+                    #LOGGER.debug("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
+                    #LOGGER.debug("\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
+                    self.setDriver('ST', (instantGridPowerW-abs(feedthroughPowerW)), True, True)
+                
                 LOGGER.debug("\n\tINIT Panel Circuit Controller's Circuits Data: \n\t\t" + self.allCircuitsData + "\n\t\tCount of circuits: " + str(self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
                 self.setDriver('PULSCNT', self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':'), True, True)
                 self.setDriver('CLIEMD', 1, True, True)
