@@ -15,13 +15,4 @@
 	<editor id="string">
 		<range uom="145" min="0" max="0" prec="0" /> 
 	</editor>
-	<editor id="panelgridstatus">
-		<range uom="25" subset="1-3" nls="IX_panelgridstatus_" />
-	</editor>
-	<editor id="circuitstatus">
-		<range uom="25" subset="0-3" nls="IX_circuitstatus_" />
-	</editor>
-	<editor id="breakerstatus">
-		<range uom="25" subset="0-3" nls="IX_breakerstatus_" />
-	</editor>
 </editors>
