@@ -166,7 +166,7 @@ class CircuitNode(udi_interface.Node):
         self.allCircuitsData = passedAllCircuitsData
         self.poll('shortPoll')
         
-    def poll(self, polltype)        
+    def poll(self, polltype):
         if 'shortPoll' in polltype:
             if self.getDriver('AWAKE') == 1:
                 tokenLastTen = self.token[-10:]
