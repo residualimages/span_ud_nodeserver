@@ -274,7 +274,10 @@ class PanelNodeForCircuits(udi_interface.Node):
                     for node in nodes:
                          if currentPanelCircuitPrefix in node:
                             LOGGER.debug("\n\tUpdating " + node + " (which should be a Circuit node under this Panel controller: " + self.address + ").\n")
-                            node.updateCircuit(self.allCircuitsData)
+                            try:
+                                node.updateCircuit(self.allCircuitsData)
+                            except:
+                                LOGGER.debug("\n\t\tPOLL ERROR: Cannot seem to update node needed in for-loop.\n")
                 else:
                     tokenLastTen = self.token[-10:]
                     LOGGER.debug('\n\tPOLL ERROR when querying Panel node at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
