@@ -58,7 +58,7 @@ class CircuitNode(udi_interface.Node):
 
         self.setDriver('GPV', self.circuitID, True, True)
 
-        LOGGER.debug("\n\tINIT - Circuit trying to use super(). as the access point for allCircuitsData / allCircuitsDataUpdated: " + str(super().allCircuitsDataUpdated) + "\n")
+        LOGGER.debug("\n\tINIT - Circuit trying to use super(). [address: '" + super().address + "'] as the access point for allCircuitsData / allCircuitsDataUpdated: " + str(super().allCircuitsDataUpdated) + "\n")
 
         '''
         spanConnection = http.client.HTTPConnection(self.ipAddress)
