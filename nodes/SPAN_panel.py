@@ -467,9 +467,11 @@ class PanelNodeForBreakers(udi_interface.Node):
             self.setDriver('FREQ', self.ipAddress, True, True)
         
             if "branches" in self.allBreakersData:
-                LOGGER.debug("\n\tINIT Panel node's Breakers Data: \n\t\t" + self.allBreakersData + "\n\t\tCount of OPEN Breakers: " + str(self.allBreakersData.count(chr(34) + 'OPEN' + chr(34) + ',')) + "\n\t\tCount of CLOSED Breakers: " + str(self.allBreakersData.count(chr(34) + 'CLOSED' + chr(34) + ',')) + "\n")
-                self.setDriver('PULSCNT', self.allBreakersData.count(chr(34) + 'CLOSED' + chr(34) + ','), True, True)
-                self.setDriver('GPV', self.allBreakersData.count(chr(34) + 'OPEN' + chr(34) + ','), True, True)
+                allBranchesData_tuple = self.allBreakersData.partition(chr(34) + "branches" + chr(34) + ":")
+                allBranchesData = allBranchesData[2]
+                LOGGER.debug("\n\tINIT Panel Breaker Controller's Branches Data: \n\t\t" + allBranchesData + "\n\t\tCount of OPEN Breakers: " + str(allBranchesData.count(chr(34) + 'OPEN' + chr(34) + ',')) + "\n\t\tCount of CLOSED Breakers: " + str(allBranchesData.count(chr(34) + 'CLOSED' + chr(34) + ',')) + "\n")
+                self.setDriver('PULSCNT', allBranchesData.count(chr(34) + 'CLOSED' + chr(34) + ','), True, True)
+                self.setDriver('GPV', allBranchesData.count(chr(34) + 'OPEN' + chr(34) + ','), True, True)
         
                 self.createBreakers()
             else:
@@ -558,6 +560,9 @@ class PanelNodeForBreakers(udi_interface.Node):
                         try:
                             currentBreaker_tuple = self.allBreakersData.partition(chr(34) + 'id' + chr(34) + ':' + str(i))
                             currentBreakerW = currentBreaker_tuple[2]
+                            currentBreakerID_tuple = currentBreakerW.partition(',')
+                            currentBreakerID = currentBreakerID_tuple[0]
+                            LOGGER.debug("\n\t\tfor-loop 'i' should be equal to currentBreakerID:\ti=" + str(i) + " ?=? currentBreakerID=" + currentBreakerID + ".\n")
                             #LOGGER.debug("\n\t\t1st level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
                             currentBreaker_tuple = currentBreakerW.partition(chr(34) + 'instantPowerW' + chr(34) + ':')
                             currentBreakerW = currentBreaker_tuple[2]
@@ -567,7 +572,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                             #LOGGER.debug("\n\t\t3rd level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
                             currentBreakerW = abs(math.ceil(float(currentBreakerW)*100)/100)
                             #LOGGER.debug("\n\t\tFinal Level Parsed for Breaker " + str(i) + ":\t" + str(currentBreakerW) + "\n")
-                            currentBreaker
+                            #currentBreaker
                         except:
                             LOGGER.warning("\n\tPOLL Issue getting data from Breaker " + str(i) + " on Panel Breaker Controller " + format(self.ipAddress) + ".\n")
                     
