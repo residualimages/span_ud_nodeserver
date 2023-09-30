@@ -79,7 +79,7 @@ class CircuitNode(udi_interface.Node):
         parentPrefix_tuple = self.address.partition('_')
         parentPrefix = parentPrefix_tuple[0]
         parentPrefix = parentPrefix.replace('s','panelcircuit_')  
-        LOGGER.info("\n\t\tAbout to try to grab the globals()['" + parentPrefix + "_allCircuitsData']\n")
+        LOGGER.debug("\n\t\tAbout to try to grab the globals()['" + parentPrefix + "_allCircuitsData']\n")
         globals()[parentPrefix + '_allCircuitsData']
         allCircuitsData = globals()[parentPrefix + '_allCircuitsData']
         '''
@@ -101,7 +101,7 @@ class CircuitNode(udi_interface.Node):
     def node_queue(self, data):
         self.n_queue.append(data['address'])        
         if self.address == data['address']:
-            LOGGER.info("\n\tWAIT FOR NODE CREATION: Fully Complete for Circuit " + self.address + "\n")
+            LOGGER.debug("\n\tWAIT FOR NODE CREATION: Fully Complete for Circuit " + self.address + "\n")
 
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
@@ -149,7 +149,7 @@ class CircuitNode(udi_interface.Node):
                 designatedCircuitTabs_tuple = designatedCircuitTabs.partition("],")
                 designatedCircuitTabs = designatedCircuitTabs_tuple[0]
               
-                LOGGER.info("\n\tINIT Designated Circuit Data: \n\t\t" + designatedCircuitData + "\n\t\tCount of Circuit Breakers In Circuit: " + str(designatedCircuitTabs.count(',')+1) + "\n")
+                LOGGER.debug("\n\tINIT Designated Circuit Data: \n\t\t" + designatedCircuitData + "\n\t\tCount of Circuit Breakers In Circuit: " + str(designatedCircuitTabs.count(',')+1) + "\n")
                 self.setDriver('PULSCNT', (designatedCircuitTabs.count(',')+1), True, True)
     
                 designatedCircuitTabs = designatedCircuitTabs.replace('[','')
@@ -178,7 +178,7 @@ class CircuitNode(udi_interface.Node):
         if 'shortPoll' in polltype:
             if self.getDriver('AWAKE') == 1:
                 tokenLastTen = self.token[-10:]
-                LOGGER.info('\n\tPOLL About to parse {} Circuit node of {}, using token ending in {}'.format(self.circuitID,self.ipAddress,tokenLastTen))
+                LOGGER.debug('\n\tPOLL About to parse {} Circuit node of {}, using token ending in {}'.format(self.circuitID,self.ipAddress,tokenLastTen))
                 designatedCircuitData_tuple = self.allCircuitsData.partition(chr(34) + self.circuitID + chr(34) + ':')
                 designatedCircuitData = designatedCircuitData_tuple[2]
                 designatedCircuitData_tuple = designatedCircuitData.partition('},')
@@ -197,7 +197,7 @@ class CircuitNode(udi_interface.Node):
                 designatedCircuitData = designatedCircuitData.decode("utf-8")
                 '''
             
-                LOGGER.info("\n\tPOLL Circuit Data: \n\t\t" + designatedCircuitData + "\n")
+                LOGGER.debug("\n\tPOLL Circuit Data: \n\t\t" + designatedCircuitData + "\n")
             
                 if "name" in designatedCircuitData:
                     designatedCircuitStatus_tuple = designatedCircuitData.partition(chr(34) + "relayState" + chr(34) + ":")
