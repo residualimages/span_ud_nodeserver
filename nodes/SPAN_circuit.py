@@ -167,7 +167,7 @@ class CircuitNode(udi_interface.Node):
                 nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                 
                 self.setDriver('TIME', nowEpoch, True, True)
-                self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
+                self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y %H:%M:%S"), True, True)
             else:
                 LOGGER.warning("\n\tINIT Issue getting data for circuit '" + self.circuitID + "'.\n")
                 self.setDriver('TIMEREM', "INIT Error Querying" , True, True)
