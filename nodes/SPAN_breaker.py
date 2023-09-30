@@ -176,7 +176,7 @@ class BreakerNode(udi_interface.Node):
         
             LOGGER.debug("\n\tPOLL Breaker Data: \n\t\t" + designatedBreakerData + "\n")
         
-            if "name" in designatedBreakerData:
+            if "instantPowerW" in designatedBreakerData:
                 designatedBreakerStatus_tuple = designatedBreakerData.partition(chr(34) + "relayState" + chr(34) + ":")
                 designatedBreakerStatus = designatedBreakerStatus_tuple[2]
                 designatedBreakerStatus_tuple = designatedBreakerStatus.partition(',')
@@ -196,7 +196,7 @@ class BreakerNode(udi_interface.Node):
                 else:
                   self.setDriver('CLIEMD', 0, True, True)
                 
-                LOGGER.debug("\n\tPOLL About to set ST to " + str(designatedBreakerInstantPowerW) + " for Breaker " + self.breakerID + ".\n")
+                LOGGER.debug("\n\tPOLL About to set ST to " + str(abs(designatedBreakerInstantPowerW)) + " for Breaker " + str(self.breakerID) + ".\n")
                 self.setDriver('ST', abs(designatedBreakerInstantPowerW), True, True)
 
                 if len(str(designatedBreakerInstantPowerW)) > 0:
@@ -205,9 +205,6 @@ class BreakerNode(udi_interface.Node):
                     LOGGER.debug("\n\tPOLL about to set TIME and ST; TIME = '" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "'.\n")
                     self.setDriver('TIME', nowEpoch, True, True)
                     self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y %H:%M:%S"), True, True)
-                else:
-                    LOGGER.warning("\n\tPOLL ERROR: Unable to get designatedBreakerInstantPowerW from designatedBreakerData:\n\t\t" + designatedBreakerData + "\n")
-                    self.setDriver('TIMEREM', "POLL Error Querying" , True, True)
             else:
-                LOGGER.warning("\n\tPOLL Issue getting data for breaker '" + self.breakerID + "'.\n")
-                self.setDriver('TIMEREM', "Error Querying" , True, True)
+                LOGGER.warning("\n\tPOLL ERROR: Unable to get designatedBreakerInstantPowerW from designatedBreakerData:\n\t\t" + designatedBreakerData + "\n")
+                self.setDriver('TIMEREM', "POLL Error Querying" , True, True)
