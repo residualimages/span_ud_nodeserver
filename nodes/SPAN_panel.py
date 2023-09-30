@@ -156,6 +156,7 @@ class PanelNodeForCircuits(udi_interface.Node):
         #LOGGER.info("\n\t\tSUBSCRIBED AddNodeDone under Panel Controller: Node Creation Complete for " + data['address'] + ".\n")
         if self.address == data['address']:
             LOGGER.info("\n\t\t\tPanelForCircuits Controller Creation Completed; Queue Circuit child node(s) creation.\n")
+            self.setDriver('AWAKE', 1, True, True)
             self.setDriver('FREQ', self.ipAddress, True, True)
         
             if "circuits" in self.allCircuitsData:
