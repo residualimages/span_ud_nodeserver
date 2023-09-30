@@ -72,7 +72,7 @@ class BreakerNode(udi_interface.Node):
         '''
         parentPrefix_tuple = self.address.partition('_')
         parentPrefix = parentPrefix_tuple[0]
-        parentPrefix = parentPrefix.replace('s','panel_')  
+        parentPrefix = parentPrefix.replace('s','panelbreakers_')  
         LOGGER.info("\n\t\tAbout to try to grab the globals()['" + parentPrefix + "_allBreakersData']\n")
         globals()[parentPrefix + '_allBreakersData']
         allBreakersData = globals()[parentPrefix + '_allBreakersData']
