@@ -46,13 +46,13 @@ class BreakerNode(udi_interface.Node):
         self.Parameters = Custom(polyglot, 'customparams')
         self.ipAddress = spanIPAddress
         self.token = bearerToken
-        self.circuitID = spanBreakerID
+        self.breakerID = spanBreakerID
         self.allBreakersData = ''
         
         tokenLastTen = self.token[-10:]
-        LOGGER.debug("\n\tINIT IP Address for circuit:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen + "; Breaker ID: " + self.circuitID)
+        LOGGER.debug("\n\tINIT IP Address for breaker:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen + "; Breaker ID: " + self.breakerID)
 
-        self.setDriver('GPV', self.circuitID, True, True)
+        self.setDriver('GPV', self.breakerID, True, True)
 
         '''
         spanConnection = http.client.HTTPConnection(self.ipAddress)
@@ -61,8 +61,8 @@ class BreakerNode(udi_interface.Node):
             "Authorization": "Bearer " + self.token
         }
      
-        LOGGER.debug("\n\tINIT About to query " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
-        spanConnection.request("GET", "/api/v1/circuits/" + self.circuitID, payload, headers)
+        LOGGER.debug("\n\tINIT About to query " + self.ipAddress + "/api/v1/panel/" + self.breakerID + "\n")
+        spanConnection.request("GET", "/api/v1/panel/" + self.breakerID, payload, headers)
 
         designatedBreakerResponse = spanConnection.getresponse()
         designatedBreakerData = designatedBreakerResponse.read()
@@ -127,7 +127,7 @@ class BreakerNode(udi_interface.Node):
         self.allBreakersData = passedAllBreakersData
 
         if 'Initializing...' in self.getDriver('TIMEREM'):
-            designatedBreakerData_tuple = self.allBreakersData.partition(chr(34) + self.circuitID + chr(34) + ':')
+            designatedBreakerData_tuple = self.allBreakersData.partition(chr(34) + self.breakerID + chr(34) + ':')
             designatedBreakerData = designatedBreakerData_tuple[2]
             designatedBreakerData_tuple = designatedBreakerData.partition('},')
             designatedBreakerData = designatedBreakerData_tuple[0] + '}'
@@ -143,7 +143,7 @@ class BreakerNode(udi_interface.Node):
                 self.setDriver('TIME', nowEpoch, True, True)
                 self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y, %H:%M:%S"), True, True)
             else:
-                LOGGER.warning("\n\tINIT Issue getting data for circuit '" + self.circuitID + "'.\n")
+                LOGGER.warning("\n\tINIT Issue getting data for breaker '" + self.breakerID + "'.\n")
                 self.setDriver('TIMEREM', "INIT Error Querying" , True, True)
         
         self.poll('shortPoll')
@@ -152,8 +152,8 @@ class BreakerNode(udi_interface.Node):
         if 'shortPoll' in polltype:
             if self.getDriver('AWAKE') == 1:
                 tokenLastTen = self.token[-10:]
-                LOGGER.info('\n\tPOLL About to parse {} Breaker node of {}, using token ending in {}'.format(self.circuitID,self.ipAddress,tokenLastTen))
-                designatedBreakerData_tuple = self.allBreakersData.partition(chr(34) + self.circuitID + chr(34) + ':')
+                LOGGER.info('\n\tPOLL About to parse {} Breaker node of {}, using token ending in {}'.format(self.breakerID,self.ipAddress,tokenLastTen))
+                designatedBreakerData_tuple = self.allBreakersData.partition(chr(34) + self.breakerID + chr(34) + ':')
                 designatedBreakerData = designatedBreakerData_tuple[2]
                 designatedBreakerData_tuple = designatedBreakerData.partition('},')
                 designatedBreakerData = designatedBreakerData_tuple[0] + '}'
@@ -164,7 +164,7 @@ class BreakerNode(udi_interface.Node):
                 headers = {
                     "Authorization": "Bearer " + self.token
                 }
-                spanConnection.request("GET", "/api/v1/circuits/" + self.circuitID, payload, headers)
+                spanConnection.request("GET", "/api/v1/panel/" + self.breakerID, payload, headers)
         
                 designatedBreakerResponse = spanConnection.getresponse()
                 designatedBreakerData = designatedBreakerResponse.read()
@@ -193,7 +193,7 @@ class BreakerNode(udi_interface.Node):
                     else:
                       self.setDriver('CLIEMD', 0, True, True)
                     
-                    LOGGER.debug("\n\tPOLL About to set ST to " + str(designatedBreakerInstantPowerW) + " for Breaker " + self.circuitID + ".\n")
+                    LOGGER.debug("\n\tPOLL About to set ST to " + str(designatedBreakerInstantPowerW) + " for Breaker " + self.breakerID + ".\n")
                     self.setDriver('ST', abs(designatedBreakerInstantPowerW), True, True)
 
                     if len(str(designatedBreakerInstantPowerW)) > 0:
@@ -206,27 +206,8 @@ class BreakerNode(udi_interface.Node):
                         LOGGER.warning("\n\tPOLL ERROR: Unable to get designatedBreakerInstantPowerW from designatedBreakerData:\n\t\t" + designatedBreakerData + "\n")
                         self.setDriver('TIMEREM', "POLL Error Querying" , True, True)
                 else:
-                    LOGGER.warning("\n\tPOLL Issue getting data for circuit '" + self.circuitID + "'.\n")
+                    LOGGER.warning("\n\tPOLL Issue getting data for breaker '" + self.breakerID + "'.\n")
                     self.setDriver('TIMEREM', "Error Querying" , True, True)
             else:
-                LOGGER.debug("\n\t\tSkipping POLL query of Breaker node '" + self.circuitID + "' due to AWAKE=0.\n")
+                LOGGER.debug("\n\t\tSkipping POLL query of Breaker node '" + self.breakerID + "' due to AWAKE=0.\n")
                 self.setDriver('TIMEREM', "Not Actively Querying" , True, True)
-
-    def toggle_circuit_monitoring(self,val):
-        # On startup this will always go back to true which is the default, but how do we restore the previous user value?
-        LOGGER.debug(f'{self.address} being set via toggle_circuit_monitoring to val={val}')
-        self.setDriver('AWAKE', val, True, True)
-
-    def cmd_toggle_circuit_monitoring(self,val):
-        val = self.getDriver('AWAKE')
-        LOGGER.debug(f'{self.address} being set via cmd_toggle_circuit_monitoring to val={val}')
-        if val == 1:
-            val = 0
-        else:
-            val = 1
-        self.toggle_circuit_monitoring(val)
-
-    commands = {
-        "TOGGLE_CIRCUIT_MONITORING": cmd_toggle_circuit_monitoring,
-    }
-  
