@@ -159,15 +159,18 @@ class Controller(udi_interface.Node):
         for i in range(0, how_many):
             current_IPaddress = listOfIPAddresses[i]
             current_BearerToken = listOfBearerTokens[i]
-            address = 'Panel_{}'.format(i+1)
+            address = 'PanelCircuits_{}'.format(i+1)
             address = getValidNodeAddress(address)
             title = 'SPAN Panel #{} - Circuits'.format(i+1)
             title = getValidNodeName(title)
             try:
-                node = SPAN_panel.PanelNodeForCircuits(self.poly, address, address, title, current_IPaddress, current_BearerToken)
-                self.poly.addNode(node)
+                circuitController = SPAN_panel.PanelNodeForCircuits(self.poly, address, address, title, current_IPaddress, current_BearerToken)
+                self.poly.addNode(circuitController)
                 self.wait_for_node_done()
-                node.setDriver('AWAKE', 1, True, True)
+                circuitController.setDriver('AWAKE', 1, True, True)
+                breakerController = SPAN_panel.PanelNodeForBreakers(self.poly, address, address, title, current_IPaddress, current_BearerToken)
+                self.poly.addNode(breakerController)
+                self.wait_for_node_done()
             except Exception as e:
                 LOGGER.error('Failed to create {}: {}'.format(title, e))
 
