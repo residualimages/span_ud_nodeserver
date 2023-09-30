@@ -278,7 +278,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                          if currentPanelCircuitPrefix in node:
                             LOGGER.debug("\n\tUpdating " + node + " (which should be a Circuit node under this Panel controller: " + self.address + ").\n")
                             try:
-                                node.updateNode(self.allCircuitsData)
+                                nodes[node].updateNode(self.allCircuitsData)
                             except Exception as e:
                                 LOGGER.debug('\n\t\tPOLL ERROR: Cannot seem to update node needed in for-loop due to error:\t{}.\n'.format(e))
                 else:
