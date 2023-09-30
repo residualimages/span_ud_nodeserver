@@ -154,6 +154,10 @@ class PanelNodeForCircuits(udi_interface.Node):
     def node_queue_panelFinished(self, data):
         self.n_queue.append(data['address'])
         LOGGER.info("\n\t\tSUBSCRIBED AddNodeDone under Panel Controller: Node Creation Complete for " + data['address'] + ".\n")
+        if self.address == data['address']:
+            LOGGER.info("\n\t\t\tTHIS IS SELF. DO THE CHILD NODE CREATION NOAW.\n")
+        else:
+            LOGGER.info("\n\t\t\tIGNORE. This is not self. This is some other controller.\n")
 
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
