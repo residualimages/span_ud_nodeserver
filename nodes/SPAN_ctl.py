@@ -211,4 +211,4 @@ class Controller(udi_interface.Node):
                 self.poly.delNode(node)
         self.start()
 
-    commands = {'DELETE AND RESET ALL NODES': reset}
+    commands = {'RESET': reset}
