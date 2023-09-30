@@ -192,6 +192,7 @@ class Controller(udi_interface.Node):
                 nodes[node].setDriver('ST', 0, True, True)
                 if 'breaker' not in node:
                     nodes[node].setDriver('AWAKE', 0, True, True)
+        self.setDriver('ST', 0, True, True)
 
         self.poly.stop()
 
