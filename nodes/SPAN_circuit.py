@@ -39,7 +39,7 @@ class CircuitNode(udi_interface.Node):
             {'driver': 'AWAKE', 'value': 0, 'uom': 25},
             {'driver': 'TIME', 'value': 0, 'uom': 151},
             {'driver': 'TIMEREM', 'value': -1, 'uom': 56},
-            {'driver': 'GPV', 'value': -1, 'uom': 56},
+            {'driver': 'GPV', 'value': -1, 'uom': 145},
             {'driver': 'GV1', 'value': 'N/A', 'uom': 56},
             {'driver': 'GV2', 'value': 'N/A', 'uom': 56},
             {'driver': 'GV3', 'value': 'N/A', 'uom': 56},
