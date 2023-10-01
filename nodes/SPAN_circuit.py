@@ -68,6 +68,7 @@ class CircuitNode(udi_interface.Node):
         tokenLastTen = self.token[-10:]
         LOGGER.debug("\n\tINIT IP Address for circuit:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen + "; Circuit ID: " + self.circuitID)
 
+        LOGGER.warning("\n\t\tINIT About to call setDriver for '" + self.address + "' with a UOM of 150 and a value of '" + self.circuitIndex + "' and a text attribute of '" + self.circuitID + "'.\n")
         self.setDriver('GPV', self.circuitIndex, True, True, 150, self.circuitID)
 
         '''
@@ -151,7 +152,8 @@ class CircuitNode(udi_interface.Node):
             LOGGER.debug("\n\tAbout to search for 'name' in:\n\t\t" + designatedCircuitData + "\n")
 
             if self.getDriver('GPV') == 0:
-                LOGGER.debug("\n\t\tSetting GPV because it is currently ''.\n")
+                LOGGER.warning("\n\tSetting GPV because it is currently ''.\n")
+                LOGGER.warning("\n\t\tFIRST UPDATE About to call setDriver for '" + self.address + "' with a UOM of 150 and a value of '" + self.circuitIndex + "' and a text attribute of '" + self.circuitID + "'.\n")
                 self.setDriver('GPV', self.circuitIndex, True, True, 150, self.circuitID)
     
             if "name" in designatedCircuitData:
