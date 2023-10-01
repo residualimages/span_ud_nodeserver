@@ -203,7 +203,7 @@ class Controller(udi_interface.Node):
     '''
     Delete and Reset Nodes:
     '''
-    def reset(self):
+    def reset(self,command):
         LOGGER.info('\n\t\tRESET: Will Delete and Recreate All Sub-Nodes.\n')
         
         # delete any existing nodes
