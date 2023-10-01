@@ -207,21 +207,20 @@ class Controller(udi_interface.Node):
         if command['cmd'] == 'RESET':
             LOGGER.warning('\n\t\tCOMMAND RECEIVED TO RESET: Will Delete and Recreate All Sub-Nodes.\n')
             
+            self.setDriver('GV0', 0, True, True)            
+            
             # delete any existing nodes
             nodes = self.poly.getNodes()
-            self.setDriver('GV0', 0, True, True)
-            
             for node in nodes:
                 if '_breaker_' in node or '_circuit_' in node:   # delete the children nodes first
                     LOGGER.debug("\n\tRESET NS Controller - deleting " + node + ".\n")
                     self.poly.delNode(node)
             
+            nodes = self.poly.getNodes()
             for node in nodes:
                 if node != 'controller':   # now delete the panel controllers but not the NS controller node
                     LOGGER.debug("\n\tRESET NS Controller - deleting " + node + ".\n")
                     self.poly.delNode(node)
-                else:
-                    self.setDriver('GV0', 0, True, True)
             self.start()
             
         else:
