@@ -16,7 +16,7 @@
   <nodeDef id="panelForCircuits" nls="panelForCircuits">
     <sts>
       <st id="ST" editor="watt" />
-      <st id="FREQ" editor="raw" />
+      <st id="FREQ" editor="octet" />
       <st id="PULSCNT" editor="raw" />
       <st id="CLIEMD" editor="SPAN_PANELGRIDSTATUS" />
       <st id="TIMEREM" editor="minsec" />
@@ -61,7 +61,7 @@
   <nodeDef id="panelForBreakers" nls="panelForBreakers">
     <sts>
       <st id="ST" editor="watt" />
-      <st id="FREQ" editor="raw" />
+      <st id="FREQ" editor="octet" />
       <st id="PULSCNT" editor="raw" />
       <st id="GPV" editor="raw" />
       <st id="TIMEREM" editor="raw" />
