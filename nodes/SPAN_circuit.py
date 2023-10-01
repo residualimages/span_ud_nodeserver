@@ -267,7 +267,7 @@ class CircuitNode(udi_interface.Node):
         
         #{"relayStateIn": {"relayState":STATE}}
         spanConnection = http.client.HTTPConnection(self.ipAddress)
-        payload = "{"+ chr(34) + "relayStateIn" + chr(34) + ":{" + chr(34) + "relayState" + chr(34) + ":" +chr(34) + "STATE" + chr(34) + "}}"
+        payload = "{"+ chr(34) + "relayStateIn" + chr(34) + ":{" + chr(34) + "relayState" + chr(34) + ":" + chr(34) + "STATE" + chr(34) + "}}"
         headers = {
             "Authorization": "Bearer " + self.token
         }
@@ -279,14 +279,14 @@ class CircuitNode(udi_interface.Node):
         else:
             return
      
-        LOGGER.debug("\n\tINIT About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
+        LOGGER.debug("\n\tCOMMAND About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
         spanConnection.request("POST", "/api/v1/circuits/" + self.circuitID, payload, headers)
 
         updateCircuitResponse = spanConnection.getresponse()
         updateCircuitData = updateCircuitResponse.read()
         updateCircuitData = updateCircuitData.decode("utf-8")
 
-        LOGGER.debug("\n\tPOST Update Circuit Status Data: \n\t\t" + updateCircuitData + "\n")
+        LOGGER.debug("\n\tCOMMAND POST Update Circuit Status Data: \n\t\t" + updateCircuitData + "\n")
         self.setDriver('CLIEMD', commandDetails['value'], True, True)
 
     def cmd_update_circuit_priority(self,commandDetails):
@@ -308,14 +308,14 @@ class CircuitNode(udi_interface.Node):
         else:
             return
     
-        LOGGER.debug("\n\tINIT About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
+        LOGGER.debug("\n\tCOMMAND About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
         spanConnection.request("POST", "/api/v1/circuits/" + self.circuitID, payload, headers)
 
         updateCircuitResponse = spanConnection.getresponse()
         updateCircuitData = updateCircuitResponse.read()
         updateCircuitData = updateCircuitData.decode("utf-8")
 
-        LOGGER.debug("\n\tPOST Update Circuit Priority Data: \n\t\t" + updateCircuitData + "\n")
+        LOGGER.debug("\n\tCOMMAND POST Update Circuit Priority Data: \n\t\t" + updateCircuitData + "\n")
         self.setDriver('AWAKE', commandDetails['value'], True, True)
 
     commands = {
