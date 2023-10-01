@@ -296,7 +296,7 @@ class CircuitNode(udi_interface.Node):
         updateCircuitData = updateCircuitData.decode("utf-8")
 
         LOGGER.debug("\n\tCOMMAND POST Update Circuit Status Data: \n\t\t" + format(updateCircuitData) + "\n")
-        self.setDriver('CLIEMD', value, True, True)
+        self.setDriver('CLIEMD', int(value), True, True)
 
     def cmd_update_circuit_priority(self,commandDetails):
         LOGGER.warning(f'\n\t{self.address} being set via cmd_update_circuit_priority to commandDetails={commandDetails}\n')
@@ -333,7 +333,7 @@ class CircuitNode(udi_interface.Node):
         updateCircuitData = updateCircuitData.decode("utf-8")
 
         LOGGER.debug("\n\tCOMMAND POST Update Circuit Priority Data: \n\t\t" + format(updateCircuitData) + "\n")
-        self.setDriver('AWAKE', value, True, True)
+        self.setDriver('AWAKE', int(value), True, True)
 
     commands = {
         "UPDATE_CIRCUIT_STATUS": cmd_update_circuit_status,
