@@ -263,7 +263,7 @@ class CircuitNode(udi_interface.Node):
                 self.setDriver('TIMEREM', "-3", True, True, None, "Error Querying")
 
     def cmd_update_circuit_status(self,commandDetails):
-        LOGGER.warning(f'\n\t{self.address} being set via cmd_update_circuit_status to commandDetails={commandDetails}\n')
+        LOGGER.debug(f'\n\t{self.address} being set via cmd_update_circuit_status to commandDetails={commandDetails}\n')
         
         #{"relayStateIn": {"relayState":STATE}}
         spanConnection = http.client.HTTPConnection(self.ipAddress)
@@ -285,10 +285,10 @@ class CircuitNode(udi_interface.Node):
         elif '1' in value:
             payload = payload.replace('STATE','OPEN')
         else:
-            LOGGER.warning("\n\tCOMMAND was expected to set circuit status, but the value is not 1 or 2; it is: '" + format(value) + "' from:\n\t\t" + format(commandDetails) + "\n")
+            LOGGER.error("\n\tCOMMAND was expected to set circuit status, but the value is not 1 or 2; it is: '" + format(value) + "' from:\n\t\t" + format(commandDetails) + "\n")
             return
      
-        LOGGER.debug("\n\tCOMMAND About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
+        LOGGER.warning("\n\tCOMMAND About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
         spanConnection.request("POST", "/api/v1/circuits/" + self.circuitID, payload, headers)
 
         updateCircuitResponse = spanConnection.getresponse()
@@ -299,7 +299,7 @@ class CircuitNode(udi_interface.Node):
         self.setDriver('CLIEMD', int(value), True, True)
 
     def cmd_update_circuit_priority(self,commandDetails):
-        LOGGER.warning(f'\n\t{self.address} being set via cmd_update_circuit_priority to commandDetails={commandDetails}\n')
+        LOGGER.debug(f'\n\t{self.address} being set via cmd_update_circuit_priority to commandDetails={commandDetails}\n')
         
         #{"priorityIn": {"priority": PRIORITY}}
         spanConnection = http.client.HTTPConnection(self.ipAddress)
@@ -322,10 +322,10 @@ class CircuitNode(udi_interface.Node):
         elif '1' in value:
             payload = payload.replace('PRIORITY','NON_ESSENTIAL')
         else:
-            LOGGER.warning("\n\tCOMMAND was expected to set circuit priority, but the value is not 1, 2, or 3; it is: '" + format(value) + "' from:\n\t\t" + format(commandDetails) + "\n")
+            LOGGER.error("\n\tCOMMAND was expected to set circuit priority, but the value is not 1, 2, or 3; it is: '" + format(value) + "' from:\n\t\t" + format(commandDetails) + "\n")
             return
     
-        LOGGER.debug("\n\tCOMMAND About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
+        LOGGER.warning("\n\tCOMMAND About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
         spanConnection.request("POST", "/api/v1/circuits/" + self.circuitID, payload, headers)
 
         updateCircuitResponse = spanConnection.getresponse()
