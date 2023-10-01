@@ -24,7 +24,7 @@
 	  </sts>
     <cmds>
       <sends />
-	    <accepts>
+	<accepts>
         <cmd id="TOGGLE_MONITORING">
           <p id="" editor="bool" init="AWAKE" />
         </cmd>
@@ -47,7 +47,7 @@
 	  </sts>
     <cmds>
       <sends />
-	    <accepts>
+	<accepts>
         <cmd id="UPDATE_CIRCUIT_STATUS">
           <p id="" editor="SPAN_CIRCUITSTATUS" init="CLIEMD" subset="1-2" />
         </cmd>
