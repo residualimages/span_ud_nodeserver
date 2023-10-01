@@ -205,7 +205,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                     instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
                     #LOGGER.debug("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
                     #LOGGER.debug("\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
-                    self.setDriver('ST', (instantGridPowerW-abs(feedthroughPowerW)), True, True)
+                    self.setDriver('ST', int((instantGridPowerW-abs(feedthroughPowerW))*100), True, True)
                 
                 LOGGER.debug("\n\tINIT Panel Circuit Controller's Circuits Data: \n\t\t" + self.allCircuitsData + "\n\t\tCount of circuits: " + str(self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
                 self.setDriver('PULSCNT', self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':'), True, True)
@@ -291,7 +291,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                     instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
                     #LOGGER.debug("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
                     #LOGGER.debug("\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
-                    self.setDriver('ST', (instantGridPowerW-abs(feedthroughPowerW)), True, True)
+                    self.setDriver('ST', int((instantGridPowerW-abs(feedthroughPowerW))*100), True, True)
 
                     '''
                     for i in range(1,33):
@@ -539,7 +539,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                 instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
                 #LOGGER.debug("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
                 #LOGGER.debug("\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
-                self.setDriver('ST', (instantGridPowerW-abs(feedthroughPowerW)), True, True)
+                self.setDriver('ST', int((instantGridPowerW-abs(feedthroughPowerW))*100), True, True)
 
                 allBranchesData_tuple = self.allBreakersData.partition(chr(34) + "branches" + chr(34) + ":")
                 allBranchesData = allBranchesData_tuple[2]
@@ -627,7 +627,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                 instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
                 #LOGGER.debug("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
                 #LOGGER.debug("\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
-                self.setDriver('ST', (instantGridPowerW-abs(feedthroughPowerW)), True, True)
+                self.setDriver('ST', int((instantGridPowerW-abs(feedthroughPowerW))*100), True, True)
 
                 allBranchesData_tuple = self.allBreakersData.partition(chr(34) + "branches" + chr(34) + ":")
                 allBranchesData = allBranchesData_tuple[2]
