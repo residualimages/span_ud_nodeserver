@@ -272,14 +272,17 @@ class CircuitNode(udi_interface.Node):
             "Authorization": "Bearer " + self.token
         }
         
+        '''
         value_tuple = commandDetails.partition(chr(39) + "value" + chr(39) + ":")
         value = value_tuple[2]
         value_tuple = value.partition(',')
         value = value_tuple[0]
+        '''
+        value = commandDetails.get('value')
         
-        if value == 2:
+        if '2' in value:
             payload = payload.replace('STATE','CLOSED')
-        elif value == 1:
+        elif '1' in value:
             payload = payload.replace('STATE','OPEN')
         else:
             LOGGER.warning("\n\tCOMMAND was expected to set circuit status, but the value is not 1 or 2; it is: '" + format(value) + "' from:\n\t\t" + format(commandDetails) + "\n")
@@ -304,17 +307,19 @@ class CircuitNode(udi_interface.Node):
         headers = {
             "Authorization": "Bearer " + self.token
         }
-
+        '''
         value_tuple = commandDetails.partition(chr(39) + "value" + chr(39) + ":")
         value = value_tuple[2]
         value_tuple = value.partition(',')
         value = value_tuple[0]
+        '''
+        value = commandDetails.get('value')
 
-        if value == 3:
+        if '3' in value:
             payload = payload.replace('PRIORITY','MUST_HAVE')
-        elif value == 2:
+        elif '2' in value:
             payload = payload.replace('PRIORITY','NICE_TO_HAVE')
-        elif value == 1:
+        elif '1' in value:
             payload = payload.replace('PRIORITY','NON_ESSENTIAL')
         else:
             LOGGER.warning("\n\tCOMMAND was expected to set circuit priority, but the value is not 1, 2, or 3; it is: '" + format(value) + "' from:\n\t\t" + format(commandDetails) + "\n")
