@@ -204,15 +204,18 @@ class Controller(udi_interface.Node):
     Delete and Reset Nodes:
     '''
     def reset(self,command):
-        LOGGER.info('\n\t\tRESET: Will Delete and Recreate All Sub-Nodes.\n')
-        
-        # delete any existing nodes
-        nodes = self.poly.getNodes()
-        self.setDriver('GV0', 0, True, True)
-        for node in nodes:
-            if node != 'controller':   # but not the controller node
-                LOGGER.debug("\n\tINIT Controller - deleting " + node + " when creating base NodeServer controller.\n")
-                self.poly.delNode(node)
-        self.start()
-
+        if command == 'RESET':
+            LOGGER.info('\n\t\tCOMMAND RECEIVED TO RESET: Will Delete and Recreate All Sub-Nodes.\n')
+            
+            # delete any existing nodes
+            nodes = self.poly.getNodes()
+            self.setDriver('GV0', 0, True, True)
+            for node in nodes:
+                if node != 'controller':   # but not the controller node
+                    LOGGER.debug("\n\tINIT Controller - deleting " + node + " when creating base NodeServer controller.\n")
+                    self.poly.delNode(node)
+            self.start()
+        else:
+            LOGGER.info("\n\t\tUNKNOWN COMMAND RECEIVED: '" + command + "'.\n")
+            
     commands = {'RESET': reset}
