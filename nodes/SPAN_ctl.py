@@ -205,7 +205,7 @@ class Controller(udi_interface.Node):
     '''
     def reset(self,command):
         if command['cmd'] == 'RESET':
-            LOGGER.info('\n\t\tCOMMAND RECEIVED TO RESET: Will Delete and Recreate All Sub-Nodes.\n')
+            LOGGER.warning('\n\t\tCOMMAND RECEIVED TO RESET: Will Delete and Recreate All Sub-Nodes.\n')
             
             # delete any existing nodes
             nodes = self.poly.getNodes()
