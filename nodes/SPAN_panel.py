@@ -228,9 +228,9 @@ class PanelNodeForCircuits(udi_interface.Node):
     
     # overload the setDriver() of the parent class to short circuit if 
     # node not initialized
-    def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None):
+    def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None, text: Optional[str]=None):
         if self._initialized:
-            super().setDriver(driver, value, report, force, uom)
+            super().setDriver(driver, value, report, force, uom, text)
 
     '''
     Read the user entered custom parameters.
@@ -565,9 +565,9 @@ class PanelNodeForBreakers(udi_interface.Node):
     
     # overload the setDriver() of the parent class to short circuit if 
     # node not initialized
-    def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None):
+    def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None, text: Optional[str]=None):
         if self._initialized:
-            super().setDriver(driver, value, report, force, uom)
+            super().setDriver(driver, value, report, force, uom, text)
 
     '''
     Read the user entered custom parameters.
