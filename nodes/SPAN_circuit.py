@@ -38,15 +38,15 @@ class CircuitNode(udi_interface.Node):
             {'driver': 'CLIEMD', 'value': 0, 'uom': 25},
             {'driver': 'AWAKE', 'value': 0, 'uom': 25},
             {'driver': 'TIME', 'value': 0, 'uom': 151},
-            {'driver': 'TIMEREM', 'value': 'Initializing...', 'uom': 145},
-            {'driver': 'GPV', 'value': '???', 'uom': 145},
+            {'driver': 'TIMEREM', 'value': '-1', 'uom': 145},
+            {'driver': 'GPV', 'value': '-1', 'uom': 145},
             {'driver': 'GV1', 'value': 'N/A', 'uom': 56},
             {'driver': 'GV2', 'value': 'N/A', 'uom': 56},
             {'driver': 'GV3', 'value': 'N/A', 'uom': 56},
             {'driver': 'GV4', 'value': 'N/A', 'uom': 56}
             ]
 
-    def __init__(self, polyglot, parent, address, name, spanIPAddress, bearerToken, spanCircuitID):
+    def __init__(self, polyglot, parent, address, name, spanIPAddress, bearerToken, spanCircuitID, spanCircuitIndex):
         super(CircuitNode, self).__init__(polyglot, parent, address, name)
 
         # set a flag to short circuit setDriver() until the node has been fully
@@ -61,13 +61,14 @@ class CircuitNode(udi_interface.Node):
         self.Parameters = Custom(polyglot, 'customparams')
         self.ipAddress = spanIPAddress
         self.token = bearerToken
+        self.circuitIndex = spanCircuitIndex
         self.circuitID = spanCircuitID
         self.allCircuitsData = ''
         
         tokenLastTen = self.token[-10:]
         LOGGER.debug("\n\tINIT IP Address for circuit:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen + "; Circuit ID: " + self.circuitID)
 
-        self.setDriver('GPV', self.circuitID, False)
+        self.setDriver('GPV', self.circuitIndex, True, True, 145, self.circuitID)
 
         '''
         spanConnection = http.client.HTTPConnection(self.ipAddress)
@@ -141,7 +142,7 @@ class CircuitNode(udi_interface.Node):
     def updateNode(self, passedAllCircuitsData):
         self.allCircuitsData = passedAllCircuitsData
 
-        if 'Initializing...' in self.getDriver('TIMEREM'):
+        if '-1' in self.getDriver('TIMEREM'):
             designatedCircuitData_tuple = self.allCircuitsData.partition(chr(34) + self.circuitID + chr(34) + ':')
             designatedCircuitData = designatedCircuitData_tuple[2]
             designatedCircuitData_tuple = designatedCircuitData.partition('},')
@@ -149,9 +150,9 @@ class CircuitNode(udi_interface.Node):
     
             LOGGER.debug("\n\tAbout to search for 'name' in:\n\t\t" + designatedCircuitData + "\n")
 
-            if "???" in self.getDriver('GPV'):
+            if "-1" in self.getDriver('GPV'):
                 LOGGER.debug("\n\t\tSetting GPV because it is currently ???.\n")
-                self.setDriver('GPV', self.circuitID, False)
+                self.setDriver('GPV', self.circuitIndex, True, True, 145, self.circuitID)
     
             if "name" in designatedCircuitData:
                 designatedCircuitTabs_tuple = designatedCircuitData.partition(chr(34) + "tabs" + chr(34) + ":")
