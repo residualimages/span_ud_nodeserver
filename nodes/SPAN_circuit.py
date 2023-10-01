@@ -178,10 +178,10 @@ class CircuitNode(udi_interface.Node):
                 nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                 
                 self.setDriver('TIME', nowEpoch, True, True)
-                self.setDriver('TIMEREM', nowDT.strftime("%M.%S"), True, True, 145, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                self.setDriver('TIMEREM', nowDT.strftime("%M.%S"), True, True, None, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
             else:
                 LOGGER.warning("\n\tINIT Issue getting data for circuit '" + self.circuitID + "'.\n")
-                self.setDriver('TIMEREM', -1, True, True, 145, "INIT Error Querying")
+                self.setDriver('TIMEREM', -1, True, True, None, "INIT Error Querying")
         
         self.poll('shortPoll')
         
@@ -252,13 +252,13 @@ class CircuitNode(udi_interface.Node):
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                     LOGGER.debug("\n\tPOLL about to set TIME and ST; TIME = '" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "'.\n")
                     self.setDriver('TIME', nowEpoch, True, True)
-                    self.setDriver('TIMEREM', nowDT.strftime("%M.%S"), True, True, 145, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                    self.setDriver('TIMEREM', nowDT.strftime("%M.%S"), True, True, None, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
                 else:
                     LOGGER.warning("\n\tPOLL ERROR: Unable to get designatedCircuitInstantPowerW from designatedCircuitData:\n\t\t" + designatedCircuitData + "\n")
-                    self.setDriver('TIMEREM', "-2", True, True, 145, "POLL Error Querying")
+                    self.setDriver('TIMEREM', "-2", True, True, None, "POLL Error Querying")
             else:
                 LOGGER.warning("\n\tPOLL Issue getting data for circuit '" + self.circuitID + "'.\n")
-                self.setDriver('TIMEREM', "-3", True, True, 145, "Error Querying")
+                self.setDriver('TIMEREM', "-3", True, True, None, "Error Querying")
 
     def update_circuit_status(self,val):
         #{"relayStateIn": {"relayState":STATE}}
