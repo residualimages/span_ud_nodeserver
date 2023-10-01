@@ -19,7 +19,6 @@
       <st id="FREQ" editor="string" />
       <st id="PULSCNT" editor="raw" />
       <st id="CLIEMD" editor="SPAN_PANELGRIDSTATUS" />
-      <st id="TIME" editor="timestamp" />
       <st id="TIMEREM" editor="string" />
       <st id="AWAKE" editor="bool" />
 	  </sts>
@@ -39,7 +38,6 @@
       <st id="PULSCNT" editor="raw" />
       <st id="CLIEMD" editor="SPAN_CIRCUITSTATUS" />
       <st id="AWAKE" editor="SPAN_CIRCUITPRIORITY" />
-      <st id="TIME" editor="timestamp" />
       <st id="TIMEREM" editor="string" />
       <st id="GPV" editor="string" />
       <st id="GV1" editor="raw" />
@@ -66,7 +64,6 @@
       <st id="FREQ" editor="string" />
       <st id="PULSCNT" editor="raw" />
       <st id="GPV" editor="raw" />
-      <st id="TIME" editor="timestamp" />
       <st id="TIMEREM" editor="string" />
 	  </sts>
   </nodeDef>
@@ -76,7 +73,6 @@
       <st id="ST" editor="watt" />
       <st id="PULSCNT" editor="raw" />
       <st id="CLIEMD" editor="SPAN_BREAKERSTATUS" />
-      <st id="TIME" editor="timestamp" />
       <st id="TIMEREM" editor="string" />
 	  </sts>
   </nodeDef>
