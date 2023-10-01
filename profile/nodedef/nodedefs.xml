@@ -39,7 +39,7 @@
       <st id="CLIEMD" editor="SPAN_CIRCUITSTATUS" />
       <st id="AWAKE" editor="SPAN_CIRCUITPRIORITY" />
       <st id="TIMEREM" editor="raw" />
-      <st id="GPV" editor="raw" />
+      <st id="GPV" editor="string" />
       <st id="GV1" editor="raw" />
       <st id="GV2" editor="raw" />
       <st id="GV3" editor="raw" />
