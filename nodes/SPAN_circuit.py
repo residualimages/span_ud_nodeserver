@@ -260,7 +260,7 @@ class CircuitNode(udi_interface.Node):
                 LOGGER.warning("\n\tPOLL Issue getting data for circuit '" + self.circuitID + "'.\n")
                 self.setDriver('TIMEREM', "-3", True, True, None, "Error Querying")
 
-    def update_circuit_status(self,val):
+    def update_circuit_status(self,commandDetails):
         #{"relayStateIn": {"relayState":STATE}}
         spanConnection = http.client.HTTPConnection(self.ipAddress)
         payload = "{"+ chr(34) + "relayStateIn" + chr(34) + ":{" + chr(34) + "relayState" + chr(34) + ":" +chr(34) + "STATE" + chr(34) + "}}"
@@ -268,9 +268,9 @@ class CircuitNode(udi_interface.Node):
             "Authorization": "Bearer " + self.token
         }
 
-        if val == 2:
+        if commandDetails.value == 2:
             payload = payload.replace('STATE','CLOSED')
-        elif val == 1:
+        elif commandDetails.value == 1:
             payload = payload.replace('STATE','OPEN')
         else:
             return
@@ -283,13 +283,13 @@ class CircuitNode(udi_interface.Node):
         updateCircuitData = updateCircuitData.decode("utf-8")
 
         LOGGER.debug("\n\tPOST Update Circuit Status Data: \n\t\t" + updateCircuitData + "\n")
-        self.setDriver('CLIEMD', val, True, True)
+        self.setDriver('CLIEMD', commandDetails.value, True, True)
 
-    def cmd_update_circuit_status(self,val):
-        LOGGER.warning(f'\n\t{self.address} being set via cmd_update_circuit_status to val={val}\n')
-        self.update_circuit_status(val)
+    def cmd_update_circuit_status(self,commandDetails):
+        LOGGER.warning(f'\n\t{self.address} being set via cmd_update_circuit_status to commandDetails={commandDetails}\n')
+        self.update_circuit_status(commandDetails)
 
-    def update_circuit_priority(self,val):
+    def update_circuit_priority(self,commandDetails):
         #{"priorityIn": {"priority": PRIORITY}}
         spanConnection = http.client.HTTPConnection(self.ipAddress)
         payload = "{"+ chr(34) + "priorityIn" + chr(34) + ":{" + chr(34) + "priority" + chr(34) + ":" +chr(34) + "PRIORITY" + chr(34) + "}}"
@@ -297,11 +297,11 @@ class CircuitNode(udi_interface.Node):
             "Authorization": "Bearer " + self.token
         }
 
-        if val == 3:
+        if commandDetails.value == 3:
             payload = payload.replace('PRIORITY','MUST_HAVE')
-        elif val == 2:
+        elif commandDetails.value == 2:
             payload = payload.replace('PRIORITY','NICE_TO_HAVE')
-        elif val == 1:
+        elif commandDetails.value == 1:
             payload = payload.replace('PRIORITY','NON_ESSENTIAL')
         else:
             return
@@ -314,11 +314,11 @@ class CircuitNode(udi_interface.Node):
         updateCircuitData = updateCircuitData.decode("utf-8")
 
         LOGGER.debug("\n\tPOST Update Circuit Priority Data: \n\t\t" + updateCircuitData + "\n")
-        self.setDriver('AWAKE', val, True, True)
+        self.setDriver('AWAKE', commandDetails.value, True, True)
 
-    def cmd_update_circuit_priority(self,val):
-        LOGGER.warning(f'\n\t{self.address} being set via cmd_update_circuit_priority to val={val}\n')
-        self.update_circuit_priority(val)
+    def cmd_update_circuit_priority(self,commandDetails):
+        LOGGER.warning(f'\n\t{self.address} being set via cmd_update_circuit_priority to commandDetails={commandDetails}\n')
+        self.update_circuit_priority(commandDetails)
 
     commands = {
         "UPDATE_CIRCUIT_STATUS": cmd_update_circuit_status,
