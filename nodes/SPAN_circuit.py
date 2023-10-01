@@ -20,6 +20,15 @@ Custom = udi_interface.Custom
 
 '''
 This is our Circuit device node. 
+
+Notes about API:
+    Circuit Relay State - POST To ipAddres/circuits/circuitID:
+            {"relayStateIn": {"relayState":STATE}}
+            STATE options: 'UNKNOWN', 'OPEN', 'CLOSED'
+
+    Circuit Priority State - POST To ipAddres/circuits/circuitID:
+            {"priorityIn": {"priority": PRIORITY}}
+            PRIORITY options: 'UNKNOWN', 'NON_ESSENTIAL', 'NICE_TO_HAVE', 'MUST_HAVE'
 '''
 class CircuitNode(udi_interface.Node):
     id = 'circuit'
