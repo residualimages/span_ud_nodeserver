@@ -193,7 +193,7 @@ class Controller(udi_interface.Node):
         for node in nodes:
             if node != 'controller':   # but not the controller node
                 nodes[node].setDriver('ST', 0, True, True)
-                if 'breaker' not in node:
+                if 'breaker' not in node and 'circuit' not in node:
                     nodes[node].setDriver('AWAKE', 0, True, True)
         self.setDriver('ST', 0, True, True)
 
