@@ -142,7 +142,7 @@ class CircuitNode(udi_interface.Node):
     def updateNode(self, passedAllCircuitsData):
         self.allCircuitsData = passedAllCircuitsData
 
-        if '-1' in self.getDriver('TIMEREM'):
+        if str(-1) in self.getDriver('TIMEREM'):
             designatedCircuitData_tuple = self.allCircuitsData.partition(chr(34) + self.circuitID + chr(34) + ':')
             designatedCircuitData = designatedCircuitData_tuple[2]
             designatedCircuitData_tuple = designatedCircuitData.partition('},')
@@ -150,7 +150,7 @@ class CircuitNode(udi_interface.Node):
     
             LOGGER.debug("\n\tAbout to search for 'name' in:\n\t\t" + designatedCircuitData + "\n")
 
-            if "-1" in self.getDriver('GPV'):
+            if str(-1) in self.getDriver('GPV'):
                 LOGGER.debug("\n\t\tSetting GPV because it is currently ???.\n")
                 self.setDriver('GPV', self.circuitIndex, True, True, 145, self.circuitID)
     
