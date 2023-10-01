@@ -161,7 +161,9 @@ class PanelNodeForCircuits(udi_interface.Node):
         if self.address == data['address']:
             LOGGER.debug("\n\t\t\tPanelForCircuits Controller Creation Completed; Queue Circuit child node(s) creation.\n")
             self.setDriver('AWAKE', 1, True, True)
-            self.setDriver('FREQ', self.ipAddress, False)
+            lastOctet_array = self.ipAddress.split('.')
+            lastOctet = lastOctet_array[len(lastOctet_array)-1]
+            self.setDriver('FREQ', lastOctet, True, True, 145, self.ipAddress)
         
             if "circuits" in self.allCircuitsData:
                 spanConnection = http.client.HTTPConnection(self.ipAddress)
@@ -509,7 +511,10 @@ class PanelNodeForBreakers(udi_interface.Node):
         if self.address == data['address']:
             LOGGER.debug("\n\t\t\tPanelForBreakers Controller Creation Completed; Queue Breaker child node(s) creation.\n")
             #self.setDriver('AWAKE', 1, True, True)
-            self.setDriver('FREQ', self.ipAddress, False)
+            
+            lastOctet_array = self.ipAddress.split('.')
+            lastOctet = lastOctet_array[len(lastOctet_array)-1]
+            self.setDriver('FREQ', lastOctet, True, True, 145, self.ipAddress)
         
             if "branches" in self.allBreakersData:
                 feedthroughPowerW_tuple = self.allBreakersData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
