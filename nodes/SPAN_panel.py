@@ -320,7 +320,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                         nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                         
                         self.setDriver('TIME', nowEpoch, True, True)
-                        self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y %H:%M:%S"), True, True)
+                        self.setDriver('TIMEREM', nowDT.strftime("%M.%S"), True, True, 145, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
     
                     try:
                         spanConnection.request("GET", "/api/v1/circuits", payload, headers)
@@ -425,7 +425,6 @@ class PanelNodeForCircuits(udi_interface.Node):
                 node = SPAN_circuit.CircuitNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken, current_circuitID, i)
                 self.poly.addNode(node)
                 self.wait_for_node_done()
-                node.setDriver('AWAKE', 1, True, True)
                 LOGGER.debug('\n\tCreated a Circuit child node {} under Panel Circuit Controller {}\n'.format(title, panelNumberPrefix))
             except Exception as e:
                 LOGGER.warning('\n\tFailed to create Circuit child node {} under Panel Circuit Controller {} due to error: {}.\n'.format(title, panelNumberPrefix, e))
