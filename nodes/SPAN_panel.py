@@ -91,7 +91,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             {'driver': 'PULSCNT', 'value': 0, 'uom': 56},
             {'driver': 'CLIEMD', 'value': 0, 'uom': 25},
             {'driver': 'TIME', 'value': 0, 'uom': 151},
-            {'driver': 'TIMEREM', 'value': 'Initializing...', 'uom': 145},
+            {'driver': 'TIMEREM', 'value': '-1', 'uom': 145},
             {'driver': 'AWAKE', 'value': 1, 'uom': 2}
             ]
 
@@ -347,7 +347,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             else:
                 tokenLastTen = self.token[-10:]
                 LOGGER.debug('\n\tSkipping POLL query of Panel Circuit Controller at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
-                self.setDriver('TIMEREM', "Not Actively Querying due to 'AWAKE' being set to 0." , True, True)
+                self.setDriver('TIMEREM', '-1', True, True, 145, "Not Actively Querying due to 'AWAKE' being set to 0.")
             
     def toggle_monitoring(self,val):
         # On startup this will always go back to true which is the default, but how do we restore the previous user value?
@@ -453,7 +453,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             {'driver': 'PULSCNT', 'value': 0, 'uom': 56},
             {'driver': 'GPV', 'value': 0, 'uom': 56},
             {'driver': 'TIME', 'value': 0, 'uom': 151},
-            {'driver': 'TIMEREM', 'value': 'Initializing...', 'uom': 145}
+            {'driver': 'TIMEREM', 'value': '-1', 'uom': 145}
             ]
 
     def __init__(self, polyglot, parent, address, name, spanIPAddress, bearerToken):
@@ -640,7 +640,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                     
                     self.setDriver('TIME', nowEpoch, True, True)
-                    self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y %H:%M:%S"), False, True)
+                    self.setDriver('TIMEREM', nowDT.strftime("%M.%S"), True, True, 145, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
 
                 '''
                 for i in range(1,33):
