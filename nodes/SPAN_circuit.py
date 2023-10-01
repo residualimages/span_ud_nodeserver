@@ -68,8 +68,8 @@ class CircuitNode(udi_interface.Node):
         tokenLastTen = self.token[-10:]
         LOGGER.debug("\n\tINIT IP Address for circuit:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen + "; Circuit ID: " + self.circuitID)
 
-        LOGGER.warning("\n\t\tINIT About to call setDriver for '" + self.address + "' with a UOM of 150 and a value of '" + str(self.circuitIndex) + "' and a text attribute of '" + self.circuitID + "'.\n")
-        self.setDriver('GPV', self.circuitIndex, True, True, 150, self.circuitID)
+        LOGGER.warning("\n\t\tINIT About to call setDriver for '" + self.address + "' with a UOM of 145 and a value of '" + str(self.circuitIndex) + "' and a text attribute of '" + self.circuitID + "'.\n")
+        self.setDriver('GPV', self.circuitIndex, True, True, 145, self.circuitID)
 
         '''
         spanConnection = http.client.HTTPConnection(self.ipAddress)
@@ -153,8 +153,8 @@ class CircuitNode(udi_interface.Node):
 
             if self.getDriver('GPV') == 0:
                 LOGGER.warning("\n\tSetting GPV because it is currently ''.\n")
-                LOGGER.warning("\n\t\tFIRST UPDATE About to call setDriver for '" + self.address + "' with a UOM of 150 and a value of '" + str(self.circuitIndex) + "' and a text attribute of '" + self.circuitID + "'.\n")
-                self.setDriver('GPV', self.circuitIndex, True, True, 150, self.circuitID)
+                LOGGER.warning("\n\t\tFIRST UPDATE About to call setDriver for '" + self.address + "' with a UOM of 145 and a value of '" + str(self.circuitIndex) + "' and a text attribute of '" + self.circuitID + "'.\n")
+                self.setDriver('GPV', self.circuitIndex, True, True, 145, self.circuitID)
     
             if "name" in designatedCircuitData:
                 designatedCircuitTabs_tuple = designatedCircuitData.partition(chr(34) + "tabs" + chr(34) + ":")
