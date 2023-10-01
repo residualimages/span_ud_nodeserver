@@ -38,8 +38,8 @@ class CircuitNode(udi_interface.Node):
             {'driver': 'CLIEMD', 'value': 0, 'uom': 25},
             {'driver': 'AWAKE', 'value': 0, 'uom': 25},
             {'driver': 'TIME', 'value': 0, 'uom': 151},
-            {'driver': 'TIMEREM', 'value': '-1', 'uom': 145},
-            {'driver': 'GPV', 'value': '-1', 'uom': 145},
+            {'driver': 'TIMEREM', 'value': -1, 'uom': 145},
+            {'driver': 'GPV', 'value': -1, 'uom': 145},
             {'driver': 'GV1', 'value': 'N/A', 'uom': 56},
             {'driver': 'GV2', 'value': 'N/A', 'uom': 56},
             {'driver': 'GV3', 'value': 'N/A', 'uom': 56},
@@ -142,7 +142,7 @@ class CircuitNode(udi_interface.Node):
     def updateNode(self, passedAllCircuitsData):
         self.allCircuitsData = passedAllCircuitsData
 
-        if str(-1) in self.getDriver('TIMEREM'):
+        if self.getDriver('TIMEREM') == -1:
             designatedCircuitData_tuple = self.allCircuitsData.partition(chr(34) + self.circuitID + chr(34) + ':')
             designatedCircuitData = designatedCircuitData_tuple[2]
             designatedCircuitData_tuple = designatedCircuitData.partition('},')
@@ -150,8 +150,8 @@ class CircuitNode(udi_interface.Node):
     
             LOGGER.debug("\n\tAbout to search for 'name' in:\n\t\t" + designatedCircuitData + "\n")
 
-            if str(-1) in self.getDriver('GPV'):
-                LOGGER.debug("\n\t\tSetting GPV because it is currently ???.\n")
+            if self.getDriver('GPV') == -1:
+                LOGGER.debug("\n\t\tSetting GPV because it is currently -1.\n")
                 self.setDriver('GPV', self.circuitIndex, True, True, 145, self.circuitID)
     
             if "name" in designatedCircuitData:
@@ -181,7 +181,7 @@ class CircuitNode(udi_interface.Node):
                 self.setDriver('TIMEREM', nowDT.strftime("%M.%S"), True, True, 145, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
             else:
                 LOGGER.warning("\n\tINIT Issue getting data for circuit '" + self.circuitID + "'.\n")
-                self.setDriver('TIMEREM', "-1", True, True, 145, "INIT Error Querying")
+                self.setDriver('TIMEREM', -1, True, True, 145, "INIT Error Querying")
         
         self.poll('shortPoll')
         
