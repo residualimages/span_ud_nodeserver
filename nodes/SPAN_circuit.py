@@ -268,9 +268,9 @@ class CircuitNode(udi_interface.Node):
             "Authorization": "Bearer " + self.token
         }
 
-        if commandDetails.value == 2:
+        if commandDetails['value'] == 2:
             payload = payload.replace('STATE','CLOSED')
-        elif commandDetails.value == 1:
+        elif commandDetails['value'] == 1:
             payload = payload.replace('STATE','OPEN')
         else:
             return
@@ -283,7 +283,7 @@ class CircuitNode(udi_interface.Node):
         updateCircuitData = updateCircuitData.decode("utf-8")
 
         LOGGER.debug("\n\tPOST Update Circuit Status Data: \n\t\t" + updateCircuitData + "\n")
-        self.setDriver('CLIEMD', commandDetails.value, True, True)
+        self.setDriver('CLIEMD', commandDetails['value'], True, True)
 
     def cmd_update_circuit_status(self,commandDetails):
         LOGGER.warning(f'\n\t{self.address} being set via cmd_update_circuit_status to commandDetails={commandDetails}\n')
@@ -297,11 +297,11 @@ class CircuitNode(udi_interface.Node):
             "Authorization": "Bearer " + self.token
         }
 
-        if commandDetails.value == 3:
+        if commandDetails['value'] == 3:
             payload = payload.replace('PRIORITY','MUST_HAVE')
-        elif commandDetails.value == 2:
+        elif commandDetails['value'] == 2:
             payload = payload.replace('PRIORITY','NICE_TO_HAVE')
-        elif commandDetails.value == 1:
+        elif commandDetails['value'] == 1:
             payload = payload.replace('PRIORITY','NON_ESSENTIAL')
         else:
             return
@@ -314,7 +314,7 @@ class CircuitNode(udi_interface.Node):
         updateCircuitData = updateCircuitData.decode("utf-8")
 
         LOGGER.debug("\n\tPOST Update Circuit Priority Data: \n\t\t" + updateCircuitData + "\n")
-        self.setDriver('AWAKE', commandDetails.value, True, True)
+        self.setDriver('AWAKE', commandDetails['value'], True, True)
 
     def cmd_update_circuit_priority(self,commandDetails):
         LOGGER.warning(f'\n\t{self.address} being set via cmd_update_circuit_priority to commandDetails={commandDetails}\n')
