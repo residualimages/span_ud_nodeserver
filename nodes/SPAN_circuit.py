@@ -39,7 +39,7 @@ class CircuitNode(udi_interface.Node):
             {'driver': 'AWAKE', 'value': 0, 'uom': 25},
             {'driver': 'TIME', 'value': 0, 'uom': 151},
             {'driver': 'TIMEREM', 'value': -1, 'uom': 56},
-            {'driver': 'GPV', 'value': -1, 'uom': 145},
+            {'driver': 'GPV', 'value': '', 'uom': 145, 'formatted': 'Uninitiated'},
             {'driver': 'GV1', 'value': 'N/A', 'uom': 56},
             {'driver': 'GV2', 'value': 'N/A', 'uom': 56},
             {'driver': 'GV3', 'value': 'N/A', 'uom': 56},
@@ -68,7 +68,7 @@ class CircuitNode(udi_interface.Node):
         tokenLastTen = self.token[-10:]
         LOGGER.debug("\n\tINIT IP Address for circuit:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen + "; Circuit ID: " + self.circuitID)
 
-        self.setDriver('GPV', self.circuitIndex, True, True, 145, self.circuitID)
+        self.setDriver('GPV', 'Index ' + str(self.circuitIndex), True, True, 145, self.circuitID)
 
         '''
         spanConnection = http.client.HTTPConnection(self.ipAddress)
@@ -150,9 +150,9 @@ class CircuitNode(udi_interface.Node):
     
             LOGGER.debug("\n\tAbout to search for 'name' in:\n\t\t" + designatedCircuitData + "\n")
 
-            if self.getDriver('GPV') == -1:
-                LOGGER.debug("\n\t\tSetting GPV because it is currently -1.\n")
-                self.setDriver('GPV', self.circuitIndex, True, True, 145, self.circuitID)
+            if self.getDriver('GPV') == '':
+                LOGGER.debug("\n\t\tSetting GPV because it is currently ''.\n")
+                self.setDriver('GPV', 'Index ' + str(self.circuitIndex), True, True, 145, self.circuitID)
     
             if "name" in designatedCircuitData:
                 designatedCircuitTabs_tuple = designatedCircuitData.partition(chr(34) + "tabs" + chr(34) + ":")
