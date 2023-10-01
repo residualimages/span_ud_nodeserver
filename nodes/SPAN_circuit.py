@@ -264,7 +264,6 @@ class CircuitNode(udi_interface.Node):
         LOGGER.warning(f'\n\t{self.address} being set via cmd_update_circuit_status to commandDetails={commandDetails}\n')
         
         #{"relayStateIn": {"relayState":STATE}}
-        LOGGER.warning(f'\n\t{self.address} being set via update_circuit_status to commandDetails={commandDetails}\n')
         spanConnection = http.client.HTTPConnection(self.ipAddress)
         payload = "{"+ chr(34) + "relayStateIn" + chr(34) + ":{" + chr(34) + "relayState" + chr(34) + ":" +chr(34) + "STATE" + chr(34) + "}}"
         headers = {
@@ -292,7 +291,6 @@ class CircuitNode(udi_interface.Node):
         LOGGER.warning(f'\n\t{self.address} being set via cmd_update_circuit_priority to commandDetails={commandDetails}\n')
         
         #{"priorityIn": {"priority": PRIORITY}}
-        LOGGER.warning(f'\n\t{self.address} being set via update_circuit_priority to commandDetails={commandDetails}\n')
         spanConnection = http.client.HTTPConnection(self.ipAddress)
         payload = "{"+ chr(34) + "priorityIn" + chr(34) + ":{" + chr(34) + "priority" + chr(34) + ":" +chr(34) + "PRIORITY" + chr(34) + "}}"
         headers = {
