@@ -38,9 +38,9 @@
       <st id="ST" editor="watt" />
       <st id="PULSCNT" editor="raw" />
       <st id="CLIEMD" editor="SPAN_CIRCUITSTATUS" />
+      <st id="AWAKE" editor="SPAN_CIRCUITPRIORITY" />
       <st id="TIME" editor="timestamp" />
       <st id="TIMEREM" editor="string" />
-      <st id="AWAKE" editor="bool" />
       <st id="GPV" editor="string" />
       <st id="GV1" editor="raw" />
       <st id="GV2" editor="raw" />
@@ -51,10 +51,10 @@
       <sends />
 	    <accepts>
         <cmd id="UPDATE_CIRCUIT_STATUS">
-          <p id="" editor="SPAN_CIRCUITSTATUS" init="AWAKE" />
+          <p id="" editor="SPAN_CIRCUITSTATUS" init="CLIEMD" />
         </cmd>
 	<cmd id="UPDATE_CIRCUIT_PRIORITY">
-          <p id="" editor="SPAN_CIRCUITPRIORITY" init="MODE" />
+          <p id="" editor="SPAN_CIRCUITPRIORITY" init="AWAKE" />
         </cmd>
       </accepts>
     </cmds>  
