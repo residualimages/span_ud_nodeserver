@@ -19,7 +19,7 @@
 		<range uom="151" min="0" max="2147483647" prec="0" /> 
 	</editor>
 	<editor id="string">
-		<range uom="150" min="0" max="0" prec="0" /> 
+		<range uom="145" min="0" max="0" prec="0" /> 
 	</editor>
 	<editor id="SPAN_PANELGRIDSTATUS">
 		<range uom="25" subset="1-2" nls="IX_SPAN_PANELGRIDSTATUS" />
