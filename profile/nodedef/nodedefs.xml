@@ -49,10 +49,10 @@
       <sends />
 	    <accepts>
         <cmd id="UPDATE_CIRCUIT_STATUS">
-          <p id="" editor="SPAN_CIRCUITSTATUS" init="CLIEMD" />
+          <p id="" editor="SPAN_CIRCUITSTATUS" init="CLIEMD" subset="1-2" />
         </cmd>
 	<cmd id="UPDATE_CIRCUIT_PRIORITY">
-          <p id="" editor="SPAN_CIRCUITPRIORITY" init="AWAKE" />
+          <p id="" editor="SPAN_CIRCUITPRIORITY" init="AWAKE" subset="1-3" />
         </cmd>
       </accepts>
     </cmds>  
