@@ -50,8 +50,11 @@
     <cmds>
       <sends />
 	    <accepts>
-        <cmd id="TOGGLE_CIRCUIT_MONITORING">
-          <p id="" editor="bool" init="AWAKE" />
+        <cmd id="UPDATE_CIRCUIT_STATUS">
+          <p id="" editor="SPAN_CIRCUITSTATUS" init="AWAKE" />
+        </cmd>
+	<cmd id="UPDATE_CIRCUIT_PRIORITY">
+          <p id="" editor="SPAN_CIRCUITPRIORITY" init="MODE" />
         </cmd>
       </accepts>
     </cmds>  
