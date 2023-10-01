@@ -260,7 +260,9 @@ class CircuitNode(udi_interface.Node):
                 LOGGER.warning("\n\tPOLL Issue getting data for circuit '" + self.circuitID + "'.\n")
                 self.setDriver('TIMEREM', "-3", True, True, None, "Error Querying")
 
-    def update_circuit_status(self,commandDetails):
+    def cmd_update_circuit_status(self,commandDetails):
+        LOGGER.warning(f'\n\t{self.address} being set via cmd_update_circuit_status to commandDetails={commandDetails}\n')
+        
         #{"relayStateIn": {"relayState":STATE}}
         LOGGER.warning(f'\n\t{self.address} being set via update_circuit_status to commandDetails={commandDetails}\n')
         spanConnection = http.client.HTTPConnection(self.ipAddress)
@@ -286,11 +288,9 @@ class CircuitNode(udi_interface.Node):
         LOGGER.debug("\n\tPOST Update Circuit Status Data: \n\t\t" + updateCircuitData + "\n")
         self.setDriver('CLIEMD', commandDetails['value'], True, True)
 
-    def cmd_update_circuit_status(self,commandDetails):
-        LOGGER.warning(f'\n\t{self.address} being set via cmd_update_circuit_status to commandDetails={commandDetails}\n')
-        self.update_circuit_status(commandDetails)
-
-    def update_circuit_priority(self,commandDetails):
+    def cmd_update_circuit_priority(self,commandDetails):
+        LOGGER.warning(f'\n\t{self.address} being set via cmd_update_circuit_priority to commandDetails={commandDetails}\n')
+        
         #{"priorityIn": {"priority": PRIORITY}}
         LOGGER.warning(f'\n\t{self.address} being set via update_circuit_priority to commandDetails={commandDetails}\n')
         spanConnection = http.client.HTTPConnection(self.ipAddress)
@@ -317,10 +317,6 @@ class CircuitNode(udi_interface.Node):
 
         LOGGER.debug("\n\tPOST Update Circuit Priority Data: \n\t\t" + updateCircuitData + "\n")
         self.setDriver('AWAKE', commandDetails['value'], True, True)
-
-    def cmd_update_circuit_priority(self,commandDetails):
-        LOGGER.warning(f'\n\t{self.address} being set via cmd_update_circuit_priority to commandDetails={commandDetails}\n')
-        self.update_circuit_priority(commandDetails)
 
     commands = {
         "UPDATE_CIRCUIT_STATUS": cmd_update_circuit_status,
