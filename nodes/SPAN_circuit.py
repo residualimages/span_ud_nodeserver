@@ -271,13 +271,18 @@ class CircuitNode(udi_interface.Node):
         headers = {
             "Authorization": "Bearer " + self.token
         }
-
-        if commandDetails['value'] == 2:
+        
+        value_tuple = commandDetails.partition(chr(39) + "value" + chr(39) + ":")
+        value = value_tuple[2]
+        value_tuple = value.partition(',')
+        value = value_tuple[0]
+        
+        if value == 2:
             payload = payload.replace('STATE','CLOSED')
-        elif commandDetails['value'] == 1:
+        elif value == 1:
             payload = payload.replace('STATE','OPEN')
         else:
-            LOGGER.warning("\n\tCOMMAND was expected to set circuit status, but the value is not 1 or 2; it is: '" + commandDetails['value'] + "' from:\n\t\t" + commandDetails + "\n")
+            LOGGER.warning("\n\tCOMMAND was expected to set circuit status, but the value is not 1 or 2; it is: '" + format(value) + "' from:\n\t\t" + format(commandDetails) + "\n")
             return
      
         LOGGER.debug("\n\tCOMMAND About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
@@ -287,8 +292,8 @@ class CircuitNode(udi_interface.Node):
         updateCircuitData = updateCircuitResponse.read()
         updateCircuitData = updateCircuitData.decode("utf-8")
 
-        LOGGER.debug("\n\tCOMMAND POST Update Circuit Status Data: \n\t\t" + updateCircuitData + "\n")
-        self.setDriver('CLIEMD', commandDetails['value'], True, True)
+        LOGGER.debug("\n\tCOMMAND POST Update Circuit Status Data: \n\t\t" + format(updateCircuitData) + "\n")
+        self.setDriver('CLIEMD', value, True, True)
 
     def cmd_update_circuit_priority(self,commandDetails):
         LOGGER.warning(f'\n\t{self.address} being set via cmd_update_circuit_priority to commandDetails={commandDetails}\n')
@@ -300,14 +305,19 @@ class CircuitNode(udi_interface.Node):
             "Authorization": "Bearer " + self.token
         }
 
-        if commandDetails['value'] == 3:
+        value_tuple = commandDetails.partition(chr(39) + "value" + chr(39) + ":")
+        value = value_tuple[2]
+        value_tuple = value.partition(',')
+        value = value_tuple[0]
+
+        if value == 3:
             payload = payload.replace('PRIORITY','MUST_HAVE')
-        elif commandDetails['value'] == 2:
+        elif value == 2:
             payload = payload.replace('PRIORITY','NICE_TO_HAVE')
-        elif commandDetails['value'] == 1:
+        elif value == 1:
             payload = payload.replace('PRIORITY','NON_ESSENTIAL')
         else:
-            LOGGER.warning("\n\tCOMMAND was expected to set circuit priority, but the value is not 1, 2, or 3; it is: '" + commandDetails['value'] + "' from:\n\t\t" + commandDetails + "\n")
+            LOGGER.warning("\n\tCOMMAND was expected to set circuit priority, but the value is not 1, 2, or 3; it is: '" + format(value) + "' from:\n\t\t" + format(commandDetails) + "\n")
             return
     
         LOGGER.debug("\n\tCOMMAND About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
@@ -317,8 +327,8 @@ class CircuitNode(udi_interface.Node):
         updateCircuitData = updateCircuitResponse.read()
         updateCircuitData = updateCircuitData.decode("utf-8")
 
-        LOGGER.debug("\n\tCOMMAND POST Update Circuit Priority Data: \n\t\t" + updateCircuitData + "\n")
-        self.setDriver('AWAKE', commandDetails['value'], True, True)
+        LOGGER.debug("\n\tCOMMAND POST Update Circuit Priority Data: \n\t\t" + format(updateCircuitData) + "\n")
+        self.setDriver('AWAKE', value, True, True)
 
     commands = {
         "UPDATE_CIRCUIT_STATUS": cmd_update_circuit_status,
