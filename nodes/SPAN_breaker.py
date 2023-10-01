@@ -30,7 +30,7 @@ class BreakerNode(udi_interface.Node):
             {'driver': 'PULSCNT', 'value': 0, 'uom': 56},
             {'driver': 'CLIEMD', 'value': 0, 'uom': 25},
             {'driver': 'TIME', 'value': 0, 'uom': 151},
-            {'driver': 'TIMEREM', 'value': -1, 'uom': 145}
+            {'driver': 'TIMEREM', 'value': -1, 'uom': 56}
             ]
 
     def __init__(self, polyglot, parent, address, name, spanIPAddress, bearerToken, spanBreakerID):
@@ -102,7 +102,7 @@ class BreakerNode(udi_interface.Node):
             nowEpoch = int(time.time())
             nowDT = datetime.datetime.fromtimestamp(nowEpoch)
             self.setDriver('TIME', nowEpoch, True, True)
-            self.setDriver('TIMEREM', nowDT.strftime("%M.%S"), True, True, 145, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+            self.setDriver('TIMEREM', nowDT.strftime("%M.%S"), True, True, None, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
 
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
@@ -147,7 +147,7 @@ class BreakerNode(udi_interface.Node):
             nowDT = datetime.datetime.fromtimestamp(nowEpoch)
             
             self.setDriver('TIME', nowEpoch, True, True)
-            self.setDriver('TIMEREM', nowDT.strftime("%M.%S"), True, True, 145, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+            self.setDriver('TIMEREM', nowDT.strftime("%M.%S"), True, True, None, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
             LOGGER.debug("\n\tINIT Final for PULSCNT, TIME, and TIMEREM now complete.\n")
         
         self.poll('shortPoll')
@@ -204,10 +204,10 @@ class BreakerNode(udi_interface.Node):
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                     LOGGER.debug("\n\tPOLL about to set TIME and ST; TIME = '" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "'.\n")
                     self.setDriver('TIME', nowEpoch, True, True)                            
-                    self.setDriver('TIMEREM', nowDT.strftime("%M.%S"), True, True, 145, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                    self.setDriver('TIMEREM', nowDT.strftime("%M.%S"), True, True, None, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
             else:
                 LOGGER.warning("\n\tPOLL ERROR: Unable to get designatedBreakerInstantPowerW from designatedBreakerData:\n\t\t" + designatedBreakerData + "\n")
-                self.setDriver('TIMEREM', -1, True, True, 145, "POLL Error Querying designatedBreakerData")
+                self.setDriver('TIMEREM', -1, True, True, None, "POLL Error Querying designatedBreakerData")
                 
     '''
     Change self status driver to 0 W
