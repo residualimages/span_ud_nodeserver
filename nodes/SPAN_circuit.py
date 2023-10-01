@@ -263,7 +263,7 @@ class CircuitNode(udi_interface.Node):
     def update_circuit_status(self,val):
         #{"relayStateIn": {"relayState":STATE}}
         spanConnection = http.client.HTTPConnection(self.ipAddress)
-        payload = "{"+ chr(34) + "relayStateIn" + ch(34) + ":{" + chr(34) + "relayState" + chr(34) + ":" +chr(34) + "STATE" + chr(34) + "}}"
+        payload = "{"+ chr(34) + "relayStateIn" + chr(34) + ":{" + chr(34) + "relayState" + chr(34) + ":" +chr(34) + "STATE" + chr(34) + "}}"
         headers = {
             "Authorization": "Bearer " + self.token
         }
@@ -272,6 +272,8 @@ class CircuitNode(udi_interface.Node):
             payload = payload.replace('STATE','CLOSED')
         elif val == 1:
             payload = payload.replace('STATE','OPEN')
+        else:
+            return
      
         LOGGER.debug("\n\tINIT About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
         spanConnection.request("POST", "/api/v1/circuits/" + self.circuitID, payload, headers)
@@ -290,7 +292,7 @@ class CircuitNode(udi_interface.Node):
     def update_circuit_priority(self,val):
         #{"priorityIn": {"priority": PRIORITY}}
         spanConnection = http.client.HTTPConnection(self.ipAddress)
-        payload = "{"+ chr(34) + "priorityIn" + ch(34) + ":{" + chr(34) + "priority" + chr(34) + ":" +chr(34) + "PRIORITY" + chr(34) + "}}"
+        payload = "{"+ chr(34) + "priorityIn" + chr(34) + ":{" + chr(34) + "priority" + chr(34) + ":" +chr(34) + "PRIORITY" + chr(34) + "}}"
         headers = {
             "Authorization": "Bearer " + self.token
         }
@@ -301,7 +303,9 @@ class CircuitNode(udi_interface.Node):
             payload = payload.replace('PRIORITY','NICE_TO_HAVE')
         elif val == 1:
             payload = payload.replace('PRIORITY','NON_ESSENTIAL')
-     
+        else:
+            return
+    
         LOGGER.debug("\n\tINIT About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
         spanConnection.request("POST", "/api/v1/circuits/" + self.circuitID, payload, headers)
 
