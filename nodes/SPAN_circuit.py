@@ -235,13 +235,13 @@ class CircuitNode(udi_interface.Node):
                     
                 LOGGER.debug("\n\tPOLL about to evaluate Circuit Priority (" + designatedCircuitPriority + ") and set MODE appropriately.\n")
                 if "MUST" in designatedCircuitPriority:
-                  self.setDriver('MODE', 3, True, True)
+                  self.setDriver('AWAKE', 3, True, True)
                 elif "NICE" in designatedCircuitPriority:
-                  self.setDriver('MODE', 2, True, True)
+                  self.setDriver('AWAKE', 2, True, True)
                 elif "NON_" in designatedCircuitPriority:
-                  self.setDriver('MODE', 1, True, True)
+                  self.setDriver('AWAKE', 1, True, True)
                 else:
-                  self.setDriver('MODE', 0, True, True)
+                  self.setDriver('AWAKE', 0, True, True)
                 
                 LOGGER.debug("\n\tPOLL About to set ST to " + str(designatedCircuitInstantPowerW) + " for Circuit " + self.circuitID + ".\n")
                 self.setDriver('ST', abs(designatedCircuitInstantPowerW), True, True)
