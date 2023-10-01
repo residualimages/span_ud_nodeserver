@@ -422,7 +422,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             #    title = title + ' (' + current_circuitID[-(26-len(title)):] + ')'
             title = getValidNodeName(title)
             try:
-                node = SPAN_circuit.CircuitNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken, current_circuitID)
+                node = SPAN_circuit.CircuitNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken, current_circuitID, i)
                 self.poly.addNode(node)
                 self.wait_for_node_done()
                 node.setDriver('AWAKE', 1, True, True)
