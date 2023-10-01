@@ -177,10 +177,10 @@ class CircuitNode(udi_interface.Node):
                 nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                 
                 self.setDriver('TIME', nowEpoch, True, True)
-                self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y %H:%M:%S"), False)
+                self.setDriver('TIMEREM', nowDT.strftime("%M.%S"), True, True, 145, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
             else:
                 LOGGER.warning("\n\tINIT Issue getting data for circuit '" + self.circuitID + "'.\n")
-                self.setDriver('TIMEREM', "INIT Error Querying" , False)
+                self.setDriver('TIMEREM', "-1", True, True, 145, "INIT Error Querying")
         
         self.poll('shortPoll')
         
@@ -251,16 +251,35 @@ class CircuitNode(udi_interface.Node):
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                     LOGGER.debug("\n\tPOLL about to set TIME and ST; TIME = '" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "'.\n")
                     self.setDriver('TIME', nowEpoch, True, True)
-                    self.setDriver('TIMEREM', nowDT.strftime("%m/%d/%Y %H:%M:%S"), False)
+                    self.setDriver('TIMEREM', nowDT.strftime("%M.%S"), True, True, 145, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
                 else:
                     LOGGER.warning("\n\tPOLL ERROR: Unable to get designatedCircuitInstantPowerW from designatedCircuitData:\n\t\t" + designatedCircuitData + "\n")
-                    self.setDriver('TIMEREM', "POLL Error Querying" , False)
+                    self.setDriver('TIMEREM', "-2", True, True, 145, "POLL Error Querying")
             else:
                 LOGGER.warning("\n\tPOLL Issue getting data for circuit '" + self.circuitID + "'.\n")
-                self.setDriver('TIMEREM', "Error Querying" , False)
+                self.setDriver('TIMEREM', "-3", True, True, 145, "Error Querying")
 
     def update_circuit_status(self,val):
-        LOGGER.warning(f'\n\t\t{self.address} being set via update_circuit_status to val={val}\n')
+        #{"relayStateIn": {"relayState":STATE}}
+        spanConnection = http.client.HTTPConnection(self.ipAddress)
+        payload = "{"+ chr(34) + "relayStateIn" + ch(34) + ":{" + chr(34) + "relayState" + chr(34) + ":" +chr(34) + "STATE" + chr(34) + "}}"
+        headers = {
+            "Authorization": "Bearer " + self.token
+        }
+
+        if val == 2:
+            payload = payload.replace('STATE','CLOSED')
+        elif val == 1:
+            payload = payload.replace('STATE','OPEN')
+     
+        LOGGER.debug("\n\tINIT About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
+        spanConnection.request("POST", "/api/v1/circuits/" + self.circuitID, payload, headers)
+
+        updateCircuitResponse = spanConnection.getresponse()
+        updateCircuitData = updateCircuitResponse.read()
+        updateCircuitData = updateCircuitData.decode("utf-8")
+
+        LOGGER.debug("\n\tPOST Update Circuit Status Data: \n\t\t" + updateCircuitData + "\n")
         self.setDriver('CLIEMD', val, True, True)
 
     def cmd_update_circuit_status(self,val):
@@ -268,7 +287,28 @@ class CircuitNode(udi_interface.Node):
         self.update_circuit_status(val)
 
     def update_circuit_priority(self,val):
-        LOGGER.warning(f'\n\t\t{self.address} being set via update_circuit_priority to val={val}\n')
+        #{"priorityIn": {"priority": PRIORITY}}
+        spanConnection = http.client.HTTPConnection(self.ipAddress)
+        payload = "{"+ chr(34) + "priorityIn" + ch(34) + ":{" + chr(34) + "priority" + chr(34) + ":" +chr(34) + "PRIORITY" + chr(34) + "}}"
+        headers = {
+            "Authorization": "Bearer " + self.token
+        }
+
+        if val == 3:
+            payload = payload.replace('PRIORITY','MUST_HAVE')
+        elif val == 2:
+            payload = payload.replace('PRIORITY','NICE_TO_HAVE')
+        elif val == 1:
+            payload = payload.replace('PRIORITY','NON_ESSENTIAL')
+     
+        LOGGER.debug("\n\tINIT About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
+        spanConnection.request("POST", "/api/v1/circuits/" + self.circuitID, payload, headers)
+
+        updateCircuitResponse = spanConnection.getresponse()
+        updateCircuitData = updateCircuitResponse.read()
+        updateCircuitData = updateCircuitData.decode("utf-8")
+
+        LOGGER.debug("\n\tPOST Update Circuit Priority Data: \n\t\t" + updateCircuitData + "\n")
         self.setDriver('AWAKE', val, True, True)
 
     def cmd_update_circuit_priority(self,val):
