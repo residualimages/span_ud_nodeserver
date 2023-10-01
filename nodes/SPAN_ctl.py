@@ -204,7 +204,7 @@ class Controller(udi_interface.Node):
     Delete and Reset Nodes:
     '''
     def reset(self,command):
-        if command.cmd == 'RESET':
+        if command['cmd'] == 'RESET':
             LOGGER.info('\n\t\tCOMMAND RECEIVED TO RESET: Will Delete and Recreate All Sub-Nodes.\n')
             
             # delete any existing nodes
@@ -218,6 +218,6 @@ class Controller(udi_interface.Node):
                     self.setDriver('GV0', 0, True, True)
             self.start()
         else:
-            LOGGER.info("\n\t\tUNKNOWN COMMAND RECEIVED: '" + command.cmd + "'.\n")
+            LOGGER.info("\n\t\tUNKNOWN COMMAND RECEIVED: '" + command['cmd'] + "'.\n")
             
     commands = {'RESET': reset}
