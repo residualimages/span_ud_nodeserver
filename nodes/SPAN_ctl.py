@@ -205,6 +205,8 @@ class Controller(udi_interface.Node):
     '''
     def reset(self,command):
         if command['cmd'] == 'RESET':
+            self.poly.stop()
+            
             LOGGER.warning('\n\t\tCOMMAND RECEIVED TO RESET: Will Delete and Recreate All Sub-Nodes.\n')
             
             self.setDriver('GV0', 0, True, True)            
