@@ -15,6 +15,9 @@ from nodes import SPAN_panel
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
 
+### Note for setDriver from BobP:
+### setDriver(driver, value, report=true, forceReport=false, uom=None, text=None)
+
 ### Generic Nodeserver Helper Functions ###
 ### copied from Goose66 ###
 
