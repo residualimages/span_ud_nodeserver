@@ -277,7 +277,7 @@ class CircuitNode(udi_interface.Node):
         elif commandDetails['value'] == 1:
             payload = payload.replace('STATE','OPEN')
         else:
-            LOGGER.debug("\n\tCOMMAND was expected to set circuit status, but the value is not 1 or 2; it is: '" + commandDetails['value'] + "' from:\n\t\t" + commandDetails + "\n")
+            LOGGER.warning("\n\tCOMMAND was expected to set circuit status, but the value is not 1 or 2; it is: '" + commandDetails['value'] + "' from:\n\t\t" + commandDetails + "\n")
             return
      
         LOGGER.debug("\n\tCOMMAND About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
@@ -307,7 +307,7 @@ class CircuitNode(udi_interface.Node):
         elif commandDetails['value'] == 1:
             payload = payload.replace('PRIORITY','NON_ESSENTIAL')
         else:
-            LOGGER.debug("\n\tCOMMAND was expected to set circuit priority, but the value is not 1, 2, or 3; it is: '" + commandDetails['value'] + "' from:\n\t\t" + commandDetails + "\n")
+            LOGGER.warning("\n\tCOMMAND was expected to set circuit priority, but the value is not 1, 2, or 3; it is: '" + commandDetails['value'] + "' from:\n\t\t" + commandDetails + "\n")
             return
     
         LOGGER.debug("\n\tCOMMAND About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
