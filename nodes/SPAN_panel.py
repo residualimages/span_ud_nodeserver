@@ -156,8 +156,6 @@ class PanelNodeForCircuits(udi_interface.Node):
     until it is fully created before we try to use it.
     '''
     def node_queue(self, data):
-        self.n_queue.append(data['address'])
-        #LOGGER.debug("\n\t\tSUBSCRIBED AddNodeDone under Panel Circuits Controller: Node Creation Complete for " + data['address'] + ".\n")
         if self.address == data['address']:
             LOGGER.debug("\n\t\t\tPanelForCircuits Controller Creation Completed; Queue Circuit child node(s) creation.\n")
             lastOctet_array = self.ipAddress.split('.')
@@ -213,6 +211,9 @@ class PanelNodeForCircuits(udi_interface.Node):
                 self.createCircuits()
             else:
                 LOGGER.warning("\n\tINIT Issue getting Circuits Data for Panel Circuits Controller @ " + self.ipAddress + ".\n")
+   
+            self.n_queue.append(data['address'])
+   
 
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
