@@ -226,6 +226,7 @@ class PanelNodeForCircuits(udi_interface.Node):
     def start(self):
         # set the initlized flag to allow setDriver to work
         self._initialized = True
+        self.setDriver('ST', 1, True, True)
     
     # overload the setDriver() of the parent class to short circuit if 
     # node not initialized
@@ -732,9 +733,11 @@ class PanelNodeForBreakers(udi_interface.Node):
                 LOGGER.warning('\n\tFailed to create Breaker child node {} under Panel Breaker controller {} due to error: {}.\n'.format(title, panelNumberPrefix, e))
 
     '''
-    Change all the child node active status drivers to 0 W
+    STOP Received
     '''
     def stop(self):
+        self.setDriver('ST', 0, True, True)
+        '''
         currentPanelBreakerPrefix = "s" + self.address.replace('panelbreaker_','') + "_breaker_"
         nodes = self.poly.getNodes()
         self.setDriver('ST', 0, True, True)
@@ -742,4 +745,4 @@ class PanelNodeForBreakers(udi_interface.Node):
             if currentPanelBreakerPrefix in node:
                 nodes[node].setDriver('ST', 0, True, True)
                 LOGGER.debug("\n\tSTOP RECEIVED: Panel Breaker Controller setting " + node + "'s property ST = 0 W.\n")
-
+        '''
