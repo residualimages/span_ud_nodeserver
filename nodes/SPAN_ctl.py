@@ -188,44 +188,13 @@ class Controller(udi_interface.Node):
     Change all the child node active status drivers to false
     '''
     def stop(self):
-
+        '''
         nodes = self.poly.getNodes()
         for node in nodes:
             if node != 'controller':   # but not the controller node
                 nodes[node].setDriver('ST', 0, True, True)
                 if 'breaker' not in node and 'circuit' not in node:
                     nodes[node].setDriver('AWAKE', 0, True, True)
+        '''
         self.setDriver('ST', 0, True, True)
-
         self.poly.stop()
-
-
-    '''
-    Delete and Reset Nodes:
-    '''
-    def reset(self,command):
-        if command['cmd'] == 'RESET':
-            self.poly.stop()
-            
-            LOGGER.warning('\n\t\tCOMMAND RECEIVED TO RESET: Will Delete and Recreate All Sub-Nodes.\n')
-            
-            self.setDriver('GV0', 0, True, True)            
-            
-            # delete any existing nodes
-            nodes = self.poly.getNodes()
-            for node in nodes:
-                if '_breaker_' in node or '_circuit_' in node:   # delete the children nodes first
-                    LOGGER.debug("\n\tRESET NS Controller - deleting " + node + ".\n")
-                    self.poly.delNode(node)
-            
-            nodes = self.poly.getNodes()
-            for node in nodes:
-                if node != 'controller':   # now delete the panel controllers but not the NS controller node
-                    LOGGER.debug("\n\tRESET NS Controller - deleting " + node + ".\n")
-                    self.poly.delNode(node)
-            self.start()
-            
-        else:
-            LOGGER.info("\n\t\tUNKNOWN COMMAND RECEIVED: '" + command['cmd'] + "'.\n")
-            
-    commands = {'RESET': reset}
