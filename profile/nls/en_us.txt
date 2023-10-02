@@ -12,7 +12,6 @@ ST-panelForCircuits-CLIEMD-NAME = Grid / Connection Status
 ST-panelForCircuits-TIME-NAME = Last Successful Query
 ST-panelForCircuits-MOON-NAME = Last Successful Query (Hour.Minute)
 ST-panelForCircuits-TIMEREM-NAME = Last Successful Query (Seconds)
-ST-panelForCircuits-AWAKE-NAME = Being Monitored?
 IX_SPAN_PANELGRIDSTATUS-1 = Panel on Grid
 IX_SPAN_PANELGRIDSTATUS-2 = UNKNOWN
 
