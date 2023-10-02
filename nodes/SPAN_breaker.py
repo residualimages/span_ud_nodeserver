@@ -18,7 +18,7 @@ import math,time,datetime
 #import urllib.parse
 
 LOGGER = udi_interface.LOGGER
-Custom = udi_interface.Custom
+#Custom = udi_interface.Custom
 
 '''
 This is our Breaker device node. 
@@ -46,7 +46,7 @@ class BreakerNode(udi_interface.Node):
 
         LOGGER.debug("\n\tINIT Span Breaker's parent is '" + parent + "' when INIT'ing.\n")
 
-        self.Parameters = Custom(polyglot, 'customparams')
+        #self.Parameters = Custom(polyglot, 'customparams')
         self.ipAddress = spanIPAddress
         self.token = bearerToken
         self.breakerID = spanBreakerID
@@ -125,9 +125,9 @@ class BreakerNode(udi_interface.Node):
 
     '''
     Read the user entered custom parameters.
-    '''
     def parameterHandler(self, params):
         self.Parameters.load(params)
+    '''
 
     '''
     This is where the real work happens.  When the parent controller gets a shortPoll, do some work. 
