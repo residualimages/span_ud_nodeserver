@@ -170,7 +170,6 @@ class Controller(udi_interface.Node):
                 circuitController = SPAN_panel.PanelNodeForCircuits(self.poly, addressCircuits, addressCircuits, titleCircuits, current_IPaddress, current_BearerToken)
                 self.poly.addNode(circuitController)
                 circuitController.wait_for_node_done()
-                circuitController.setDriver('AWAKE', 1, True, True)
             except Exception as e:
                 LOGGER.warning('Failed to create Panel Circuits Controller {}: {}'.format(titleCircuits, e))
 
@@ -185,16 +184,9 @@ class Controller(udi_interface.Node):
         self.setDriver('GV0', how_many, True, True)
 
     '''
-    Change all the child node active status drivers to false
+    STOP Command Received
     '''
     def stop(self):
-        '''
-        nodes = self.poly.getNodes()
-        for node in nodes:
-            if node != 'controller':   # but not the controller node
-                nodes[node].setDriver('ST', 0, True, True)
-                if 'breaker' not in node and 'circuit' not in node:
-                    nodes[node].setDriver('AWAKE', 0, True, True)
-        '''
+        LOGGER.warning("\n\tSTOP COMMAND Received by '" + self.address + "'.\n")
         self.setDriver('ST', 0, True, True)
         self.poly.stop()
