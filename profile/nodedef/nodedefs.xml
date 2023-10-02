@@ -16,14 +16,6 @@
       <st id="MOON" editor="hourmin" />
       <st id="TIMEREM" editor="seconds" />
 	  </sts>
-    <cmds>
-      <sends />
-	<accepts>
-        <cmd id="TOGGLE_MONITORING">
-          <p id="" editor="bool" init="AWAKE" />
-        </cmd>
-      </accepts>
-    </cmds>
   </nodeDef>
 	
   <nodeDef id="circuit" nls="circuit">
