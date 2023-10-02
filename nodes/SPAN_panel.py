@@ -155,6 +155,8 @@ class PanelNodeForCircuits(udi_interface.Node):
                             nodes[node].updateNode(self.allCircuitsData)
                         except Exception as e:
                             LOGGER.warning('\n\t\tPOLL ERROR in Panel Circuits: Cannot seem to update node needed in for-loop due to error:\t{}.\n'.format(e))
+            else:
+                 LOGGER.warning("\n\tUPDATE ALLCIRCUITSDATA failed to populate allCircuitsData.\n")
     '''
     Create the circuit nodes.
     TODO: Handle fewer circuit nodes by deleting (currently commented out)
@@ -228,6 +230,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             "Authorization": "Bearer " + self.token
         }
         try:
+            LOGGER.debug("n\tUPDATING ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' being attempted to http://" + self.ipAddress + "/api/v1/circuits\n")
             spanConnection.request("GET", "/api/v1/circuits", payload, headers)
             circuitsResponse = spanConnection.getresponse()
             self.allCircuitsData = circuitsResponse.read()
