@@ -91,6 +91,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             {'driver': 'PULSCNT', 'value': 0, 'uom': 56},
             {'driver': 'CLIEMD', 'value': 0, 'uom': 25},
             {'driver': 'TIME', 'value': 0, 'uom': 151},
+            {'driver': 'MOON', 'value': -1, 'uom': 56},
             {'driver': 'TIMEREM', 'value': -1, 'uom': 56},
             {'driver': 'AWAKE', 'value': 1, 'uom': 2}
             ]
@@ -320,7 +321,8 @@ class PanelNodeForCircuits(udi_interface.Node):
                         nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                         
                         self.setDriver('TIME', nowEpoch, True, True)
-                        self.setDriver('TIMEREM', nowDT.strftime("%M.%S"), True, True, None, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                        self.setDriver('MOON', nowDT.strftime("%H.%M"), True, True, None, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                        self.setDriver('TIMEREM', nowDT.strftime("%S"), True, True, None, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
     
                     try:
                         spanConnection.request("GET", "/api/v1/circuits", payload, headers)
@@ -347,6 +349,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             else:
                 tokenLastTen = self.token[-10:]
                 LOGGER.debug('\n\tSkipping POLL query of Panel Circuit Controller at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
+                self.setDriver('MOON', -1, True, True, None, "Not Actively Querying due to 'AWAKE' being set to 0.")
                 self.setDriver('TIMEREM', -1, True, True, None, "Not Actively Querying due to 'AWAKE' being set to 0.")
             
     def toggle_monitoring(self,val):
@@ -453,6 +456,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             {'driver': 'PULSCNT', 'value': 0, 'uom': 56},
             {'driver': 'GPV', 'value': 0, 'uom': 56},
             {'driver': 'TIME', 'value': 0, 'uom': 151},
+            {'driver': 'MOON', 'value': -1, 'uom': 56},
             {'driver': 'TIMEREM', 'value': -1, 'uom': 56}
             ]
 
@@ -640,7 +644,8 @@ class PanelNodeForBreakers(udi_interface.Node):
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                     
                     self.setDriver('TIME', nowEpoch, True, True)
-                    self.setDriver('TIMEREM', nowDT.strftime("%M.%S"), True, True, None, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                    self.setDriver('MOON', nowDT.strftime("%H.%M"), True, True, None, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                    self.setDriver('TIMEREM', nowDT.strftime("%S"), True, True, None, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
 
                 '''
                 for i in range(1,33):
