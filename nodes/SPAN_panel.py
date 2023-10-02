@@ -413,11 +413,11 @@ class PanelNodeForCircuits(udi_interface.Node):
     STOP Called
     '''
     def stop(self):
-        LOGGER.debug("\n\tSTOP RECEIVED: Panel Circuit Controller handler.\n")
+        LOGGER.debug("\n\tSTOP RECEIVED: Panel Circuit Controller handler '" + self.address + "'.\n")
+        self.setDriver('ST', 0, True, True)
         '''
         currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
         nodes = self.poly.getNodes()
-        self.setDriver('ST', 0, True, True)
         for node in nodes:
             if currentPanelCircuitPrefix in node:
                 nodes[node].setDriver('ST', 0, True, True)
@@ -479,7 +479,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         polyglot.subscribe(polyglot.POLL, self.poll)
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.START, self.start, address)
-        polyglot.subscribe(polyglot.ADDNODEDONE, self.wait_for_node_done)
+        polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
 
     '''
     node_queue() and wait_for_node_event() create a simple way to wait
@@ -712,6 +712,7 @@ class PanelNodeForBreakers(udi_interface.Node):
     STOP Received
     '''
     def stop(self):
+        LOGGER.debug("\n\tSTOP RECEIVED: Panel Breaker Controller handler '" + self.address + "'.\n")
         self.setDriver('ST', 0, True, True)
         '''
         currentPanelBreakerPrefix = "s" + self.address.replace('panelbreaker_','') + "_breaker_"
