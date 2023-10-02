@@ -471,7 +471,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             panelResponse = spanConnection.getresponse()
             self.allBreakersData = panelResponse.read()
             self.allBreakersData = self.allBreakersData.decode("utf-8")
-            LOGGER.debug("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.addres + "' Panel Data: \n\t\t" + self.allBreakersData + "\n")
+            LOGGER.debug("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.address + "' Panel Data: \n\t\t" + self.allBreakersData + "\n")
         except Exception as e:
             LOGGER.warning('\n\t\tINIT ERROR: SPAN API GET request for Panel Circuits Controller failed due to error:\t{}.\n'.format(e))
             self.allBreakersData = ''
