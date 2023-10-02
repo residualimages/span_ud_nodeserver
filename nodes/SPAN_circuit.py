@@ -100,7 +100,9 @@ class CircuitNode(udi_interface.Node):
         #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
         #polyglot.subscribe(polyglot.POLL, self.poll)
         #polyglot.subscribe(polyglot.START, self.start, address)
+        polyglot.subscribe(polyglot.STOP, self.stop, address)
         #polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
+        polyglot.subscribe(polyglot.ADDNODEDONE, self.wait_for_node_done)
         
         self.initialized = True
         
@@ -346,3 +348,10 @@ class CircuitNode(udi_interface.Node):
         "UPDATE_CIRCUIT_STATUS": cmd_update_circuit_status,
         "UPDATE_CIRCUIT_PRIORITY": cmd_update_circuit_status,
     }
+
+    '''
+    Change self status driver to 0 W
+    '''
+    def stop(self):
+        LOGGER.warning("\n\tSTOP COMMAND received: Circuit Node '" + self.address + "'.\n")
+        self.setDriver('ST', 0, True, True)
