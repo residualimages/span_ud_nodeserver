@@ -247,7 +247,7 @@ class CircuitNode(udi_interface.Node):
                   self.setDriver('AWAKE', 0, True, True)
                 
                 LOGGER.debug("\n\tPOLL About to set ST to " + str(designatedCircuitInstantPowerW) + " for Circuit " + self.circuitID + ".\n")
-                self.setDriver('ST', int(abs(designatedCircuitInstantPowerW)*100), True, True)
+                self.setDriver('ST', round(abs(designatedCircuitInstantPowerW)*,2), True, True)
 
                 if len(str(designatedCircuitInstantPowerW)) > 0:
                     nowEpoch = int(time.time())
