@@ -7,8 +7,6 @@ MIT License
 """
 import udi_interface
 import sys
-import http.client
-
 
 # Standard Library
 from typing import Optional, Any, TYPE_CHECKING
@@ -16,7 +14,6 @@ from typing import Optional, Any, TYPE_CHECKING
 import math,time,datetime
 
 LOGGER = udi_interface.LOGGER
-#Custom = udi_interface.Custom
 
 '''
 This is our Circuit device node. 
@@ -60,7 +57,6 @@ class CircuitNode(udi_interface.Node):
 
         LOGGER.debug("\n\tINIT Span Circuit's parent is '" + parent + "' when INIT'ing.\n")
 
-        #self.Parameters = Custom(polyglot, 'customparams')
         self.ipAddress = spanIPAddress
         self.token = bearerToken
         self.circuitIndex = spanCircuitIndex
@@ -72,37 +68,10 @@ class CircuitNode(udi_interface.Node):
 
         LOGGER.debug("\n\t\tINIT About to call setDriver for '" + self.address + "' with a UOM of 145 and a value of '" + str(self.circuitIndex) + "' and a text attribute of '" + self.circuitID + "'.\n")
         self.setDriver('GPV', self.circuitIndex, True, True, 145, self.circuitID)
-
-        '''
-        spanConnection = http.client.HTTPConnection(self.ipAddress)
-        payload = ''
-        headers = {
-            "Authorization": "Bearer " + self.token
-        }
-     
-        LOGGER.debug("\n\tINIT About to query " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
-        spanConnection.request("GET", "/api/v1/circuits/" + self.circuitID, payload, headers)
-
-        designatedCircuitResponse = spanConnection.getresponse()
-        designatedCircuitData = designatedCircuitResponse.read()
-        designatedCircuitData = designatedCircuitData.decode("utf-8")
-        '''
-
-        '''
-        parentPrefix_tuple = self.address.partition('_')
-        parentPrefix = parentPrefix_tuple[0]
-        parentPrefix = parentPrefix.replace('s','panelcircuit_')  
-        LOGGER.debug("\n\t\tAbout to try to grab the globals()['" + parentPrefix + "_allCircuitsData']\n")
-        globals()[parentPrefix + '_allCircuitsData']
-        allCircuitsData = globals()[parentPrefix + '_allCircuitsData']
-        '''
             
         # subscribe to the events we want
-        #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
-        #polyglot.subscribe(polyglot.POLL, self.poll)
-        #polyglot.subscribe(polyglot.START, self.start, address)
+        polyglot.subscribe(polyglot.START, self.start, address)
         polyglot.subscribe(polyglot.STOP, self.stop, address)
-        #polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
         
         self.initialized = True
@@ -125,25 +94,18 @@ class CircuitNode(udi_interface.Node):
         
     # called by the interface after the node data has been put in the Polyglot DB
     # and the node created/updated in the ISY
-    #def start(self):
+    def start(self):
         # set the initlized flag to allow setDriver to work
-        #self._initialized = True
+        self._initialized = True
     
     # overload the setDriver() of the parent class to short circuit if 
     # node not initialized
-    #def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None):
-    #    if self._initialized:
-    #        super().setDriver(driver, value, report, force, uom)
+    def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None, text: Optional[str]=None):
+        if self._initialized:
+            super().setDriver(driver, value, report, force, uom, text)
 
     '''
-    Read the user entered custom parameters.
-    
-    def parameterHandler(self, params):
-        self.Parameters.load(params)
-    '''
-
-    '''
-    This is where the real work happens.  When the parent controller gets a shortPoll, do some work. 
+    This is where the real work happens.  When the parent controller gets a shortPoll, do some work with the passed data. 
     '''
     def updateNode(self, passedAllCircuitsData):
         self.allCircuitsData = passedAllCircuitsData
@@ -205,19 +167,6 @@ class CircuitNode(udi_interface.Node):
             designatedCircuitData = designatedCircuitData_tuple[2]
             designatedCircuitData_tuple = designatedCircuitData.partition('},')
             designatedCircuitData = designatedCircuitData_tuple[0] + '}'
-    
-            '''
-            spanConnection = http.client.HTTPConnection(self.ipAddress)
-            payload = ''
-            headers = {
-                "Authorization": "Bearer " + self.token
-            }
-            spanConnection.request("GET", "/api/v1/circuits/" + self.circuitID, payload, headers)
-    
-            designatedCircuitResponse = spanConnection.getresponse()
-            designatedCircuitData = designatedCircuitResponse.read()
-            designatedCircuitData = designatedCircuitData.decode("utf-8")
-            '''
         
             LOGGER.debug("\n\tPOLL Circuit Data: \n\t\t" + designatedCircuitData + "\n")
         
@@ -289,12 +238,6 @@ class CircuitNode(udi_interface.Node):
             "Authorization": "Bearer " + self.token
         }
         
-        '''
-        value_tuple = commandDetails.partition(chr(39) + "value" + chr(39) + ":")
-        value = value_tuple[2]
-        value_tuple = value.partition(',')
-        value = value_tuple[0]
-        '''
         value = commandDetails.get('value')
         
         if '2' in value:
@@ -324,12 +267,7 @@ class CircuitNode(udi_interface.Node):
         headers = {
             "Authorization": "Bearer " + self.token
         }
-        '''
-        value_tuple = commandDetails.partition(chr(39) + "value" + chr(39) + ":")
-        value = value_tuple[2]
-        value_tuple = value.partition(',')
-        value = value_tuple[0]
-        '''
+
         value = commandDetails.get('value')
 
         if '3' in value:
