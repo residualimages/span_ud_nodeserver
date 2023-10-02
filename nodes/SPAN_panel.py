@@ -498,7 +498,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             
             try:
                 nodes = self.poly.getNodes()
-                sisterCircuitsController = self.address.replace('panelcircuit_','panelbreaker_')
+                sisterCircuitsController = self.address.replace('panelbreaker_','panelcircuit_')
                 nodes[sisterCircuitsController].updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, epoch, hour, minute, second)
                 LOGGER.warning("\n\tUPDATE ALLBREAKERSDATA successfully found its sisterCircuitsController '" + sisterCircuitsController + "', and tried to update its total power 'ST', as well as time-based, Status elements.\n")
             except Exception as e: 
