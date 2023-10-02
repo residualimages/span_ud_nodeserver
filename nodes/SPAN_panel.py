@@ -147,7 +147,7 @@ class PanelNodeForCircuits(udi_interface.Node):
         polyglot.subscribe(polyglot.POLL, self.poll)
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.START, self.start, address)
-        polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue_panelCircuitsFinished)
+        polyglot.subscribe(polyglot.ADDNODEDONE, self.wait_for_node_done)
 
     '''
     node_queue() and wait_for_node_event() create a simple way to wait
@@ -155,7 +155,7 @@ class PanelNodeForCircuits(udi_interface.Node):
     will return before the node is fully created. Using this, we can wait
     until it is fully created before we try to use it.
     '''
-    def node_queue_panelCircuitsFinished(self, data):
+    def node_queue(self, data):
         self.n_queue.append(data['address'])
         #LOGGER.debug("\n\t\tSUBSCRIBED AddNodeDone under Panel Circuits Controller: Node Creation Complete for " + data['address'] + ".\n")
         if self.address == data['address']:
@@ -478,7 +478,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         polyglot.subscribe(polyglot.POLL, self.poll)
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.START, self.start, address)
-        polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue_panelFinished)
+        polyglot.subscribe(polyglot.ADDNODEDONE, self.wait_for_node_done)
 
     '''
     node_queue() and wait_for_node_event() create a simple way to wait
@@ -486,7 +486,7 @@ class PanelNodeForBreakers(udi_interface.Node):
     will return before the node is fully created. Using this, we can wait
     until it is fully created before we try to use it.
     '''
-    def node_queue_panelFinished(self, data):
+    def node_queue(self, data):
         self.n_queue.append(data['address'])
         #LOGGER.debug("\n\t\tSUBSCRIBED AddNodeDone under Panel Breaker Controller: Node Creation Complete for " + data['address'] + ".\n")
         if self.address == data['address']:
