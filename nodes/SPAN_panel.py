@@ -161,7 +161,7 @@ class PanelNodeForCircuits(udi_interface.Node):
         #LOGGER.debug("\n\t\tSUBSCRIBED AddNodeDone under Panel Circuits Controller: Node Creation Complete for " + data['address'] + ".\n")
         if self.address == data['address']:
             LOGGER.debug("\n\t\t\tPanelForCircuits Controller Creation Completed; Queue Circuit child node(s) creation.\n")
-            self.setDriver('AWAKE', 1, True, True)
+            #self.setDriver('AWAKE', 1, True, True)
             lastOctet_array = self.ipAddress.split('.')
             lastOctet = lastOctet_array[len(lastOctet_array)-1]
             self.setDriver('FREQ', lastOctet, True, True, None, self.ipAddress)
@@ -444,6 +444,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                 nodes[node].setDriver('AWAKE', 0, True, True)
                 nodes[node].setDriver('ST', 0, True, True)
                 LOGGER.debug("\n\tSTOP RECEIVED: Panel Circuit Controller Setting child " + node + "'s properties AWAKE = 0 and ST = 0 W.\n")
+        self.setDriver('AWAKE', 0, True, True)
 
 '''
 This is our PanelForBreakers device node. 
