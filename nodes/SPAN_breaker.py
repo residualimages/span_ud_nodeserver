@@ -87,7 +87,7 @@ class BreakerNode(udi_interface.Node):
         #polyglot.subscribe(polyglot.START, self.start, address)
         polyglot.subscribe(polyglot.STOP, self.stop, address)
         #polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
-        polyglot.subscribe(polyglot.ADDNODEDONE, self.wait_for_node_done)
+        polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
         
         self.initialized = True
         
@@ -98,7 +98,6 @@ class BreakerNode(udi_interface.Node):
     until it is fully created before we try to use it.
     '''
     def node_queue(self, data):
-        self.n_queue.append(data['address'])        
         if self.address == data['address']:
             LOGGER.debug("\n\tWAIT FOR NODE CREATION: Fully Complete for Breaker " + self.address + "\n")
             nowEpoch = int(time.time())
@@ -106,6 +105,7 @@ class BreakerNode(udi_interface.Node):
             self.setDriver('TIME', nowEpoch, True, True)
             self.setDriver('MOON', nowDT.strftime("%H.%M"), True, True, None, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
             self.setDriver('TIMEREM', nowDT.strftime("%S"), True, True, None, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+            self.n_queue.append(data['address'])        
 
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
