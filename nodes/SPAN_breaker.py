@@ -197,7 +197,7 @@ class BreakerNode(udi_interface.Node):
                   self.setDriver('CLIEMD', 0, True, True)
                 
                 LOGGER.debug("\n\tPOLL About to set ST to " + str(abs(designatedBreakerInstantPowerW)) + " for Breaker " + str(self.breakerID) + ".\n")
-                self.setDriver('ST', int(abs(designatedBreakerInstantPowerW)*100), True, True)
+                self.setDriver('ST', round(abs(designatedBreakerInstantPowerW),2), True, True)
 
                 if len(str(designatedBreakerInstantPowerW)) > 0:
                     nowEpoch = int(time.time())
