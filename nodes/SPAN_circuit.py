@@ -102,7 +102,7 @@ class CircuitNode(udi_interface.Node):
         #polyglot.subscribe(polyglot.START, self.start, address)
         polyglot.subscribe(polyglot.STOP, self.stop, address)
         #polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
-        polyglot.subscribe(polyglot.ADDNODEDONE, self.wait_for_node_done)
+        polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
         
         self.initialized = True
         
