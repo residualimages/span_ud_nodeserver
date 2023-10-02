@@ -219,5 +219,5 @@ class BreakerNode(udi_interface.Node):
     Change self status driver to 0 W
     '''
     def stop(self):
-        LOGGER.warning("\n\tSTOP COMMAND received: Circuit Node '" + self.address + "'.\n")
+        LOGGER.warning("\n\tSTOP COMMAND received: Breaker Node '" + self.address + "'.\n")
         self.setDriver('ST', 0, True, True)
