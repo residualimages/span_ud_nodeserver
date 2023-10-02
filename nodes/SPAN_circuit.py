@@ -262,11 +262,11 @@ class CircuitNode(udi_interface.Node):
                 else:
                     LOGGER.warning("\n\tPOLL ERROR: Unable to get designatedCircuitInstantPowerW from designatedCircuitData:\n\t\t" + designatedCircuitData + "\n")
                     self.setDriver('MOON', -2, True, True, None, "POLL Error Querying")
-                    self.setDriver('TIMEREM', "-2", True, True, None, "POLL Error Querying")
+                    self.setDriver('TIMEREM', -2, True, True, None, "POLL Error Querying")
             else:
                 LOGGER.warning("\n\tPOLL Issue getting data for circuit '" + self.circuitID + "'.\n")
+                self.setDriver('MOON', -3, True, True, None, "Error Querying")
                 self.setDriver('TIMEREM', -3, True, True, None, "Error Querying")
-                self.setDriver('TIMEREM', "-3", True, True, None, "Error Querying")
 
     def cmd_update_circuit_status(self,commandDetails):
         LOGGER.debug(f'\n\t{self.address} being set via cmd_update_circuit_status to commandDetails={commandDetails}\n')
