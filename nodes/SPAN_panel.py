@@ -501,7 +501,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                 sisterCircuitsController = self.address.replace('panelcircuit_','panelbreaker_')
                 nodes[sisterCircuitsController].updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, epoch, hour, minute, second)
                 LOGGER.warning("\n\tUPDATE ALLBREAKERSDATA successfully found its sisterCircuitsController '" + sisterCircuitsController + "', and tried to update its total power 'ST', as well as time-based, Status elements.\n")
-            except Exception as e: its 
+            except Exception as e: 
                 LOGGER.warning("\n\tUPDATE ALLBREAKERSDATA ERROR: Panel Breaker Controller '" + self.address + "' cannot seem to find its sisterCircuitsController '" + self.address.replace('panelcircuit_','panelbreaker_') + "' to update, due to error:\n\t\t{}\n".format(e))
 
     '''
