@@ -41,10 +41,10 @@ class CircuitNode(udi_interface.Node):
             {'driver': 'MOON', 'value': -1, 'uom': 56},
             {'driver': 'TIMEREM', 'value': -1, 'uom': 56},
             {'driver': 'GPV', 'value': 0, 'uom': 145},
-            {'driver': 'GV1', 'value': 'N/A', 'uom': 56},
-            {'driver': 'GV2', 'value': 'N/A', 'uom': 56},
-            {'driver': 'GV3', 'value': 'N/A', 'uom': 56},
-            {'driver': 'GV4', 'value': 'N/A', 'uom': 56}
+            {'driver': 'GV1', 'value': '', 'uom': 56},
+            {'driver': 'GV2', 'value': '', 'uom': 56},
+            {'driver': 'GV3', 'value': '', 'uom': 56},
+            {'driver': 'GV4', 'value': '', 'uom': 56}
             ]
 
     def __init__(self, polyglot, parent, address, name, spanIPAddress, bearerToken, spanCircuitID, spanCircuitIndex):
