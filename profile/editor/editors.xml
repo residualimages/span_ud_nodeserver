@@ -6,6 +6,9 @@
 	<editor id="raw">
 		<range uom="56" min="0" max="20000" prec="0" /> 
 	</editor>
+	<editor id="hour">
+		<range uom="56" min="0" max="24" prec="0" /> 
+	</editor>
 	<editor id="minsec">
 		<range uom="56" min="0" max="61" prec="2" /> 
 	</editor>
