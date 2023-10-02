@@ -113,9 +113,9 @@ class CircuitNode(udi_interface.Node):
     until it is fully created before we try to use it.
     '''
     def node_queue(self, data):
-        self.n_queue.append(data['address'])        
         if self.address == data['address']:
             LOGGER.debug("\n\tWAIT FOR NODE CREATION: Fully Complete for Circuit " + self.address + "\n")
+            self.n_queue.append(data['address'])
 
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
