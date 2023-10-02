@@ -91,6 +91,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             {'driver': 'PULSCNT', 'value': 0, 'uom': 56},
             {'driver': 'CLIEMD', 'value': 0, 'uom': 25},
             {'driver': 'TIME', 'value': 0, 'uom': 151},
+            {'driver': 'HR', 'value': -1, 'uom': 56},
             {'driver': 'MOON', 'value': -1, 'uom': 56},
             {'driver': 'TIMEREM', 'value': -1, 'uom': 56}
             ]
@@ -321,8 +322,10 @@ class PanelNodeForCircuits(udi_interface.Node):
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                     
                     self.setDriver('TIME', nowEpoch, True, True)
-                    self.setDriver('MOON', nowDT.strftime("%H.%M"), True, True, None, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
-                    self.setDriver('TIMEREM', nowDT.strftime("%S"), True, True, None, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                    #nowDT.strftime("%m/%d/%Y %H:%M:%S")
+                    self.setDriver('HR', int(nowDT.strftime("%H")), True, True)
+                    self.setDriver('MOON', int(nowDT.strftime("%M")), True, True)
+                    self.setDriver('TIMEREM', int(nowDT.strftime("%S")), True, True)
 
                 try:
                     spanConnection.request("GET", "/api/v1/circuits", payload, headers)
@@ -435,6 +438,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             {'driver': 'PULSCNT', 'value': 0, 'uom': 56},
             {'driver': 'GPV', 'value': 0, 'uom': 56},
             {'driver': 'TIME', 'value': 0, 'uom': 151},
+            {'driver': 'HR', 'value': -1, 'uom': 56},
             {'driver': 'MOON', 'value': -1, 'uom': 56},
             {'driver': 'TIMEREM', 'value': -1, 'uom': 56}
             ]
@@ -622,9 +626,10 @@ class PanelNodeForBreakers(udi_interface.Node):
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                     
                     self.setDriver('TIME', nowEpoch, True, True)
-                    self.setDriver('MOON', nowDT.strftime("%H.%M"), True, True, None, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
-                    self.setDriver('TIMEREM', nowDT.strftime("%S"), True, True, None, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
-
+                    #nowDT.strftime("%m/%d/%Y %H:%M:%S")
+                    self.setDriver('HR', int(nowDT.strftime("%H")), True, True)
+                    self.setDriver('MOON', int(nowDT.strftime("%M")), True, True)
+                    self.setDriver('TIMEREM', int(nowDT.strftime("%S")), True, True)
                 '''
                 for i in range(1,33):
                     try:
