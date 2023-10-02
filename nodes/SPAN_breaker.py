@@ -7,18 +7,13 @@ MIT License
 """
 import udi_interface
 import sys
-import http.client
-
 
 # Standard Library
 from typing import Optional, Any, TYPE_CHECKING
 
 import math,time,datetime
 
-#import urllib.parse
-
 LOGGER = udi_interface.LOGGER
-#Custom = udi_interface.Custom
 
 '''
 This is our Breaker device node. 
@@ -47,7 +42,6 @@ class BreakerNode(udi_interface.Node):
 
         LOGGER.debug("\n\tINIT Span Breaker's parent is '" + parent + "' when INIT'ing.\n")
 
-        #self.Parameters = Custom(polyglot, 'customparams')
         self.ipAddress = spanIPAddress
         self.token = bearerToken
         self.breakerID = spanBreakerID
@@ -57,37 +51,10 @@ class BreakerNode(udi_interface.Node):
         LOGGER.debug("\n\tINIT IP Address for breaker:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen + "; Breaker ID: " + str(self.breakerID))
 
         self.setDriver('PULSCNT', self.breakerID, True, True)
-
-        '''
-        spanConnection = http.client.HTTPConnection(self.ipAddress)
-        payload = ''
-        headers = {
-            "Authorization": "Bearer " + self.token
-        }
-     
-        LOGGER.debug("\n\tINIT About to query " + self.ipAddress + "/api/v1/panel/" + self.breakerID + "\n")
-        spanConnection.request("GET", "/api/v1/panel/" + self.breakerID, payload, headers)
-
-        designatedBreakerResponse = spanConnection.getresponse()
-        designatedBreakerData = designatedBreakerResponse.read()
-        designatedBreakerData = designatedBreakerData.decode("utf-8")
-        '''
-
-        '''
-        parentPrefix_tuple = self.address.partition('_')
-        parentPrefix = parentPrefix_tuple[0]
-        parentPrefix = parentPrefix.replace('s','panelbreaker_')  
-        LOGGER.debug("\n\t\tAbout to try to grab the globals()['" + parentPrefix + "_allBreakersData']\n")
-        globals()[parentPrefix + '_allBreakersData']
-        allBreakersData = globals()[parentPrefix + '_allBreakersData']
-        '''
             
         # subscribe to the events we want
-        #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
-        #polyglot.subscribe(polyglot.POLL, self.poll)
-        #polyglot.subscribe(polyglot.START, self.start, address)
+        polyglot.subscribe(polyglot.START, self.start, address)
         polyglot.subscribe(polyglot.STOP, self.stop, address)
-        #polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
         
         self.initialized = True
@@ -118,24 +85,18 @@ class BreakerNode(udi_interface.Node):
         
     # called by the interface after the node data has been put in the Polyglot DB
     # and the node created/updated in the ISY
-    #def start(self):
+    def start(self):
         # set the initlized flag to allow setDriver to work
-        #self._initialized = True
+        self._initialized = True
     
     # overload the setDriver() of the parent class to short circuit if 
     # node not initialized
-    #def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None):
-    #    if self._initialized:
-    #        super().setDriver(driver, value, report, force, uom)
+    def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None, text: Optional[str]=None):
+        if self._initialized:
+            super().setDriver(driver, value, report, force, uom, text)
 
     '''
-    Read the user entered custom parameters.
-    def parameterHandler(self, params):
-        self.Parameters.load(params)
-    '''
-
-    '''
-    This is where the real work happens.  When the parent controller gets a shortPoll, do some work. 
+    This is where the real work happens.  When the parent controller gets a shortPoll, do some work with the passed data. 
     '''
     def updateNode(self, passedAllBreakersData):
         self.allBreakersData = passedAllBreakersData
@@ -170,19 +131,6 @@ class BreakerNode(udi_interface.Node):
             designatedBreakerData = designatedBreakerData_tuple[2]
             designatedBreakerData_tuple = designatedBreakerData.partition('},')
             designatedBreakerData = designatedBreakerData_tuple[0] + '}'
-    
-            '''
-            spanConnection = http.client.HTTPConnection(self.ipAddress)
-            payload = ''
-            headers = {
-                "Authorization": "Bearer " + self.token
-            }
-            spanConnection.request("GET", "/api/v1/panel/" + self.breakerID, payload, headers)
-    
-            designatedBreakerResponse = spanConnection.getresponse()
-            designatedBreakerData = designatedBreakerResponse.read()
-            designatedBreakerData = designatedBreakerData.decode("utf-8")
-            '''
         
             LOGGER.debug("\n\tPOLL Breaker Data: \n\t\t" + designatedBreakerData + "\n")
         
@@ -225,7 +173,7 @@ class BreakerNode(udi_interface.Node):
                 self.setDriver('TIMEREM', -1, True, True)
                 
     '''
-    Change self status driver to 0 W
+    Change reported power draw 'ST' driver to 0 W
     '''
     def stop(self):
         LOGGER.warning("\n\tSTOP COMMAND received: Breaker Node '" + self.address + "'.\n")
