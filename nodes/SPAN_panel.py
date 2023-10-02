@@ -154,7 +154,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                         try:
                             nodes[node].updateNode(self.allCircuitsData)
                         except Exception as e:
-                            LOGGER.warning('\n\t\tPOLL ERROR in Panel Circuits: Cannot seem to update node needed in for-loop due to error:\t{}.\n'.format(e))
+                            LOGGER.warning('\n\t\tPOLL ERROR in Panel Circuits: Cannot seem to update node needed in for-loop due to error:\n\t\t{}\n'.format(e))
             else:
                  LOGGER.warning("\n\tUPDATE ALLCIRCUITSDATA failed to populate allCircuitsData.\n")
     '''
@@ -207,7 +207,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                 node.wait_for_node_done()
                 LOGGER.debug('\n\tCreated a Circuit child node {} under Panel Circuit Controller {}\n'.format(title, panelNumberPrefix))
             except Exception as e:
-                LOGGER.warning('\n\tFailed to create Circuit child node {} under Panel Circuit Controller {} due to error: {}.\n'.format(title, panelNumberPrefix, e))
+                LOGGER.warning('\n\tFailed to create Circuit child node {} under Panel Circuit Controller {} due to error:\n\t\t{}\n'.format(title, panelNumberPrefix, e))
 
     '''
     This is how we handle whenever our 'sister' Breaker controller updates its allBreakersData variable
@@ -302,8 +302,6 @@ class PanelNodeForBreakers(udi_interface.Node):
     until it is fully created before we try to use it.
     '''
     def node_queue(self, data):
-        self.n_queue.append(data['address'])
-        #LOGGER.debug("\n\t\tSUBSCRIBED AddNodeDone under Panel Breaker Controller: Node Creation Complete for " + data['address'] + ".\n")
         if self.address == data['address']:
             LOGGER.debug("\n\t\t\tPanelForBreakers Controller Creation Completed; Queue Breaker child node(s) creation.\n")
             
@@ -335,7 +333,9 @@ class PanelNodeForBreakers(udi_interface.Node):
         
                 self.createBreakers()
             else:
-                LOGGER.warning("\n\tINIT Issue getting Breakers Data for Panel Breaker Controller '" + self.address + "' @ " + self.ipAddress + ".\n")
+                LOGGER.warning("\n\tINIT Issue getting first-time Breakers Data for Panel Breaker Controller '" + self.address + "' @ " + self.ipAddress + ".\n")
+
+            self.n_queue.append(data['address'])
 
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
@@ -458,7 +458,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                 
                 LOGGER.debug('\n\tCreated a Breaker child node {} under Panel Breaker controller {}\n'.format(title, panelNumberPrefix))
             except Exception as e:
-                LOGGER.warning('\n\tFailed to create Breaker child node {} under Panel Breaker controller {} due to error: {}.\n'.format(title, panelNumberPrefix, e))
+                LOGGER.warning('\n\tCHILD NODE CREATION ERROR: Failed to create Breaker child node {} under Panel Breaker controller {} due to error:\n\t\t{}\n'.format(title, panelNumberPrefix, e))
 
     '''
     This is how we update the allBreakersData variable
@@ -476,7 +476,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             self.allBreakersData = self.allBreakersData.decode("utf-8")
             LOGGER.debug("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.address + "' Panel Data: \n\t\t" + self.allBreakersData + "\n")
         except Exception as e:
-            LOGGER.warning('\n\t\tINIT ERROR: SPAN API GET request for Panel Circuits Controller failed due to error:\t{}.\n'.format(e))
+            LOGGER.warning("\n\tUPDATE ALLBREAKERSDATA ERROR: SPAN API GET request for Panel Circuits Controller '" + self.address + "' failed due to error:\n\t\t{}\n".format(e))
             self.allBreakersData = ''
             
         if "branches" in self.allBreakersData:
@@ -503,7 +503,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                 nodes = self.poly.getNodes()
                 sisterCircuitsController = self.address.replace('panelbreaker_','panelcircuit_')
                 nodes[sisterCircuitsController].updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, epoch, hour, minute, second)
-                LOGGER.warning("\n\tUPDATE ALLBREAKERSDATA successfully found its sisterCircuitsController '" + sisterCircuitsController + "', and tried to update its total power 'ST', as well as time-based, Status elements.\n")
+                LOGGER.debug("\n\tUPDATE ALLBREAKERSDATA successfully found its sisterCircuitsController '" + sisterCircuitsController + "', and tried to update its total power 'ST', as well as time-based, Status elements.\n")
             except Exception as e: 
                 LOGGER.warning("\n\tUPDATE ALLBREAKERSDATA ERROR: Panel Breaker Controller '" + self.address + "' cannot seem to find its sisterCircuitsController '" + self.address.replace('panelcircuit_','panelbreaker_') + "' to update, due to error:\n\t\t{}\n".format(e))
 
