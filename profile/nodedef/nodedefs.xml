@@ -10,22 +10,24 @@
   <nodeDef id="panelForCircuits" nls="panelForCircuits">
     <sts>
       <st id="ST" editor="watt" />
-      <st id="FREQ" editor="octet" />
       <st id="PULSCNT" editor="raw" />
       <st id="CLIEMD" editor="SPAN_PANELGRIDSTATUS" />
-      <st id="MOON" editor="hourmin" />
+      <st id="HR" editor="hour" />
+      <st id="MOON" editor="minute" />
       <st id="TIMEREM" editor="seconds" />
+      <st id="FREQ" editor="octet" />
 	  </sts>
   </nodeDef>
 	
   <nodeDef id="circuit" nls="circuit">
     <sts>
       <st id="ST" editor="watt" />
-      <st id="PULSCNT" editor="raw" />
       <st id="CLIEMD" editor="SPAN_CIRCUITSTATUS" />
       <st id="AWAKE" editor="SPAN_CIRCUITPRIORITY" />
-      <st id="MOON" editor="hourmin" />
+      <st id="HR" editor="hour" />
+      <st id="MOON" editor="minute" />
       <st id="TIMEREM" editor="seconds" />
+      <st id="PULSCNT" editor="raw" />
       <st id="GPV" editor="string" />
       <st id="GV1" editor="raw" />
       <st id="GV2" editor="raw" />
@@ -48,11 +50,12 @@
   <nodeDef id="panelForBreakers" nls="panelForBreakers">
     <sts>
       <st id="ST" editor="watt" />
-      <st id="FREQ" editor="octet" />
       <st id="PULSCNT" editor="raw" />
       <st id="GPV" editor="raw" />
-      <st id="MOON" editor="hourmin" />
+      <st id="HR" editor="hour" />
+      <st id="MOON" editor="minute" />
       <st id="TIMEREM" editor="seconds" />
+      <st id="FREQ" editor="octet" />
 	  </sts>
   </nodeDef>
 	
@@ -61,7 +64,8 @@
       <st id="ST" editor="watt" />
       <st id="PULSCNT" editor="raw" />
       <st id="CLIEMD" editor="SPAN_BREAKERSTATUS" />
-      <st id="MOON" editor="hourmin" />
+      <st id="HR" editor="hour" />
+      <st id="MOON" editor="minute" />
       <st id="TIMEREM" editor="seconds" />
 	  </sts>
   </nodeDef>
