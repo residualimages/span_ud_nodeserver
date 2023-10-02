@@ -18,7 +18,7 @@ from typing import Optional, Any, TYPE_CHECKING
 import math,time,datetime
 
 LOGGER = udi_interface.LOGGER
-Custom = udi_interface.Custom
+#Custom = udi_interface.Custom
 
 ### Generic Nodeserver Helper Functions ###
 ### copied from Goose66 ###
@@ -108,7 +108,7 @@ class PanelNodeForCircuits(udi_interface.Node):
 
         LOGGER.debug("\n\tINIT Panel Circuit Controller " + address + "'s parent is '" + parent + "' when INIT'ing.\n")
 
-        self.Parameters = Custom(polyglot, 'customparams')
+        #self.Parameters = Custom(polyglot, 'customparams')
         self.ipAddress = spanIPAddress
         self.token = bearerToken
 
@@ -235,10 +235,10 @@ class PanelNodeForCircuits(udi_interface.Node):
 
     '''
     Read the user entered custom parameters.
-    '''
     def parameterHandler(self, params):
         self.Parameters.load(params)
-
+    '''
+    
     def updateNode(self, passedAllCircuitsData):
         self.allCircuitsData = passedAllCircuitsData
 
@@ -473,7 +473,7 @@ class PanelNodeForBreakers(udi_interface.Node):
 
         LOGGER.debug("\n\tINIT Panel Breaker Controller " + address + "'s parent is '" + parent + "' when INIT'ing.\n")
 
-        self.Parameters = Custom(polyglot, 'customparams')
+        #self.Parameters = Custom(polyglot, 'customparams')
         self.ipAddress = spanIPAddress
         self.token = bearerToken
 
@@ -575,9 +575,9 @@ class PanelNodeForBreakers(udi_interface.Node):
 
     '''
     Read the user entered custom parameters.
-    '''
     def parameterHandler(self, params):
         self.Parameters.load(params)
+    '''
 
     def updateNode(self, passedAllBreakersData):
         self.allBreakersData = passedAllBreakersData
