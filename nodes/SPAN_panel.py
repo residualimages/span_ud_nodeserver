@@ -18,7 +18,6 @@ from typing import Optional, Any, TYPE_CHECKING
 import math,time,datetime
 
 LOGGER = udi_interface.LOGGER
-#Custom = udi_interface.Custom
 
 ### Generic Nodeserver Helper Functions ###
 ### copied from Goose66 ###
@@ -46,43 +45,7 @@ def getValidNodeName(s: str) -> str:
     name = s.translate({ 0x2018:0x27, 0x2019:0x27, 0x201C:0x22, 0x201D:0x22 }).encode("ascii", "ignore").decode("ascii")
 
     return name
-
-'''
-This is our PanelForCircuits device node. 
-Previously held Circuits in additional Status Parameters like so:
-            {'driver': 'GV0', 'value': 0, 'uom': 73},
-            {'driver': 'GV1', 'value': 0, 'uom': 73},
-            {'driver': 'GV2', 'value': 0, 'uom': 73},
-            {'driver': 'GV3', 'value': 0, 'uom': 73},
-            {'driver': 'GV4', 'value': 0, 'uom': 73},
-            {'driver': 'GV5', 'value': 0, 'uom': 73},
-            {'driver': 'GV6', 'value': 0, 'uom': 73},
-            {'driver': 'GV7', 'value': 0, 'uom': 73},
-            {'driver': 'GV8', 'value': 0, 'uom': 73},
-            {'driver': 'GV9', 'value': 0, 'uom': 73},
-            {'driver': 'GV10', 'value': 0, 'uom': 73},
-            {'driver': 'GV11', 'value': 0, 'uom': 73},
-            {'driver': 'GV12', 'value': 0, 'uom': 73},
-            {'driver': 'GV13', 'value': 0, 'uom': 73},
-            {'driver': 'GV14', 'value': 0, 'uom': 73},
-            {'driver': 'GV15', 'value': 0, 'uom': 73},
-            {'driver': 'GV16', 'value': 0, 'uom': 73},
-            {'driver': 'GV17', 'value': 0, 'uom': 73},
-            {'driver': 'GV18', 'value': 0, 'uom': 73},
-            {'driver': 'GV19', 'value': 0, 'uom': 73},
-            {'driver': 'GV20', 'value': 0, 'uom': 73},
-            {'driver': 'GV21', 'value': 0, 'uom': 73},
-            {'driver': 'GV22', 'value': 0, 'uom': 73},
-            {'driver': 'GV23', 'value': 0, 'uom': 73},
-            {'driver': 'GV24', 'value': 0, 'uom': 73},
-            {'driver': 'GV25', 'value': 0, 'uom': 73},
-            {'driver': 'GV26', 'value': 0, 'uom': 73},
-            {'driver': 'GV27', 'value': 0, 'uom': 73},
-            {'driver': 'GV28', 'value': 0, 'uom': 73},
-            {'driver': 'GV29', 'value': 0, 'uom': 73},
-            {'driver': 'GV30', 'value': 0, 'uom': 73},
-            {'driver': 'GPV', 'value': 0, 'uom': 73}
-'''
+    
 class PanelNodeForCircuits(udi_interface.Node):
     id = 'panelForCircuits'
     drivers = [
@@ -115,36 +78,9 @@ class PanelNodeForCircuits(udi_interface.Node):
         tokenLastTen = self.token[-10:]
         LOGGER.debug("\n\tINIT Panel Circuit Controller's IP Address:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen)
 
-        spanConnection = http.client.HTTPConnection(self.ipAddress)
-        payload = ''
-        headers = {
-            "Authorization": "Bearer " + self.token
-        }
-        try:
-            spanConnection.request("GET", "/api/v1/status", payload, headers)
-    
-            statusResponse = spanConnection.getresponse()
-            statusData = statusResponse.read()
-            statusData = statusData.decode("utf-8")
-        except Exception as e:
-            LOGGER.warning('\n\t\tINIT ERROR: SPAN API GET request failed in Panel Circuit Controller due to error:\t{}.\n'.format(e))
-            statusData = ''
-        
         self.allCircuitsData = ''
-
-        if "system" in statusData:
-            LOGGER.debug("\n\tINIT Panel Circuit Controller's Status Data: \n\t\t" + statusData + "\n")
-
-            spanConnection.request("GET", "/api/v1/circuits", payload, headers)
-    
-            circuitsResponse = spanConnection.getresponse()
-            self.allCircuitsData = circuitsResponse.read()
-            self.allCircuitsData = self.allCircuitsData.decode("utf-8")
-        else:
-            LOGGER.warning("\n\tINIT Issue getting Status Data for Panel Circuit Controller @ " + self.ipAddress + ".\n")
         
         # subscribe to the events we want
-        #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
         polyglot.subscribe(polyglot.POLL, self.poll)
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.START, self.start, address)
@@ -162,59 +98,20 @@ class PanelNodeForCircuits(udi_interface.Node):
             lastOctet_array = self.ipAddress.split('.')
             lastOctet = lastOctet_array[len(lastOctet_array)-1]
             self.setDriver('FREQ', lastOctet, True, True, None, self.ipAddress)
-        
-            if "circuits" in self.allCircuitsData:
-                spanConnection = http.client.HTTPConnection(self.ipAddress)
-                payload = ''
-                headers = {
-                    "Authorization": "Bearer " + self.token
-                }
-                try:
-                    spanConnection.request("GET", "/api/v1/panel", payload, headers)
-                    panelResponse = spanConnection.getresponse()
-                    panelData = panelResponse.read()
-                    panelData = panelData.decode("utf-8")
-                    LOGGER.debug("\n\tINIT Panel Circuit Controller's Panel Data: \n\t\t" + panelData + "\n")
-                except Exception as e:
-                    LOGGER.warning('\n\t\tINIT ERROR: SPAN API GET request for Panel Circuits Controller failed due to error:\t{}.\n'.format(e))
-                    panelData = ''
-                    
-                if "branches" in panelData:
-                    feedthroughPowerW_tuple = panelData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
-                    feedthroughPowerW = feedthroughPowerW_tuple[2]
-                    #LOGGER.debug("\n\t\t1st level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
-                    feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
-                    feedthroughPowerW = feedthroughPowerW_tuple[0]
-                    #LOGGER.debug("\n\t\t2nd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
-                    #feedthroughPowerW_tuple = feedthroughPowerW.partition(":")
-                    #feedthroughPowerW = feedthroughPowerW_tuple[2]
-                    #LOGGER.debug("\n\t\t3rd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")                
-                    feedthroughPowerW = math.ceil(float(feedthroughPowerW)*100)/100
-    
-                    instantGridPowerW_tuple = panelData.partition(chr(34) + "instantGridPowerW" + chr(34) + ":")
-                    instantGridPowerW = instantGridPowerW_tuple[2]
-                    #LOGGER.debug("\n\t\t1st level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
-                    instantGridPowerW_tuple = instantGridPowerW.partition(",")
-                    instantGridPowerW = instantGridPowerW_tuple[0]
-                    #LOGGER.debug("\n\t\t2nd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
-                    #instantGridPowerW_tuple = instantGridPowerW.partition(":")
-                    #instantGridPowerW = instantGridPowerW_tuple[2]
-                    #LOGGER.debug("\n\t\t3rd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")                
-                    instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
-                    #LOGGER.debug("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
-                    #LOGGER.debug("\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
-                    self.setDriver('ST', round((instantGridPowerW-abs(feedthroughPowerW)),2), True, True)
-                
+
+            self.updateAllCircuitsData()
+            
+            if self.allCircuitsData != '':
                 LOGGER.debug("\n\tINIT Panel Circuit Controller's Circuits Data: \n\t\t" + self.allCircuitsData + "\n\t\tCount of circuits: " + str(self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
                 self.setDriver('PULSCNT', self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':'), True, True)
                 self.setDriver('CLIEMD', 1, True, True)
-        
+                
                 self.createCircuits()
             else:
-                LOGGER.warning("\n\tINIT Issue getting Circuits Data for Panel Circuits Controller @ " + self.ipAddress + ".\n")
-   
+                LOGGER.warning("\n\tINIT Issue getting Circuits Data for Panel Circuits Controller '" + self.address + "' @ " + self.ipAddress + ".\n")
+                
             self.n_queue.append(data['address'])
-   
+    
 
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
@@ -226,7 +123,6 @@ class PanelNodeForCircuits(udi_interface.Node):
     def start(self):
         # set the initlized flag to allow setDriver to work
         self._initialized = True
-        self.setDriver('ST', 1, True, True)
     
     # overload the setDriver() of the parent class to short circuit if 
     # node not initialized
@@ -234,108 +130,21 @@ class PanelNodeForCircuits(udi_interface.Node):
         if self._initialized:
             super().setDriver(driver, value, report, force, uom, text)
 
-    '''
-    Read the user entered custom parameters.
-    def parameterHandler(self, params):
-        self.Parameters.load(params)
-    '''
-    
     def updateNode(self, passedAllCircuitsData):
         self.allCircuitsData = passedAllCircuitsData
 
     '''
-    This is where the real work happens.  When we get a shortPoll, do some work. 
+    This is where the real work happens.  When we get a shortPoll, do some work.
+    Note: the Circuit and Breaker controllers will query and then pass data to the child nodes of Circuits and Breakers, respectively, so that we don't async hammer the http connection of SPAN panels. 
     '''
     def poll(self, polltype):
         if 'shortPoll' in polltype:
-            
             tokenLastTen = self.token[-10:]
-            LOGGER.debug('\n\tPOLL About to query Panel Circuits Controller of {}, using token ending in {}'.format(self.ipAddress,tokenLastTen))
-    
-            spanConnection = http.client.HTTPConnection(self.ipAddress)
-            payload = ''
-            headers = {
-                "Authorization": "Bearer " + self.token
-            }
-
-            try:
-                spanConnection.request("GET", "/api/v1/panel", payload, headers)
-        
-                panelResponse = spanConnection.getresponse()
-                panelData = panelResponse.read()
-                panelData = panelData.decode("utf-8")
-                LOGGER.debug("\n\tPOLL Panel Circuit Controller's Panel Data: \n\t\t" + panelData + "\n")
-            except Exception as e:
-                LOGGER.warning('\n\t\tPOLL ERROR: SPAN API GET request for Panel Circuits Controller failed due to error:\t{}.\n'.format(e))
-                panelData = ''
-           
-            if "branches" in panelData:
-                feedthroughPowerW_tuple = panelData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
-                feedthroughPowerW = feedthroughPowerW_tuple[2]
-                #LOGGER.debug("\n\t\t1st level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
-                feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
-                feedthroughPowerW = feedthroughPowerW_tuple[0]
-                #LOGGER.debug("\n\t\t2nd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
-                #feedthroughPowerW_tuple = feedthroughPowerW.partition(":")
-                #feedthroughPowerW = feedthroughPowerW_tuple[2]
-                #LOGGER.debug("\n\t\t3rd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")                
-                feedthroughPowerW = math.ceil(float(feedthroughPowerW)*100)/100
-
-                instantGridPowerW_tuple = panelData.partition(chr(34) + "instantGridPowerW" + chr(34) + ":")
-                instantGridPowerW = instantGridPowerW_tuple[2]
-                #LOGGER.debug("\n\t\t1st level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
-                instantGridPowerW_tuple = instantGridPowerW.partition(",")
-                instantGridPowerW = instantGridPowerW_tuple[0]
-                #LOGGER.debug("\n\t\t2nd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
-                #instantGridPowerW_tuple = instantGridPowerW.partition(":")
-                #instantGridPowerW = instantGridPowerW_tuple[2]
-                #LOGGER.debug("\n\t\t3rd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")                
-                instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
-                #LOGGER.debug("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
-                #LOGGER.debug("\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
-                self.setDriver('ST', round((instantGridPowerW-abs(feedthroughPowerW)),2), True, True)
-
-                '''
-                for i in range(1,33):
-                    try:
-                        currentBreaker_tuple = panelData.partition(chr(34) + 'id' + chr(34) + ':' + str(i))
-                        currentBreakerW = currentBreaker_tuple[2]
-                        #LOGGER.debug("\n\t\t1st level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
-                        currentBreaker_tuple = currentBreakerW.partition(chr(34) + 'instantPowerW' + chr(34) + ':')
-                        currentBreakerW = currentBreaker_tuple[2]
-                        #LOGGER.debug("\n\t\t2nd level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
-                        currentBreaker_tuple = currentBreakerW.partition(',')
-                        currentBreakerW = currentBreaker_tuple[0]
-                        #LOGGER.debug("\n\t\t3rd level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
-                        currentBreakerW = abs(math.ceil(float(currentBreakerW)*100)/100)
-                        #LOGGER.debug("\n\t\tFinal Level Parsed for Breaker " + str(i) + ":\t" + str(currentBreakerW) + "\n")
-                        if i < 32:
-                            self.setDriver('GV' + str(i-1), currentBreakerW, True, True)
-                        else:
-                            self.setDriver('GPV', currentBreakerW, True, True)
-                    except:
-                        LOGGER.warning("\n\tPOLL Issue for Panel Circuits controller getting data from Breaker " + str(i) + " on Panel node " + format(self.ipAddress) + ".\n")
-                '''
-                
-                if len(str(instantGridPowerW)) > 0:
-                    nowEpoch = int(time.time())
-                    nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-                    
-                    self.setDriver('TIME', nowEpoch, True, True)
-                    #nowDT.strftime("%m/%d/%Y %H:%M:%S")
-                    self.setDriver('HR', int(nowDT.strftime("%H")), True, True)
-                    self.setDriver('MOON', int(nowDT.strftime("%M")), True, True)
-                    self.setDriver('TIMEREM', int(nowDT.strftime("%S")), True, True)
-
-                try:
-                    spanConnection.request("GET", "/api/v1/circuits", payload, headers)
-                    circuitsResponse = spanConnection.getresponse()
-                    self.allCircuitsData = circuitsResponse.read()
-                    self.allCircuitsData = self.allCircuitsData.decode("utf-8")
-                except Exception as e:
-                    LOGGER.warning('\n\t\tPOLL ERROR: SPAN API GET request for Panel Circuits Controller failed due to error:\t{}.\n'.format(e))
-                    #self.allCircuitsData = ''
-                
+            LOGGER.debug("\n\tPOLL About to query Panel Circuits Controller '" + self.address + "' @ {}, using token ending in {}".format(self.ipAddress,tokenLastTen))
+            
+            self.updateAllCircuitsData()
+            
+            if self.allCircuitsData != '':
                 nodes = self.poly.getNodes()
                 currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
                 LOGGER.debug("\n\tWill be looking for Circuit nodes with this as the prefix: '" + currentPanelCircuitPrefix + "'.\n")
@@ -346,10 +155,6 @@ class PanelNodeForCircuits(udi_interface.Node):
                             nodes[node].updateNode(self.allCircuitsData)
                         except Exception as e:
                             LOGGER.warning('\n\t\tPOLL ERROR in Panel Circuits: Cannot seem to update node needed in for-loop due to error:\t{}.\n'.format(e))
-            else:
-                tokenLastTen = self.token[-10:]
-                LOGGER.warning('\n\tPOLL ERROR when querying Panel Circuit Controller at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
-
     '''
     Create the circuit nodes.
     TODO: Handle fewer circuit nodes by deleting (currently commented out)
@@ -377,32 +182,22 @@ class PanelNodeForCircuits(udi_interface.Node):
             LOGGER.debug("\n\tHere is the currentCircuitData:\n\t\t" + allCircuitsArray[i] + "\n")
             
             current_IPaddress = self.ipAddress
-            #LOGGER.debug("\n\t\t'current_IPaddress':\t" + current_IPaddress + "\n")
             current_BearerToken = self.token
-            #LOGGER.debug("\n\t\t'current_BearerToken':\t" + current_BearerToken + "\n")
             
             address = 'S' + panelNumberPrefix + '_Circuit_' + str(i)
             address = getValidNodeAddress(address)
-            #LOGGER.debug("\n\t\tCalculated 'address':\t" + address + "\n")
             
             current_circuitID_tuple = allCircuitsArray[i].partition(',')
             current_circuitID = current_circuitID_tuple[0]
-            #LOGGER.debug("\n\t\tCalculated 'current_CircuitID':\t" + current_circuitID + "\n")
             current_circuitID = current_circuitID.replace(chr(34),'')
-            #LOGGER.debug("\n\t\tCalculated 'current_CircuitID':\t" + current_circuitID + "\n")
             
             current_circuitName_tuple = allCircuitsArray[i].partition(chr(34) + 'name' + chr(34) + ':')
             current_circuitName = current_circuitName_tuple[2]
-            #LOGGER.debug("\n\t\tCalculated 'current_CircuitName':\t" + current_circuitName + "\n")
             current_circuitName_tuple = current_circuitName.partition(',')
             current_circuitName = current_circuitName_tuple[0]
-            #LOGGER.debug("\n\t\tCalculated 'current_CircuitName':\t" + current_circuitName + "\n")
             current_circuitName = current_circuitName.replace(chr(34),'')
-            #LOGGER.debug("\n\t\tCalculated 'current_CircuitName':\t" + current_circuitName + "\n")
             
             title = current_circuitName
-            #if len(title)<25:
-            #    title = title + ' (' + current_circuitID[-(26-len(title)):] + ')'
             title = getValidNodeName(title)
             try:
                 node = SPAN_circuit.CircuitNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken, current_circuitID, i)
@@ -412,6 +207,34 @@ class PanelNodeForCircuits(udi_interface.Node):
             except Exception as e:
                 LOGGER.warning('\n\tFailed to create Circuit child node {} under Panel Circuit Controller {} due to error: {}.\n'.format(title, panelNumberPrefix, e))
 
+    '''
+    This is how we handle whenever our 'sister' Breaker controller updates its allBreakersData variable
+    '''
+    def updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(self, totalPower, epoch, hour, minute, second):
+        LOGGER.debug("\n\t Using Shared Data from Breaker Controller to update 'ST', 'TIME', 'HR', 'MOON', 'TIMEREM'.\n")
+        self.setDriver('ST', totalPower, True, True)
+        self.setDriver('TIME', epoch, True, True)
+        self.setDriver('HR', hour, True, True)
+        self.setDriver('MOON', minute, True, True)
+        self.setDriver('TIMEREM', second, True, True)
+
+    '''
+    This is how we update the allCircuitsData variable
+    '''
+    def updateAllCircuitsData(self):
+        spanConnection = http.client.HTTPConnection(self.ipAddress)
+        payload = ''
+        headers = {
+            "Authorization": "Bearer " + self.token
+        }
+        try:
+            spanConnection.request("GET", "/api/v1/circuits", payload, headers)
+            circuitsResponse = spanConnection.getresponse()
+            self.allCircuitsData = circuitsResponse.read()
+            self.allCircuitsData = self.allCircuitsData.decode("utf-8")
+        except Exception as e:
+            LOGGER.warning("\n\tUPDATE ALLCIRCUITSDATA ERROR: SPAN API GET request for Panel Circuits Controller '" + self.address + "' failed due to error:\n\t\t{}\n".format(e))
+            
     '''
     STOP Called
     '''
@@ -455,31 +278,15 @@ class PanelNodeForBreakers(udi_interface.Node):
 
         LOGGER.debug("\n\tINIT Panel Breaker Controller " + address + "'s parent is '" + parent + "' when INIT'ing.\n")
 
-        #self.Parameters = Custom(polyglot, 'customparams')
         self.ipAddress = spanIPAddress
         self.token = bearerToken
 
         tokenLastTen = self.token[-10:]
         LOGGER.debug("\n\tINIT Panel Breaker Controller's IP Address:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen)
 
-        spanConnection = http.client.HTTPConnection(self.ipAddress)
-        payload = ''
-        headers = {
-            "Authorization": "Bearer " + self.token
-        }
-
-        try:
-            spanConnection.request("GET", "/api/v1/panel", payload, headers)
-
-            panelResponse = spanConnection.getresponse()
-            self.allBreakersData = panelResponse.read()
-            self.allBreakersData = self.allBreakersData.decode("utf-8")
-        except Exception as e:
-            LOGGER.warning('\n\t\tINIT ERROR: SPAN API GET request for Panel Breakers Controller failed due to error:\t{}.\n'.format(e))
-            self.allBreakersData = ''
+        self.allBreakersData = ''
         
         # subscribe to the events we want
-        #polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
         polyglot.subscribe(polyglot.POLL, self.poll)
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.START, self.start, address)
@@ -500,31 +307,21 @@ class PanelNodeForBreakers(udi_interface.Node):
             lastOctet_array = self.ipAddress.split('.')
             lastOctet = lastOctet_array[len(lastOctet_array)-1]
             self.setDriver('FREQ', lastOctet, True, True, None, self.ipAddress)
+
+            self.updateAllBreakersData()
         
             if "branches" in self.allBreakersData:
                 feedthroughPowerW_tuple = self.allBreakersData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
                 feedthroughPowerW = feedthroughPowerW_tuple[2]
-                #LOGGER.debug("\n\t\t1st level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
                 feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
                 feedthroughPowerW = feedthroughPowerW_tuple[0]
-                #LOGGER.debug("\n\t\t2nd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
-                #feedthroughPowerW_tuple = feedthroughPowerW.partition(":")
-                #feedthroughPowerW = feedthroughPowerW_tuple[2]
-                #LOGGER.debug("\n\t\t3rd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")                
                 feedthroughPowerW = math.ceil(float(feedthroughPowerW)*100)/100
 
                 instantGridPowerW_tuple = self.allBreakersData.partition(chr(34) + "instantGridPowerW" + chr(34) + ":")
                 instantGridPowerW = instantGridPowerW_tuple[2]
-                #LOGGER.debug("\n\t\t1st level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
                 instantGridPowerW_tuple = instantGridPowerW.partition(",")
                 instantGridPowerW = instantGridPowerW_tuple[0]
-                #LOGGER.debug("\n\t\t2nd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
-                #instantGridPowerW_tuple = instantGridPowerW.partition(":")
-                #instantGridPowerW = instantGridPowerW_tuple[2]
-                #LOGGER.debug("\n\t\t3rd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")                
                 instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
-                #LOGGER.debug("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
-                #LOGGER.debug("\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
                 self.setDriver('ST', round((instantGridPowerW-abs(feedthroughPowerW)),2), True, True)
 
                 allBranchesData_tuple = self.allBreakersData.partition(chr(34) + "branches" + chr(34) + ":")
@@ -535,7 +332,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         
                 self.createBreakers()
             else:
-                LOGGER.warning("\n\tINIT Issue getting Breakers Data for Panel Breaker Controller @ " + self.ipAddress + ".\n")
+                LOGGER.warning("\n\tINIT Issue getting Breakers Data for Panel Breaker Controller '" + self.address + "' @ " + self.ipAddress + ".\n")
 
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
@@ -569,50 +366,22 @@ class PanelNodeForBreakers(udi_interface.Node):
     def poll(self, polltype):
         if 'shortPoll' in polltype:
             tokenLastTen = self.token[-10:]
-            LOGGER.debug('\n\tPOLL About to query Panel Breaker controller of {}, using token ending in {}'.format(self.ipAddress,tokenLastTen))
-    
-            spanConnection = http.client.HTTPConnection(self.ipAddress)
-            payload = ''
-            headers = {
-                "Authorization": "Bearer " + self.token
-            }
+            LOGGER.debug("\n\tPOLL About to query Panel Breaker Controller '" + self.address + "' @ {}, using token ending in {}".format(self.ipAddress,tokenLastTen))
 
-            try:
-                spanConnection.request("GET", "/api/v1/panel", payload, headers)
-        
-                panelResponse = spanConnection.getresponse()
-                self.allBreakersData = panelResponse.read()
-                self.allBreakersData = self.allBreakersData.decode("utf-8")
-            except Exception as e:
-                LOGGER.warning('\n\t\tPOLL ERROR: SPAN API GET request for Panel Breaker Controller failed due to error:\t{}.\n'.format(e))
-                #self.allBreakersData = ''
-
-            LOGGER.debug("\n\tPOLL Panel Breaker Controller's allBreakersData: \n\t\t" + self.allBreakersData + "\n")
+            self.updateAllBreakersData()
            
             if "branches" in self.allBreakersData:
                 feedthroughPowerW_tuple = self.allBreakersData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
                 feedthroughPowerW = feedthroughPowerW_tuple[2]
-                #LOGGER.debug("\n\t\t1st level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
                 feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
                 feedthroughPowerW = feedthroughPowerW_tuple[0]
-                #LOGGER.debug("\n\t\t2nd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")
-                #feedthroughPowerW_tuple = feedthroughPowerW.partition(":")
-                #feedthroughPowerW = feedthroughPowerW_tuple[2]
-                #LOGGER.debug("\n\t\t3rd level Parsed feedthroughPowerW:\t" + feedthroughPowerW + "\n")                
                 feedthroughPowerW = math.ceil(float(feedthroughPowerW)*100)/100
 
                 instantGridPowerW_tuple = self.allBreakersData.partition(chr(34) + "instantGridPowerW" + chr(34) + ":")
                 instantGridPowerW = instantGridPowerW_tuple[2]
-                #LOGGER.debug("\n\t\t1st level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
                 instantGridPowerW_tuple = instantGridPowerW.partition(",")
                 instantGridPowerW = instantGridPowerW_tuple[0]
-                #LOGGER.debug("\n\t\t2nd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")
-                #instantGridPowerW_tuple = instantGridPowerW.partition(":")
-                #instantGridPowerW = instantGridPowerW_tuple[2]
-                #LOGGER.debug("\n\t\t3rd level Parsed instantGridPowerW:\t" + instantGridPowerW + "\n")                
                 instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
-                #LOGGER.debug("\n\t\tFinal Level Parsed and rounded instantGridPowerW:\t" + str(instantGridPowerW) + "\n")
-                #LOGGER.debug("\t\tFinal Level Parsed and rounded feedthroughPowerW:\t" + str(feedthroughPowerW) + "\n")
                 self.setDriver('ST', round((instantGridPowerW-abs(feedthroughPowerW)),2), True, True)
 
                 allBranchesData_tuple = self.allBreakersData.partition(chr(34) + "branches" + chr(34) + ":")
@@ -630,40 +399,20 @@ class PanelNodeForBreakers(udi_interface.Node):
                     self.setDriver('HR', int(nowDT.strftime("%H")), True, True)
                     self.setDriver('MOON', int(nowDT.strftime("%M")), True, True)
                     self.setDriver('TIMEREM', int(nowDT.strftime("%S")), True, True)
-                '''
-                for i in range(1,33):
-                    try:
-                        currentBreaker_tuple = self.allBreakersData.partition(chr(34) + 'id' + chr(34) + ':' + str(i))
-                        currentBreakerW = currentBreaker_tuple[2]
-                        currentBreakerID_tuple = currentBreakerW.partition(',')
-                        currentBreakerID = currentBreakerID_tuple[0]
-                        LOGGER.debug("\n\t\tfor-loop 'i' should be equal to currentBreakerID:\ti=" + str(i) + " ?=? currentBreakerID=" + currentBreakerID + ".\n")
-                        #LOGGER.debug("\n\t\t1st level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
-                        currentBreaker_tuple = currentBreakerW.partition(chr(34) + 'instantPowerW' + chr(34) + ':')
-                        currentBreakerW = currentBreaker_tuple[2]
-                        #LOGGER.debug("\n\t\t2nd level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
-                        currentBreaker_tuple = currentBreakerW.partition(',')
-                        currentBreakerW = currentBreaker_tuple[0]
-                        #LOGGER.debug("\n\t\t3rd level Parsed for Breaker " + str(i) + ":\t" + currentBreakerW + "\n")
-                        currentBreakerW = abs(math.ceil(float(currentBreakerW)*100)/100)
-                        #LOGGER.debug("\n\t\tFinal Level Parsed for Breaker " + str(i) + ":\t" + str(currentBreakerW) + "\n")
-                        #currentBreaker
-                    except:
-                        LOGGER.warning("\n\tPOLL Issue getting data from Breaker " + str(i) + " on Panel Breaker Controller " + format(self.ipAddress) + ".\n")
-                '''
+
                 nodes = self.poly.getNodes()
                 currentPanelBreakerPrefix = "s" + self.address.replace('panelbreaker_','') + "_breaker_"
                 LOGGER.debug("\n\tWill be looking for Breaker nodes with this as the prefix: '" + currentPanelBreakerPrefix + "'.\n")
-                for node in nodes:
-                     if currentPanelBreakerPrefix in node:
-                        LOGGER.debug("\n\tUpdating " + node + " (which should be a Breaker node under this Panel controller: " + self.address + ").\n")
-                        try:
-                            nodes[node].updateNode(self.allBreakersData)
-                        except Exception as e:
-                            LOGGER.debug('\n\t\tPOLL ERROR: Cannot seem to update node needed in for-loop due to error:\t{}.\n'.format(e))
+                for i in range(1,33):
+                    node = currentPanelBreakerPrefix + str(i)
+                    LOGGER.debug("\n\tUpdating " + node + " (which should be a Breaker node under this Panel controller: " + self.address + ").\n")
+                    try:
+                        nodes[node].updateNode(self.allBreakersData)
+                    except Exception as e:
+                        LOGGER.debug("\n\t\tPOLL ERROR: Cannot seem to update node '" + node + "' needed in for-loop due to error:\n\t\t{}\n".format(e))
             else:
                 tokenLastTen = self.token[-10:]
-                LOGGER.warning('\n\tPOLL ERROR when querying Panel Breaker Controller at IP address {}, using token {}'.format(self.ipAddress,tokenLastTen))
+                LOGGER.warning("\n\tPOLL ERROR when querying Panel Breaker Controller '" + self.address + "' @ IP address {}, using token {}.\n".format(self.ipAddress,tokenLastTen))
             
     '''
     Create the breaker nodes.
@@ -678,8 +427,6 @@ class PanelNodeForBreakers(udi_interface.Node):
                 LOGGER.debug("\n\tDeleting " + node + " when creating child Breaker nodes for " + self.address + ".\n")
                 self.poly.delNode(node)
         '''
-
-        #how_many = self.getDriver('PULSCNT')
         
         allBreakersArray = self.allBreakersData.split(chr(34) + 'id' + chr(34) + ':')
         panelNumberPrefix = self.address
@@ -691,13 +438,10 @@ class PanelNodeForBreakers(udi_interface.Node):
             LOGGER.debug("\n\tHere is the currentBreakersData:\n\t\t" + allBreakersArray[i] + "\n")
             
             current_IPaddress = self.ipAddress
-            #LOGGER.debug("\n\t\t'current_IPaddress':\t" + current_IPaddress + "\n")
             current_BearerToken = self.token
-            #LOGGER.debug("\n\t\t'current_BearerToken':\t" + current_BearerToken + "\n")
             
             address = 'S' + panelNumberPrefix + '_Breaker_' + str(i)
             address = getValidNodeAddress(address)
-            #LOGGER.debug("\n\t\tCalculated 'address':\t" + address + "\n")
             
             title = "Breaker #"
             if i < 10:
@@ -712,6 +456,52 @@ class PanelNodeForBreakers(udi_interface.Node):
                 LOGGER.debug('\n\tCreated a Breaker child node {} under Panel Breaker controller {}\n'.format(title, panelNumberPrefix))
             except Exception as e:
                 LOGGER.warning('\n\tFailed to create Breaker child node {} under Panel Breaker controller {} due to error: {}.\n'.format(title, panelNumberPrefix, e))
+
+    '''
+    This is how we update the allBreakersData variable
+    '''
+    def updateAllBreakersData(self):
+        spanConnection = http.client.HTTPConnection(self.ipAddress)
+        payload = ''
+        headers = {
+            "Authorization": "Bearer " + self.token
+        }
+        try:
+            spanConnection.request("GET", "/api/v1/panel", payload, headers)
+            panelResponse = spanConnection.getresponse()
+            self.allBreakersData = panelResponse.read()
+            self.allBreakersData = self.allBreakersData.decode("utf-8")
+            LOGGER.debug("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.addres + "' Panel Data: \n\t\t" + self.allBreakersData + "\n")
+        except Exception as e:
+            LOGGER.warning('\n\t\tINIT ERROR: SPAN API GET request for Panel Circuits Controller failed due to error:\t{}.\n'.format(e))
+            self.allBreakersData = ''
+            
+        if "branches" in self.allBreakersData:
+            feedthroughPowerW_tuple = self.allBreakersData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
+            feedthroughPowerW = feedthroughPowerW_tuple[2]
+            feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
+            feedthroughPowerW = feedthroughPowerW_tuple[0]           
+            feedthroughPowerW = math.ceil(float(feedthroughPowerW)*100)/100
+
+            instantGridPowerW_tuple = self.allBreakersData.partition(chr(34) + "instantGridPowerW" + chr(34) + ":")
+            instantGridPowerW = instantGridPowerW_tuple[2]
+            instantGridPowerW_tuple = instantGridPowerW.partition(",")
+            instantGridPowerW = instantGridPowerW_tuple[0]             
+            instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
+
+            epoch = int(time.time())
+            nowDT = datetime.datetime.fromtimestamp(epoch)
+            hour = int(nowDT.strftime("%H"))
+            minute = int(nowDT.strftime("%M"))
+            second = int(nowDT.strftime("%S"))
+            totalPower = round((instantGridPowerW-abs(feedthroughPowerW)),2)
+            
+            try:
+                nodes = self.poly.getNodes()
+                sisterCircuitsController = self.address.replace('panelcircuit_','panelbreaker_')
+                nodes[sisterCircuitsController].updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, epoch, hour, minute, second)
+            except Exception as e:
+                LOGGER.warning("\n\tUPDATE ALLBREAKERSDATA ERROR: Panel Breaker Controller '" + self.address + "' cannot seem to find its sisterCircuitsController '" + self.address.replace('panelcircuit_','panelbreaker_') + "' to update, due to error:\n\t\t{}\n".format(e))
 
     '''
     STOP Received
