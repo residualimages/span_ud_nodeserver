@@ -403,7 +403,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             try:
                 node = SPAN_circuit.CircuitNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken, current_circuitID, i)
                 self.poly.addNode(node)
-                self.wait_for_node_done()
+                node.wait_for_node_done()
                 LOGGER.debug('\n\tCreated a Circuit child node {} under Panel Circuit Controller {}\n'.format(title, panelNumberPrefix))
             except Exception as e:
                 LOGGER.warning('\n\tFailed to create Circuit child node {} under Panel Circuit Controller {} due to error: {}.\n'.format(title, panelNumberPrefix, e))
@@ -701,7 +701,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             try:
                 node = SPAN_breaker.BreakerNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken, i)
                 self.poly.addNode(node)
-                self.wait_for_node_done()
+                node.wait_for_node_done()
                 
                 LOGGER.debug('\n\tCreated a Breaker child node {} under Panel Breaker controller {}\n'.format(title, panelNumberPrefix))
             except Exception as e:
