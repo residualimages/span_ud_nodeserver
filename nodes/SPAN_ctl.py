@@ -309,10 +309,11 @@ class Controller(udi_interface.Node):
         LOGGER.warning('\n\tRESET COMMAND ISSUED: Will Delete and Recreate All Sub-Nodes.\n\t\t{}'.format(commandDetails))
         self.pushTextToDriver('GPV','Resetting...')
         self.stop()
-        
+        countOfNodes = 0
         # delete any existing nodes
         nodes = self.poly.getNodes()
         for node in nodes.copy():
+            countOfNodes += 1
             if node != 'controller' and 'panel' not in node:   # but not the controller nodes at first
                 LOGGER.warning("\n\tRESET NodeServer - deleting node '" + node + "'.\n")
                 try:
@@ -331,8 +332,16 @@ class Controller(udi_interface.Node):
                 except Exception as e:
                     LOGGER.warning('\n\tDELETING FAILED due to: {}\n'.format(e))
             else:
-                LOGGER.debug("\n\tRESET NodeServer - SKIP deleting '" + controller + "'.\n")
-                
+                LOGGER.debug("\n\tRESET NodeServer - SKIP deleting '" + controller + "'.\n")      
+
+        countOfRemainingNodes = countOfNodes
+        while countOfRemainingNodes > 1:
+            nodes = self.poly.getNodes()
+            for node in nodes.copy():
+                countOfRemainingNodes += 1
+            if countOfRemainingNodes > 1:
+                LOGGER.warning("\n\t\tSTILL DELETING nodes, not yet at 1 remaining. Current count: " + countOfRemainingNodes + "...\n")
+        
         self.setDriver('GV0', 0, True, True)
         self.pushTextToDriver('GPV','Re-starting...')
         self.start()
