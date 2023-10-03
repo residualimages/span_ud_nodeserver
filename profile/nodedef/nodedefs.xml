@@ -19,10 +19,8 @@
       <st id="ST" editor="watt" />
       <st id="PULSCNT" editor="raw" />
       <st id="CLIEMD" editor="SPAN_PANELGRIDSTATUS" />
-      <st id="HR" editor="hour" />
-      <st id="MOON" editor="minute" />
-      <st id="TIMEREM" editor="seconds" />
-      <st id="FREQ" editor="octet" />
+      <st id="TIME" editor="dateTimeStamp" />
+      <st id="FREQ" editor="ipAddress" />
       <st id="GPV" editor="rawStringToIoX" />
 	  </sts>
   </nodeDef>
@@ -32,11 +30,9 @@
       <st id="ST" editor="watt" />
       <st id="CLIEMD" editor="SPAN_CIRCUITSTATUS" />
       <st id="AWAKE" editor="SPAN_CIRCUITPRIORITY" />
-      <st id="HR" editor="hour" />
-      <st id="MOON" editor="minute" />
-      <st id="TIMEREM" editor="seconds" />
+      <st id="TIME" editor="dateTimeStamp" />
       <st id="PULSCNT" editor="raw" />
-      <st id="GV0" editor="string" />
+      <st id="GV0" editor="rawStringToIoX" />
       <st id="GV1" editor="raw" />
       <st id="GV2" editor="raw" />
       <st id="GV3" editor="raw" />
@@ -61,10 +57,8 @@
       <st id="ST" editor="watt" />
       <st id="PULSCNT" editor="raw" />
       <st id="GV0" editor="raw" />
-      <st id="HR" editor="hour" />
-      <st id="MOON" editor="minute" />
-      <st id="TIMEREM" editor="seconds" />
-      <st id="FREQ" editor="octet" />
+      <st id="TIME" editor="dateTimeStamp" />
+      <st id="FREQ" editor="ipAddress" />
       <st id="GPV" editor="rawStringToIoX" />
 	  </sts>
   </nodeDef>
@@ -74,9 +68,7 @@
       <st id="ST" editor="watt" />
       <st id="PULSCNT" editor="raw" />
       <st id="CLIEMD" editor="SPAN_BREAKERSTATUS" />
-      <st id="HR" editor="hour" />
-      <st id="MOON" editor="minute" />
-      <st id="TIMEREM" editor="seconds" />
+      <st id="TIME" editor="dateTimeStamp" />
       <st id="GPV" editor="rawStringToIoX" />
 	  </sts>
   </nodeDef>
