@@ -36,7 +36,7 @@
       <st id="MOON" editor="minute" />
       <st id="TIMEREM" editor="seconds" />
       <st id="PULSCNT" editor="raw" />
-      <st id="GPV" editor="string" />
+      <st id="GV0" editor="string" />
       <st id="GV1" editor="raw" />
       <st id="GV2" editor="raw" />
       <st id="GV3" editor="raw" />
