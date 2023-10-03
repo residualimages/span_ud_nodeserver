@@ -190,3 +190,30 @@ class Controller(udi_interface.Node):
         LOGGER.warning("\n\tSTOP COMMAND Received by '" + self.address + "'.\n")
         self.setDriver('ST', 0, True, True)
         self.poly.stop()
+        
+    '''
+    Delete and Reset Nodes:
+    '''
+    def reset(self):
+        LOGGER.warning('\n\t\tRESET COMMAND ISSUED: Will Delete and Recreate All Sub-Nodes.\n')
+        self.n_queue = []
+        self.poly.stop()
+        
+        # delete any existing nodes
+        nodes = self.poly.getNodes()
+        for node in nodes:
+            if node != 'controller' and 'panel' not in node:   # but not the controller nodes at first
+                LOGGER.warning("\n\tRESET NodeServer - deleting '" + node + "'.\n")
+                self.poly.delNode(node)
+
+        nodes = self.poly.getNodes()
+        for node in nodes:
+            if node != 'controller':   # but not the NS controller node itself
+                LOGGER.warning("\n\tRESET NodeServer - deleting '" + node + "'.\n")
+                self.poly.delNode(node)
+                
+        self.setDriver('GV0', 0, True, True)
+        polyglot.ready()
+        self.poly.addNode(self)
+
+    commands = {'RESET': reset}
