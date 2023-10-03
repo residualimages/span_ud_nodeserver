@@ -93,6 +93,7 @@ class PanelNodeForCircuits(udi_interface.Node):
         
         self.poly = polyglot
         self.n_queue = []
+        self.parent = parent
 
         LOGGER.debug("\n\tINIT Panel Circuit Controller " + address + "'s parent is '" + parent + "' when INIT'ing.\n")
 
@@ -399,6 +400,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         
         self.poly = polyglot
         self.n_queue = []
+        self.parent = parent
 
         LOGGER.debug("\n\tINIT Panel Breaker Controller " + address + "'s parent is '" + parent + "' when INIT'ing.\n")
 
