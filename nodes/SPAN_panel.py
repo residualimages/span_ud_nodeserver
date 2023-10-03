@@ -253,10 +253,6 @@ class PanelNodeForCircuits(udi_interface.Node):
     '''
     def poll(self, polltype):
         if 'shortPoll' in polltype:
-
-            nowEpoch = int(time.time())
-            nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-            self.pushTextToDriver('GPV',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
         
             tokenLastTen = self.token[-10:]
             LOGGER.debug("\n\tPOLL About to query Panel Circuits Controller '" + self.address + "' @ {}, using token ending in {}".format(self.ipAddress,tokenLastTen))
@@ -264,6 +260,10 @@ class PanelNodeForCircuits(udi_interface.Node):
             self.updateAllCircuitsData()
             
             if self.allCircuitsData != '':
+                nowEpoch = int(time.time())
+                nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+                self.pushTextToDriver('GPV',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                
                 nodes = self.poly.getNodes()
                 currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
                 LOGGER.debug("\n\tWill be looking for Circuit nodes with this as the prefix: '" + currentPanelCircuitPrefix + "'.\n")
@@ -592,6 +592,11 @@ class PanelNodeForBreakers(udi_interface.Node):
             self.updateAllBreakersData()
            
             if "branches" in self.allBreakersData:
+                
+                nowEpoch = int(time.time())
+                nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+                self.pushTextToDriver('GPV',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                
                 feedthroughPowerW_tuple = self.allBreakersData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
                 feedthroughPowerW = feedthroughPowerW_tuple[2]
                 feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
