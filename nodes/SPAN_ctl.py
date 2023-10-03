@@ -173,7 +173,7 @@ class Controller(udi_interface.Node):
         newValue = -1
         encodedStringToPublish = urllib.parse.quote(stringToPublish, safe='')
 
-        if currentValue == 0:
+        if currentValue != 1:
             newValue = 1
             message = {
                 'set': [{
