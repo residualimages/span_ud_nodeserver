@@ -224,7 +224,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                 "Authorization": "Basic " + userpasswordAsBase64String
             }
             
-            LOGGER.debug("n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3 via " + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
+            LOGGER.debug("\n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3 via " + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
     
             prefixN = str(self.poly.profileNum)
             if len(prefixN) < 2:
@@ -363,7 +363,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             "Authorization": "Bearer " + self.token
         }
         try:
-            LOGGER.debug("n\tUPDATING ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' being attempted to http://" + self.ipAddress + "/api/v1/circuits\n")
+            LOGGER.debug("\n\tUPDATING ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' being attempted to http://" + self.ipAddress + "/api/v1/circuits\n")
             spanConnection.request("GET", "/api/v1/circuits", payload, headers)
             circuitsResponse = spanConnection.getresponse()
             self.allCircuitsData = circuitsResponse.read()
@@ -560,7 +560,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                 "Authorization": "Basic " + userpasswordAsBase64String
             }
             
-            LOGGER.debug("n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3 via " + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
+            LOGGER.debug("\n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3 via " + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
     
             prefixN = str(self.poly.profileNum)
             if len(prefixN) < 2:
