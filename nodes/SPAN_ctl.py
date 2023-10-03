@@ -17,6 +17,7 @@ from nodes import SPAN_panel
 
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
+ISY = udi_interface.ISY
 
 ### Note for setDriver from BobP:
 ### setDriver(driver, value, report=true, forceReport=false, uom=None, text=None)
@@ -69,6 +70,8 @@ class Controller(udi_interface.Node):
 
         self.Parameters = Custom(polyglot, 'customparams')
 
+        self.ISY = ISY(self.poly)
+
         # subscribe to the events we want
         polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
         polyglot.subscribe(polyglot.STOP, self.stop)
@@ -87,6 +90,7 @@ class Controller(udi_interface.Node):
     '''
     def node_queue(self, data):
         self.n_queue.append(data['address'])
+        LOGGER.warning("\n\tISY Object created under 'controller':\t" + self.ISY._isy_ip + ".\n")
 
     def wait_for_node_done(self):
         self.pushTextToGPV('Waiting for root controller...')
@@ -173,7 +177,7 @@ class Controller(udi_interface.Node):
                     'text': encodedStringToPublish
                 }]
             }    
-        LOGGER.warning("n\tPUSHING REPORT TO 'controller' status variable 'GPV' via self.poly.send('" + encodedStringToPublish + "','status').\n")
+        LOGGER.warning("\n\tPUSHING REPORT TO 'controller' status variable 'GPV' via self.poly.send('" + encodedStringToPublish + "','status').\n")
         
         self.poly.send(message, 'status')
 
