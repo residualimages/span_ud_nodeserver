@@ -14,6 +14,7 @@ from typing import Optional, Any, TYPE_CHECKING
 import math,time,datetime,urllib.parse,http.client
 
 LOGGER = udi_interface.LOGGER
+ISY = udi_interface.ISY
 
 '''
 This is our Circuit device node. 
