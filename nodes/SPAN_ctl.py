@@ -339,6 +339,7 @@ class Controller(udi_interface.Node):
         countOfRemainingNodes = countOfNodes
         while countOfRemainingNodes > 1:
             nodes = self.poly.getNodes()
+            countOfRemainingNodes = 0
             for node in nodes.copy():
                 countOfRemainingNodes += 1
             if countOfRemainingNodes > 1:
