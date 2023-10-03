@@ -347,36 +347,32 @@ class Controller(udi_interface.Node):
         # Iterate over polyglot's internal list of nodes to check for orphaned ones belonging to this NodeServer
         for controllerIndex in range(1,2):
             for entityIndex in range(1,33):
-                try:
-                    address = 's' + str(controllerIndex) + '_breaker_' + str(entityIndex)
-                    if address in self.poly.nodes_internal:
-                        del self.poly.nodes_internal[address]        
-                        LOGGER.warning("\n\tFound an orphaned breaker node (#" + str(entityIndex) + ") under Breaker Controller #" + str(controllerIndex) + ".\n")
-                except KeyError:
+                address = 's' + str(controllerIndex) + '_breaker_' + str(entityIndex)
+                if address in self.poly.nodes_internal:
+                    del self.poly.nodes_internal[address]        
+                    LOGGER.warning("\n\tFound an orphaned breaker node (#" + str(entityIndex) + ") under Breaker Controller #" + str(controllerIndex) + ".\n")
+                else:
                     LOGGER.debug("\n\tNo orphaned breaker node with address '{}' found.\n".format(address))
                     
-                try:
-                    address = 's' + str(controllerIndex) + '_circuit_' + str(entityIndex)
-                    if address in self.poly.nodes_internal:
-                        del self.poly.nodes_internal[address]        
-                        LOGGER.warning("\n\tFound an orphaned circuit node (#" + str(entityIndex) + ") under Circuit Controller #" + str(controllerIndex) + ".\n")
-                except KeyError:
+                address = 's' + str(controllerIndex) + '_circuit_' + str(entityIndex)
+                if address in self.poly.nodes_internal:
+                    del self.poly.nodes_internal[address]        
+                    LOGGER.warning("\n\tFound an orphaned circuit node (#" + str(entityIndex) + ") under Circuit Controller #" + str(controllerIndex) + ".\n")
+                else:
                     LOGGER.debug("\n\tNo orphaned circuit node with address '{}' found.\n".format(address))
 
-            try:
-                address = 'panelbreaker_' + str(controllerIndex)
-                if address in self.poly.nodes_internal:
-                    del self.poly.nodes_internal[address]        
-                    LOGGER.warning("\n\tFound an orphaned Breaker Controller #" + str(controllerIndex) + "; removing.\n")
-            except KeyError:
+            address = 'panelbreaker_' + str(controllerIndex)
+            if address in self.poly.nodes_internal:
+                del self.poly.nodes_internal[address]        
+                LOGGER.warning("\n\tFound an orphaned Breaker Controller #" + str(controllerIndex) + "; removing.\n")
+            else:
                 LOGGER.debug("\n\tNo orphaned Breaker Controller with address '{}' found.\n".format(address))
                 
-            try:
-                address = 'panelcircuit_' + str(controllerIndex)
-                if address in self.poly.nodes_internal:
-                    del self.poly.nodes_internal[address]        
-                    LOGGER.warning("\n\tFound an orphaned Circuit Controller #" + str(controllerIndex) + "; removing.\n")        
-            except KeyError:
+            address = 'panelcircuit_' + str(controllerIndex)
+            if address in self.poly.nodes_internal:
+                del self.poly.nodes_internal[address]        
+                LOGGER.warning("\n\tFound an orphaned Circuit Controller #" + str(controllerIndex) + "; removing.\n")        
+            else:
                 LOGGER.debug("\n\tNo orphaned Circuit Controller with address '{}' found.\n".format(address))
                 
         self.setDriver('GV0', 0, True, True)
