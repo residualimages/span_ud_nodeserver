@@ -300,7 +300,7 @@ class Controller(udi_interface.Node):
     def stop(self):
         LOGGER.warning("\n\tSTOP COMMAND Received by '" + self.address + "'.\n")
         self.setDriver('ST', 0, True, True)
-        self.pushTextToDriver('GPV','Querying INACTIVE')
+        self.pushTextToDriver('GPV','NodeServer STOPPED')
         self.poly.stop()
         
     '''
