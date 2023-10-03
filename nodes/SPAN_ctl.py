@@ -79,17 +79,22 @@ class Controller(udi_interface.Node):
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
         polyglot.subscribe(polyglot.CUSTOMTYPEDPARAMS, self.manuallyAddedParametersHandler)
         polyglot.subscribe(polyglot.NSINFO, self.nsInfo)
+        polyglot.subscribe(polyglot.POLL, self.poll)
 
         # start processing events and create add our controller node
         polyglot.ready()
         self.poly.addNode(self)
 
     def manuallyAddedParametersHandler(self, data):
-        LOGGER.warning("\n\tHANDLE MANUALLY ADDED PARAMETERS.\n")
+        LOGGER.warning("\n\tHANDLE MANUALLY ADDED PARAMETERS.\n\t\t{}\n".format(data))
 
     def nsInfo(self, data):
-        LOGGER.warning("\n\tHANDLE NSINFO.\n")
+        LOGGER.warning("\n\tHANDLE NSINFO.\n\t\t{}\n".format(data)
     
+    def poll(self, polltype):
+        if 'shortPoll' in polltype:
+            nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+            self.pushTextToGPV(nowDT.strftime("%m/%d/%Y %H:%M:%S"))
     '''
     node_queue() and wait_for_node_event() create a simple way to wait
     for a node to be created.  The nodeAdd() API call is asynchronous and
