@@ -161,6 +161,12 @@ class PanelNodeForCircuits(udi_interface.Node):
     -1 is reserved for initializing.
     '''
     def pushTextToDriver(self,driver,stringToPublish):
+        if len(str(self.getDriver(driver))) <= 0:
+            LOGGER.warning("\n\tPUSHING REPORT ERROR - a (correct) Driver was not passed.\n")
+            return
+        else:
+            LOGGER.debug("\n\tLEN of self.getDriver('" + driver + "') is greater than 0; driver value = " + str(self.getDriver(driver)) + "\n")
+        
         currentValue = int(self.getDriver(driver))
         newValue = -1
         encodedStringToPublish = urllib.parse.quote(stringToPublish, safe='')
@@ -481,6 +487,12 @@ class PanelNodeForBreakers(udi_interface.Node):
     -1 is reserved for initializing.
     '''
     def pushTextToDriver(self,driver,stringToPublish):
+        if len(str(self.getDriver(driver))) <= 0:
+            LOGGER.warning("\n\tPUSHING REPORT ERROR - a (correct) Driver was not passed.\n")
+            return
+        else:
+            LOGGER.debug("\n\tLEN of self.getDriver('" + driver + "') is greater than 0; driver value = " + str(self.getDriver(driver)) + "\n")
+            
         currentValue = int(self.getDriver(driver))
         newValue = -1
         encodedStringToPublish = urllib.parse.quote(stringToPublish, safe='')
