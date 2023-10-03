@@ -149,26 +149,25 @@ class PanelNodeForCircuits(udi_interface.Node):
                 currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
                 LOGGER.debug("\n\tWill be looking for Circuit nodes with this as the prefix: '" + currentPanelCircuitPrefix + "'.\n")
                 
-                if (currentPanelCircuitPrefix + '1') in nodes:
-                    LOGGER.warning("\n\tChecking if I can see if an object exists in a collection by name:\n\t\tHurray! As expected, " + currentPanelCircuitPrefix + "1 exists.\n")
-                if (currentPanelCircuitPrefix + '10') not in nodes:
-                    LOGGER.warning("\n\tChecking if I can see if an object exists in a collection by name:\n\t\tHurray! As expected, " + currentPanelCircuitPrefix + "10 does not exist.\n")
-                    
                 for i in range(1,33):
                     if (currentPanelCircuitPrefix + int(i)) in nodes:
                         LOGGER.debug("\n\tUpdating " + node + " (which should be a Circuit node under this Panel controller: " + self.address + ").\n")
+                        
                         try:
-                           epoch = self.getDriver('TIME')
-                           hour = self.getDriver('HR')
-                           minute = self.getDriver('MOON')
-                           second = self.getDriver('TIMEREM')
-                           nodes[node].updateNode(self.allCircuitsData, epoch, hour, minute, second)
-                       except Exception as e:
-                           LOGGER.warning('\n\t\tPOLL ERROR in Panel Circuits: Cannot seem to update node needed in for-loop due to error:\n\t\t{}\n'.format(e))
+                            epoch = self.getDriver('TIME')
+                            hour = self.getDriver('HR')
+                            minute = self.getDriver('MOON')
+                            second = self.getDriver('TIMEREM')
+                            nodes[node].updateNode(self.allCircuitsData, epoch, hour, minute, second)
+                        except Exception as e:
+                            LOGGER.warning('\n\t\tPOLL ERROR in Panel Circuits: Cannot seem to update node needed in for-loop due to error:\n\t\t{}\n'.format(e))
+    
                     elif self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':') > self.getDriver('PULSCNT'):
                         LOGGER.warning("\n\tCIRCUIT COUNT INCREASED - upon short poll with Panel Circuit Controller '" + self.address + "' @ " + self.ipAddress + ", it seems like there are now MORE distinct circuits in SPAN, for a total of " + self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':') + ", but originally this controller only had " + self.getDriver('PULSCNT') + " .\n")
+                        
                     else:
                         LOGGER.warning("\n\tCIRCUIT COUNT DECREASED - upon short poll with Panel Circuit Controller '" + self.address + "' @ " + self.ipAddress + ", it seems like there are now FEWER distinct circuits in SPAN, for a total of " + self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':') + ", but originally this controller had " + self.getDriver('PULSCNT') + " .\n")
+                        
             else:
                  LOGGER.warning("\n\tUPDATE ALLCIRCUITSDATA failed to populate allCircuitsData.\n")
     '''
