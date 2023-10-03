@@ -412,6 +412,8 @@ class PanelNodeForBreakers(udi_interface.Node):
         self.n_queue = []
         self.parent = parent
 
+        self.ISY = ISY(self.poly)
+
         LOGGER.debug("\n\tINIT Panel Breaker Controller " + address + "'s parent is '" + parent + "' when INIT'ing.\n")
 
         self.ipAddress = spanIPAddress
