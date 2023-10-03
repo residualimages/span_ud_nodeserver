@@ -509,7 +509,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                 }]
             }
 
-        self.setDriver(driver,newValue)
+        self.setDriver(driver, newValue, False)
 
         if 'isPG3x' in self.poly.pg3init and self.poly.pg3init['isPG3x'] is True:
             #PG3x can use this, but PG3 doesn't have the necessary 'text' handling within message, set above, so we have the 'else' below
