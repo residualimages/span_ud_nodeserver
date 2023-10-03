@@ -53,6 +53,7 @@ class Controller(udi_interface.Node):
     drivers = [
             {'driver': 'ST', 'value': 1, 'uom': 2},
             {'driver': 'GV0', 'value': 0, 'uom': 56},
+            {'driver': 'GPV', 'value': -1, 'uom': 56},
             ]
 
     def __init__(self, polyglot, parent, address, name):
@@ -85,6 +86,7 @@ class Controller(udi_interface.Node):
         self.n_queue.append(data['address'])
 
     def wait_for_node_done(self):
+        self.pushTextToGPV('Waiting for root controller...')
         while len(self.n_queue) == 0:
             time.sleep(0.1)
         self.n_queue.pop()
@@ -138,7 +140,19 @@ class Controller(udi_interface.Node):
         self.poly.setCustomParamsDoc()
         # Not necessary to call this since profile_version is used from server.json
         self.poly.updateProfile()
-
+        
+    '''
+    Testing for <text /> attribute.
+    Note that to be reported to IoX, the value has to change; this is why we flip from 0 to 1 or 1 to 0.
+    -1 is reserved for initializing.
+    '''
+    def pushTextToGPV(self,stringToPublish):
+        currentValue = int(self.getDriver('GPV'))
+        if currentValue != 0:
+            self.setDriver('GPV', 0, True, True, 56, stringToPublish)
+        else:
+            self.setDriver('GPV', 1, True, True, 56, stringToPublish)
+            
     '''
     Create the controller nodes. 
     '''
@@ -166,6 +180,7 @@ class Controller(udi_interface.Node):
             titleBreakers = 'SPAN Panel #{} - Breakers'.format(i+1)
             titleBreakers = getValidNodeName(titleBreakers)
             
+            self.pushTextToGPV('Creating Circuit Controller ' + str(i))
             try:
                 circuitController = SPAN_panel.PanelNodeForCircuits(self.poly, addressCircuits, addressCircuits, titleCircuits, current_IPaddress, current_BearerToken)
                 self.poly.addNode(circuitController)
@@ -173,6 +188,7 @@ class Controller(udi_interface.Node):
             except Exception as e:
                 LOGGER.warning('Failed to create Panel Circuits Controller {}: {}'.format(titleCircuits, e))
 
+            self.pushTextToGPV('Creating Panel Controller ' + str(i))
             try:
                 LOGGER.debug("\n\t\ADD breakerController = SPAN_panel.PanelNodeForBreakers(self.poly, " + addressBreakers + ", " + addressBreakers + ", " + titleBreakers + ", " + current_IPaddress + ", " + current_BearerToken + ")\n")
                 breakerController = SPAN_panel.PanelNodeForBreakers(self.poly, addressBreakers, addressBreakers, titleBreakers, current_IPaddress, current_BearerToken)
@@ -182,6 +198,7 @@ class Controller(udi_interface.Node):
                 LOGGER.warning('Failed to create Panel Breakers Controller {}: {}'.format(titleBreakers, e))
         
         self.setDriver('GV0', how_many, True, True)
+        self.pushTextToGPV('Querying ACTIVE')
 
     '''
     STOP Command Received
@@ -189,6 +206,7 @@ class Controller(udi_interface.Node):
     def stop(self):
         LOGGER.warning("\n\tSTOP COMMAND Received by '" + self.address + "'.\n")
         self.setDriver('ST', 0, True, True)
+        self.pushTextToGPV('Querying INACTIVE')
         self.poly.stop()
         
     '''
@@ -196,6 +214,7 @@ class Controller(udi_interface.Node):
     '''
     def reset(self, comamndDetails):
         LOGGER.warning('\n\t\tRESET COMMAND ISSUED: Will Delete and Recreate All Sub-Nodes.\n')
+        self.pushTextToGPV('Resetting...')
         self.n_queue = []
         self.poly.stop()
         
@@ -213,6 +232,7 @@ class Controller(udi_interface.Node):
                 self.poly.delNode(node)
                 
         self.setDriver('GV0', 0, True, True)
+        self.pushTextToGPV('Starting...')
         polyglot.ready()
         self.poly.addNode(self)
 
