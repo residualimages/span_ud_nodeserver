@@ -333,8 +333,8 @@ class Controller(udi_interface.Node):
                 LOGGER.debug("\n\tRESET NodeServer - SKIP deleting '" + controller + "'.\n")
                 
         self.setDriver('GV0', 0, True, True)
-        self.pushTextToDriver('GPV','Starting...')
-        self.poly.ready()
-        self.poly.addNode(self)
+        self.pushTextToDriver('GPV','Re-starting...')
+        self.poly.stop()
+        self.poly.start()
 
     commands = {'RESET': reset}
