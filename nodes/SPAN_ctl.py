@@ -10,6 +10,9 @@ import sys
 import time
 import string
 import re
+
+import urllib.parse,http.client
+
 from nodes import SPAN_panel
 
 LOGGER = udi_interface.LOGGER
@@ -148,11 +151,24 @@ class Controller(udi_interface.Node):
     '''
     def pushTextToGPV(self,stringToPublish):
         currentValue = int(self.getDriver('GPV'))
-        if currentValue != 0:
-            self.setDriver('GPV', 0, True, True, 56, stringToPublish)
-        else:
-            self.setDriver('GPV', 1, True, True, 56, stringToPublish)
+        encodedStringToPublish = urllib.parse.quote(stringToPublish, safe='')
+        
+        localConnection = http.client.HTTPConnection('127.0.0.1',8080)
+        payload = ''
+        LOGGER.warning("n\tPUSHING REPORT TO 'controller' status variable 'GPV' via 127.0.0.1:8080.\n")
             
+        if currentValue != 0:
+            suffixURL = 'rest/ns/25/nodes/n025_controller/report/status/GPV/0/56/text/' + encodedStringToPublish
+        else:
+            suffixURL = 'rest/ns/25/nodes/n025_controller/report/status/GPV/0/56/text/' + encodedStringToPublish
+
+        localConnection.request("GET", suffixURL) #, payload, headers)
+        localResponse = localConnection.getresponse()
+        localResponseData = localResponse.read()
+        localResponseData = localResponseData.decode("utf-8")
+        
+        LOGGER.warning("\n\t\tRESPONSE from report:\n\t\t\t" + localResponseData + "\n")
+    
     '''
     Create the controller nodes. 
     '''
