@@ -190,7 +190,9 @@ class BreakerNode(udi_interface.Node):
             self.setDriver('PULSCNT', self.breakerID, True, True)
         
         self.poll('shortPoll')
-        self.pushTextToDriver('TIME', dateTimeString)
+        
+        if "instantPowerW" in self.allBreakersData:
+            self.pushTextToDriver('TIME', dateTimeString)
         
     def poll(self, polltype):
         if 'shortPoll' in polltype:
@@ -225,10 +227,6 @@ class BreakerNode(udi_interface.Node):
                 
                 LOGGER.debug("\n\tPOLL About to set ST to " + str(abs(designatedBreakerInstantPowerW)) + " for Breaker " + str(self.breakerID) + ".\n")
                 self.setDriver('ST', round(abs(designatedBreakerInstantPowerW),2), True, True)
-                
-                nowEpoch = int(time.time())
-                nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-                self.pushTextToDriver('TIME',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
 
             else:
                 LOGGER.warning("\n\tPOLL ERROR: Unable to get designatedBreakerInstantPowerW from designatedBreakerData:\n\t\t" + designatedBreakerData + "\n")
