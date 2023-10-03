@@ -18,6 +18,7 @@ from typing import Optional, Any, TYPE_CHECKING
 import math,time,datetime,urllib.parse,http.client
 
 LOGGER = udi_interface.LOGGER
+ISY = udi_interface.ISY
 
 '''
 Notes from https://github.com/UniversalDevicesInc/udi_python_interface/blob/d620824c14a917add0b471295984da1d323a12a3/udi_interface/interface.py#L1140
