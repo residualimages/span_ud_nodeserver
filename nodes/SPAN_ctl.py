@@ -308,6 +308,7 @@ class Controller(udi_interface.Node):
     def reset(self, commandDetails):
         LOGGER.warning('\n\tRESET COMMAND ISSUED: Will Delete and Recreate All Sub-Nodes.\n\t\t{}'.format(commandDetails))
         self.pushTextToDriver('GPV','Resetting...')
+        self.stop()
         
         # delete any existing nodes
         nodes = self.poly.getNodes()
