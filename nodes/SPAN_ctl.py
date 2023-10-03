@@ -194,7 +194,7 @@ class Controller(udi_interface.Node):
     '''
     Delete and Reset Nodes:
     '''
-    def reset(self):
+    def reset(self, comamndDetails):
         LOGGER.warning('\n\t\tRESET COMMAND ISSUED: Will Delete and Recreate All Sub-Nodes.\n')
         self.n_queue = []
         self.poly.stop()
