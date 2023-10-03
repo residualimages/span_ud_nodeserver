@@ -55,6 +55,7 @@ class CircuitNode(udi_interface.Node):
         
         self.poly = polyglot
         self.n_queue = []
+        self.parent = parent
 
         LOGGER.debug("\n\tINIT Span Circuit's parent is '" + parent + "' when INIT'ing.\n")
 
