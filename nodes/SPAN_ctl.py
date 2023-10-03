@@ -313,13 +313,13 @@ class Controller(udi_interface.Node):
         
         # delete any existing nodes
         nodes = self.poly.getNodes()
-        for node in nodes:
+        for node in nodes.copy():
             if node != 'controller' and 'panel' not in node:   # but not the controller nodes at first
                 LOGGER.warning("\n\tRESET NodeServer - deleting '" + node + "'.\n")
                 self.poly.delNode(node)
 
         nodes = self.poly.getNodes()
-        for node in nodes:
+        for node in nodes.copy():
             if node != 'controller':   # but not the NS controller node itself
                 LOGGER.warning("\n\tRESET NodeServer - deleting '" + node + "'.\n")
                 self.poly.delNode(node)
