@@ -227,6 +227,8 @@ class Controller(udi_interface.Node):
                 prefixN = 'n0' + prefixN + '_'
             
             suffixURL = '/rest/ns/' + str(self.poly.profileNum) + '/nodes/' + prefixN + self.address + '/report/status/' + driver + '/' + str(newValue) + '/56/text/' + encodedStringToPublish
+            
+            LOGGER.debug("\n\t\tPUSHING REPORT Details - this is the 'suffixURL':\n\t\t\t" + suffixURL + "\n")
     
             localConnection.request("GET", suffixURL, payload, headers)
             localResponse = localConnection.getresponse()
@@ -235,6 +237,8 @@ class Controller(udi_interface.Node):
             
             if '<status>200</status>' not in localResponseData:
                 LOGGER.warning("\n\t\tPUSHING REPORT ERROR - RESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
+            else:
+                LOGGER.debug("\n\t\tPUSHING REPORT - RESPONSE from report:\n\t\t\t" + localResponseData + "\n")
         else:
             LOGGER.warning("\n\t\PUSHING REPORT ERROR: looks like this is a PG3 install but the ISY authorization state seems to currently be 'Unauthorized': 'True'.\n")
     
