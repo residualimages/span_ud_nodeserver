@@ -154,17 +154,21 @@ class PanelNodeForCircuits(udi_interface.Node):
                 if (currentPanelCircuitPrefix + '10') not in nodes:
                     LOGGER.warning("\n\tChecking if I can see if an object exists in a collection by name:\n\t\tHurray! As expected, " + currentPanelCircuitPrefix + "10 does not exist.\n")
                     
-                for node in nodes:
-                     if currentPanelCircuitPrefix in node:
+                for i in range(1,33):
+                    if (currentPanelCircuitPrefix + int(i)) in nodes:
                         LOGGER.debug("\n\tUpdating " + node + " (which should be a Circuit node under this Panel controller: " + self.address + ").\n")
                         try:
-                            epoch = self.getDriver('TIME')
-                            hour = self.getDriver('HR')
-                            minute = self.getDriver('MOON')
-                            second = self.getDriver('TIMEREM')
-                            nodes[node].updateNode(self.allCircuitsData, epoch, hour, minute, second)
-                        except Exception as e:
-                            LOGGER.warning('\n\t\tPOLL ERROR in Panel Circuits: Cannot seem to update node needed in for-loop due to error:\n\t\t{}\n'.format(e))
+                           epoch = self.getDriver('TIME')
+                           hour = self.getDriver('HR')
+                           minute = self.getDriver('MOON')
+                           second = self.getDriver('TIMEREM')
+                           nodes[node].updateNode(self.allCircuitsData, epoch, hour, minute, second)
+                       except Exception as e:
+                           LOGGER.warning('\n\t\tPOLL ERROR in Panel Circuits: Cannot seem to update node needed in for-loop due to error:\n\t\t{}\n'.format(e))
+                    elif self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':') > self.getDriver('PULSCNT'):
+                        LOGGER.warning("\n\tCIRCUIT COUNT INCREASED - upon short poll with Panel Circuit Controller '" + self.address + "' @ " + self.ipAddress + ", it seems like there are now MORE distinct circuits in SPAN, for a total of " + self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':') + ", but originally this controller only had " + self.getDriver('PULSCNT') + " .\n")
+                    else:
+                        LOGGER.warning("\n\tCIRCUIT COUNT DECREASED - upon short poll with Panel Circuit Controller '" + self.address + "' @ " + self.ipAddress + ", it seems like there are now FEWER distinct circuits in SPAN, for a total of " + self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':') + ", but originally this controller had " + self.getDriver('PULSCNT') + " .\n")
             else:
                  LOGGER.warning("\n\tUPDATE ALLCIRCUITSDATA failed to populate allCircuitsData.\n")
     '''
@@ -255,6 +259,11 @@ class PanelNodeForCircuits(udi_interface.Node):
     def stop(self):
         LOGGER.debug("\n\tSTOP RECEIVED: Panel Circuit Controller handler '" + self.address + "'.\n")
         self.setDriver('ST', 0, True, True)
+        self.setDriver('ST', 0, True, True)
+        self.setDriver('TIME', -1, True, True)
+        self.setDriver('HR', -1, True, True)
+        self.setDriver('MOON', -1, True, True)
+        self.setDriver('TIMEREM', -1, True, True)
 
 '''
 This is our PanelForBreakers device node. 
@@ -524,3 +533,4 @@ class PanelNodeForBreakers(udi_interface.Node):
         self.setDriver('HR', -1, True, True)
         self.setDriver('MOON', -1, True, True)
         self.setDriver('TIMEREM', -1, True, True)
+
