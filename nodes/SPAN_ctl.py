@@ -86,10 +86,10 @@ class Controller(udi_interface.Node):
         self.poly.addNode(self)
 
     def manuallyAddedParametersHandler(self, data):
-        LOGGER.warning("\n\tHANDLE MANUALLY ADDED PARAMETERS.\n\t\t{}\n".format(data))
+        LOGGER.debug("\n\tHANDLE MANUALLY ADDED PARAMETERS.\n\t\t{}\n".format(data))
 
     def nsInfo(self, data):
-        LOGGER.warning("\n\tHANDLE NSINFO.\n\t\t{}\n".format(data))
+        LOGGER.debug("\n\tHANDLE NSINFO.\n\t\t{}\n".format(data))
     
     def poll(self, polltype):
         if 'shortPoll' in polltype:
@@ -104,8 +104,8 @@ class Controller(udi_interface.Node):
     '''
     def node_queue(self, data):
         self.n_queue.append(data['address'])
-        LOGGER.warning("\n\tISY Object created under 'controller':\t" + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", which is itself NS #" + str(self.poly.profileNum) + ", and has self.address of '" + str(self.address) + "'.\n")   
-        LOGGER.warning("\n\t\tUNAuthorized (expecting this to be false): " + str(self.ISY.unauthorized) + ".\n")
+        LOGGER.debug("\n\tISY Object created under 'controller':\t" + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", which is itself NS #" + str(self.poly.profileNum) + ", and has self.address of '" + str(self.address) + "'.\n")   
+        LOGGER.debug("\n\t\tUNAuthorized (expecting this to be false): " + str(self.ISY.unauthorized) + ".\n")
 
     def wait_for_node_done(self):
         self.pushTextToDriver('BEEP','Waiting for root controller...')
@@ -201,7 +201,7 @@ class Controller(udi_interface.Node):
 
         if 'isPG3x' in self.poly.pg3init and self.poly.pg3init['isPG3x'] is True:
             #PG3x can use this, but PG3 doesn't have the necessary 'text' handling within message, set above, so we have the 'else' below
-            LOGGER.warning("\n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3x via self.poly.send('" + encodedStringToPublish + "','status') with a value of '" + str(newValue) + "'.\n")
+            LOGGER.debug("\n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3x via self.poly.send('" + encodedStringToPublish + "','status') with a value of '" + str(newValue) + "'.\n")
             self.poly.send(message, 'status')
         elif not(self.ISY.unauthorized):
             userpassword = self.ISY._isy_user + ":" + self.ISY._isy_pass
@@ -215,7 +215,7 @@ class Controller(udi_interface.Node):
                 "Authorization": "Basic " + userpasswordAsBase64String
             }
             
-            LOGGER.warning("n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3 via " + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
+            LOGGER.debug("n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3 via " + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
     
             prefixN = str(self.poly.profileNum)
             if len(prefixN) < 2:
@@ -231,7 +231,7 @@ class Controller(udi_interface.Node):
             localResponseData = localResponseData.decode("utf-8")
             
             if '<status>200</status>' not in localResponseData:
-                LOGGER.warning("\n\t\tRESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
+                LOGGER.warning("\n\t\tPUSHING REPORT ERROR - RESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
         else:
             LOGGER.warning("\n\t\PUSHING REPORT ERROR: looks like this is a PG3 install but the ISY authorization state seems to currently be 'Unauthorized': 'True'.\n")
     
