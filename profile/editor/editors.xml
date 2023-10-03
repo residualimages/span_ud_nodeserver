@@ -12,7 +12,7 @@
 	<editor id="ipAddress">
 		<range uom="56" min="-1" max="2" prec="0" /> 
 	</editor>
-	<editor id="timestamp">
+	<editor id="dateTimeStamp">
 		<range uom="56" min="-1" max="2" prec="0" /> 
 	</editor>
 	<editor id="rawStringToIoX">
