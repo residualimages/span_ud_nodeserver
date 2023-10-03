@@ -88,6 +88,8 @@ class PanelNodeForCircuits(udi_interface.Node):
         # set a flag to short circuit setDriver() until the node has been fully
         # setup in the Polyglot DB and the ISY (as indicated by START event)
         self._initialized: bool = False
+
+        self._fullyCreated: bool = False
         
         self.poly = polyglot
         self.n_queue = []
@@ -138,6 +140,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             else:
                 LOGGER.warning("\n\tINIT Issue getting Circuits Data for Panel Circuits Controller '" + self.address + "' @ " + self.ipAddress + ".\n")
                 
+            self._fullyCreated = True
             self.n_queue.append(data['address'])
     
 
@@ -170,6 +173,8 @@ class PanelNodeForCircuits(udi_interface.Node):
     -1 is reserved for initializing.
     '''
     def pushTextToDriver(self,driver,stringToPublish):
+        if not(self._fullyCreated):
+            return
         stringToPublish = stringToPublish.replace('.','')
         if len(str(self.getDriver(driver))) <= 0:
             LOGGER.warning("\n\tPUSHING REPORT ERROR - a (correct) Driver was not passed.\n")
@@ -390,6 +395,8 @@ class PanelNodeForBreakers(udi_interface.Node):
         # set a flag to short circuit setDriver() until the node has been fully
         # setup in the Polyglot DB and the ISY (as indicated by START event)
         self._initialized: bool = False
+
+        self._fullyCreated: bool = False
         
         self.poly = polyglot
         self.n_queue = []
@@ -459,6 +466,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             else:
                 LOGGER.warning("\n\tINIT Issue getting first-time Breakers Data for Panel Breaker Controller '" + self.address + "' @ " + self.ipAddress + ".\n")
 
+            self._fullyCreated = True
             self.n_queue.append(data['address'])
 
     def wait_for_node_done(self):
@@ -496,6 +504,8 @@ class PanelNodeForBreakers(udi_interface.Node):
     -1 is reserved for initializing.
     '''
     def pushTextToDriver(self,driver,stringToPublish):
+        if not(self._fullyCreated):
+            return
         stringToPublish = stringToPublish.replace('.','')
         if len(str(self.getDriver(driver))) <= 0:
             LOGGER.warning("\n\tPUSHING REPORT ERROR - a (correct) Driver was not passed.\n")
