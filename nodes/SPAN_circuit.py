@@ -122,7 +122,7 @@ class CircuitNode(udi_interface.Node):
     def pushTextToDriver(self,driver,stringToPublish):
         stringToPublish = stringToPublish.replace('.','')
         if len(str(self.getDriver(driver))) <= 0:
-            LOGGER.warning("\n\tPUSHING REPORT ERROR - a (correct) Driver was not passed.\n")
+            LOGGER.warning("\n\tPUSHING REPORT ERROR under '" + self.address + "' - a (correct) Driver was not passed.\n")
             return
         else:
             LOGGER.debug("\n\tLEN of self.getDriver('" + driver + "') is greater than 0; driver value = " + str(self.getDriver(driver)) + "\n")
