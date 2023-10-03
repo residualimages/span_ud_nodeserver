@@ -95,7 +95,7 @@ class Controller(udi_interface.Node):
         if 'shortPoll' in polltype:
             nowEpoch = int(time.time())
             nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-            self.pushTextToGPV(nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+            self.pushTextToDriver('GPV',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
     '''
     node_queue() and wait_for_node_event() create a simple way to wait
     for a node to be created.  The nodeAdd() API call is asynchronous and
@@ -108,7 +108,7 @@ class Controller(udi_interface.Node):
         LOGGER.warning("\n\t\tUNAuthorized (expecting this to be false): " + str(self.ISY.unauthorized) + ".\n")
 
     def wait_for_node_done(self):
-        self.pushTextToGPV('Waiting for root controller...')
+        self.pushTextToDriver('GPV','Waiting for root controller...')
         while len(self.n_queue) == 0:
             time.sleep(0.1)
         self.n_queue.pop()
@@ -168,8 +168,8 @@ class Controller(udi_interface.Node):
     Note that to be reported to IoX, the value has to change; this is why we flip from 0 to 1 or 1 to 0.
     -1 is reserved for initializing.
     '''
-    def pushTextToGPV(self,stringToPublish):
-        currentValue = int(self.getDriver('GPV'))
+    def pushTextToDriver(self,driver,stringToPublish):
+        currentValue = int(self.getDriver(driver))
         newValue = -1
         encodedStringToPublish = urllib.parse.quote(stringToPublish, safe='')
 
@@ -178,7 +178,7 @@ class Controller(udi_interface.Node):
             message = {
                 'set': [{
                     'address': self.address,
-                    'driver': 'GPV',
+                    'driver': driver,
                     'value': 1,
                     'uom': 56,
                     'text': encodedStringToPublish
@@ -190,18 +190,18 @@ class Controller(udi_interface.Node):
             message = {
                 'set': [{
                     'address': self.address,
-                    'driver': 'GPV',
+                    'driver': driver,
                     'value': 0,
                     'uom': 56,
                     'text': encodedStringToPublish
                 }]
             }
 
-        self.setDriver('GPV',newValue)
+        self.setDriver(driver,newValue)
 
         if 'isPG3x' in self.poly.pg3init and self.poly.pg3init['isPG3x'] is True:
             #PG3x can use this, but PG3 doesn't have the necessary 'text' handling within message, set above, so we have the 'else' below
-            LOGGER.warning("\n\tPUSHING REPORT TO 'controller' status variable 'GPV' with PG3x via self.poly.send('" + encodedStringToPublish + "','status') with a value of '" + str(newValue) + "'.\n")
+            LOGGER.warning("\n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3x via self.poly.send('" + encodedStringToPublish + "','status') with a value of '" + str(newValue) + "'.\n")
             self.poly.send(message, 'status')
         elif not(self.ISY.unauthorized):
             userpassword = self.ISY._isy_user + ":" + self.ISY._isy_pass
@@ -215,7 +215,7 @@ class Controller(udi_interface.Node):
                 "Authorization": "Basic " + userpasswordAsBase64String
             }
             
-            LOGGER.warning("n\tPUSHING REPORT TO 'controller' status variable 'GPV' with PG3 via " + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
+            LOGGER.warning("n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3 via " + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
     
             prefixN = str(self.poly.profileNum)
             if len(prefixN) < 2:
@@ -230,7 +230,8 @@ class Controller(udi_interface.Node):
             localResponseData = localResponse.read()
             localResponseData = localResponseData.decode("utf-8")
             
-            LOGGER.warning("\n\t\tRESPONSE from report:\n\t\t\t" + localResponseData + "\n")
+            if '<status>200</status>' not in localResponseData:
+                LOGGER.warning("\n\t\tRESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
         else:
             LOGGER.warning("\n\t\PUSHING REPORT ERROR: looks like this is a PG3 install but the ISY authorization state seems to currently be 'Unauthorized': 'True'.\n")
     
@@ -261,7 +262,7 @@ class Controller(udi_interface.Node):
             titleBreakers = 'SPAN Panel #{} - Breakers'.format(i+1)
             titleBreakers = getValidNodeName(titleBreakers)
             
-            self.pushTextToGPV('Creating Circuit Controller ' + str(i))
+            self.pushTextToDriver('GPV','Creating Circuit Controller ' + str(i))
             try:
                 circuitController = SPAN_panel.PanelNodeForCircuits(self.poly, addressCircuits, addressCircuits, titleCircuits, current_IPaddress, current_BearerToken)
                 self.poly.addNode(circuitController)
@@ -269,7 +270,7 @@ class Controller(udi_interface.Node):
             except Exception as e:
                 LOGGER.warning('Failed to create Panel Circuits Controller {}: {}'.format(titleCircuits, e))
 
-            self.pushTextToGPV('Creating Panel Controller ' + str(i))
+            self.pushTextToDriver('GPV','Creating Panel Controller ' + str(i))
             try:
                 LOGGER.debug("\n\t\ADD breakerController = SPAN_panel.PanelNodeForBreakers(self.poly, " + addressBreakers + ", " + addressBreakers + ", " + titleBreakers + ", " + current_IPaddress + ", " + current_BearerToken + ")\n")
                 breakerController = SPAN_panel.PanelNodeForBreakers(self.poly, addressBreakers, addressBreakers, titleBreakers, current_IPaddress, current_BearerToken)
@@ -279,7 +280,7 @@ class Controller(udi_interface.Node):
                 LOGGER.warning('Failed to create Panel Breakers Controller {}: {}'.format(titleBreakers, e))
         
         self.setDriver('GV0', how_many, True, True)
-        self.pushTextToGPV('Querying ACTIVE')
+        self.pushTextToDriver('GPV','Querying ACTIVE')
 
     '''
     STOP Command Received
@@ -287,7 +288,7 @@ class Controller(udi_interface.Node):
     def stop(self):
         LOGGER.warning("\n\tSTOP COMMAND Received by '" + self.address + "'.\n")
         self.setDriver('ST', 0, True, True)
-        self.pushTextToGPV('Querying INACTIVE')
+        self.pushTextToDriver('GPV','Querying INACTIVE')
         self.poly.stop()
         
     '''
@@ -295,7 +296,7 @@ class Controller(udi_interface.Node):
     '''
     def reset(self, comamndDetails):
         LOGGER.warning('\n\t\tRESET COMMAND ISSUED: Will Delete and Recreate All Sub-Nodes.\n')
-        self.pushTextToGPV('Resetting...')
+        self.pushTextToDriver('GPV','Resetting...')
         self.n_queue = []
         self.poly.stop()
         
@@ -313,7 +314,7 @@ class Controller(udi_interface.Node):
                 self.poly.delNode(node)
                 
         self.setDriver('GV0', 0, True, True)
-        self.pushTextToGPV('Starting...')
+        self.pushTextToDriver('GPV','Starting...')
         polyglot.ready()
         self.poly.addNode(self)
 
