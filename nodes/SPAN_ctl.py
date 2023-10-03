@@ -343,7 +343,38 @@ class Controller(udi_interface.Node):
             if countOfRemainingNodes > 1:
                 LOGGER.warning("\n\t\tSTILL DELETING nodes, not yet at 1 remaining. Current count: " + str(countOfRemainingNodes) + "...\n")
                 self.pushTextToDriver('GPV',"STILL DELETING nodes; current count: " + str(countOfRemainingNodes) + "...")
-        
+
+        # Iterate over polyglot's internal list of nodes to check for orphaned ones belonging to this NodeServer
+        for controllerIndex in range (1,2):
+            for entityIndex in range(1,33):
+                try:
+                    address = 's' + str(controllerIndex) + '_breaker_' + entityIndex
+                    if address in self.poly.nodes_internal:
+                        del self.poly.nodes_internal[address]        
+                        LOGGER.warning"\n\tFound an orphaned breaker node (#" + str(entityIndex) + ") under Breaker Controller #" + str(controllerIndex) + ".\n")
+                    
+                    address = 's' + str(controllerIndex) + '_circuit_' + entityIndex
+                    if address in self.poly.nodes_internal:
+                        del self.poly.nodes_internal[address]        
+                        LOGGER.warning"\n\tFound an orphaned circuit node (#" + str(entityIndex) + ") under Circuit Controller #" + str(controllerIndex) + ".\n")
+                        
+                except KeyError:
+                    LOGGER.debug("\n\tNo node with address '{}' found.\n".format(address))
+
+            try:
+                address = 'panelbreaker_' + entityIndex
+                if address in self.poly.nodes_internal:
+                    del self.poly.nodes_internal[address]        
+                    LOGGER.warning"\n\tFound an orphaned Breaker Controller #" + str(controllerIndex) + "; removing.\n")
+                    
+                address = 'panelcircuit_' + entityIndex
+                    if address in self.poly.nodes_internal:
+                        del self.poly.nodes_internal[address]        
+                        LOGGER.warning"\n\tFound an orphaned Circuit Controller #" + str(controllerIndex) + "; removing.\n")
+                        
+                except KeyError:
+                    LOGGER.debug("\n\tNo orphaned controllers with address '{}' found.\n".format(address))
+                
         self.setDriver('GV0', 0, True, True)
         self.pushTextToDriver('GPV','Will restart in 5 seconds...')
         #self.stop()
