@@ -148,11 +148,20 @@ class PanelNodeForCircuits(udi_interface.Node):
                 nodes = self.poly.getNodes()
                 currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
                 LOGGER.debug("\n\tWill be looking for Circuit nodes with this as the prefix: '" + currentPanelCircuitPrefix + "'.\n")
+                if (currentPanelCircuitPrefix + '1') in nodes:
+                    LOGGER.debug("\n\tChecking if I can see if an object exists in a collection by name:\n\t\tHurray! As expected, " + currentPanelCircuitPrefix + "1 exists.\n")
+                if (currentPanelCircuitPrefix + '10') not in nodes:
+                    LOGGER.debug("\n\tChecking if I can see if an object exists in a collection by name:\n\t\tHurray! As expected, " + currentPanelCircuitPrefix + "10 does not exist.\n")
+                    
                 for node in nodes:
                      if currentPanelCircuitPrefix in node:
                         LOGGER.debug("\n\tUpdating " + node + " (which should be a Circuit node under this Panel controller: " + self.address + ").\n")
                         try:
-                            nodes[node].updateNode(self.allCircuitsData)
+                            epoch = self.getDriver('TIME')
+                            hour = self.getDriver('HR')
+                            minute = self.getDriver('MOON')
+                            second = self.getDriver('TIMEREM')
+                            nodes[node].updateNode(self.allCircuitsData, epoch, hour, minute, second)
                         except Exception as e:
                             LOGGER.warning('\n\t\tPOLL ERROR in Panel Circuits: Cannot seem to update node needed in for-loop due to error:\n\t\t{}\n'.format(e))
             else:
@@ -235,6 +244,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             circuitsResponse = spanConnection.getresponse()
             self.allCircuitsData = circuitsResponse.read()
             self.allCircuitsData = self.allCircuitsData.decode("utf-8")
+            
         except Exception as e:
             LOGGER.warning("\n\tUPDATE ALLCIRCUITSDATA ERROR: SPAN API GET request for Panel Circuits Controller '" + self.address + "' failed due to error:\n\t\t{}\n".format(e))
             
@@ -244,14 +254,6 @@ class PanelNodeForCircuits(udi_interface.Node):
     def stop(self):
         LOGGER.debug("\n\tSTOP RECEIVED: Panel Circuit Controller handler '" + self.address + "'.\n")
         self.setDriver('ST', 0, True, True)
-        '''
-        currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
-        nodes = self.poly.getNodes()
-        for node in nodes:
-            if currentPanelCircuitPrefix in node:
-                nodes[node].setDriver('ST', 0, True, True)
-                LOGGER.debug("\n\tSTOP RECEIVED: Panel Circuit Controller Setting child " + node + "'s properties AWAKE = 0 and ST = 0 W.\n")
-        '''
 
 '''
 This is our PanelForBreakers device node. 
@@ -410,7 +412,11 @@ class PanelNodeForBreakers(udi_interface.Node):
                     node = currentPanelBreakerPrefix + str(i)
                     LOGGER.debug("\n\tUpdating " + node + " (which should be a Breaker node under this Panel controller: " + self.address + ").\n")
                     try:
-                        nodes[node].updateNode(self.allBreakersData)
+                        epoch = self.getDriver('TIME')
+                        hour = self.getDriver('HR')
+                        minute = self.getDriver('MOON')
+                        second = self.getDriver('TIMEREM')
+                        nodes[node].updateNode(self.allBreakersData, epoch, hour, minute, second)
                     except Exception as e:
                         LOGGER.debug("\n\t\tPOLL ERROR: Cannot seem to update node '" + node + "' needed in for-loop due to error:\n\t\t{}\n".format(e))
             else:
