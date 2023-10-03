@@ -5,6 +5,12 @@
       <st id="ST" editor="bool" />
       <st id="GV0" editor="raw" />
 	</sts>
+    <cmds>
+      <sends />
+      <accepts>
+        <cmd id="RESET" />
+      </accepts>
+    </cmds>
   </nodeDef>
 
   <nodeDef id="panelForCircuits" nls="panelForCircuits">
