@@ -104,8 +104,8 @@ class Controller(udi_interface.Node):
     '''
     def node_queue(self, data):
         self.n_queue.append(data['address'])
-        LOGGER.warning("\n\tISY Object created under 'controller':\t" + self.ISY._isy_ip + ":" + self.ISY._isy_port + ", which is itself NS #" + self.poly.profileNum + ".\n")   
-        LOGGER.warning("\n\t\tUSER: " + self.ISY._isy_user + "; PASS: " + self.ISY._isy_pass + "; UNAuthorized: " + self.ISY.unauthorized + ".\n")
+        LOGGER.warning("\n\tISY Object created under 'controller':\t" + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", which is itself NS #" + str(self.poly.profileNum) + ".\n")   
+        LOGGER.warning("\n\t\tUSER: " + self.ISY._isy_user + "; PASS: " + self.ISY._isy_pass + "; UNAuthorized: " + str(self.ISY.unauthorized) + ".\n")
 
     def wait_for_node_done(self):
         self.pushTextToGPV('Waiting for root controller...')
