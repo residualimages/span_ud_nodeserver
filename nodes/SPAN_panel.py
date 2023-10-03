@@ -114,6 +114,7 @@ class PanelNodeForCircuits(udi_interface.Node):
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.START, self.start, address)
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
+        polyglot.subscribe(polyglot.DELETE, self.delete)
 
     '''
     node_queue() and wait_for_node_event() create a simple way to wait
@@ -152,6 +153,12 @@ class PanelNodeForCircuits(udi_interface.Node):
     def start(self):
         # set the initlized flag to allow setDriver to work
         self._initialized = True
+        
+    def delete(self, address):
+        if address == self.address:
+            LOGGER.warning("\n\tDELETE COMMAND RECEIVED for self ('" + self.address + "')\n")
+        else:
+            LOGGER.debug("\n\tDELETE COMMAND RECEIVED for '" + address + "'\n")
     
     # overload the setDriver() of the parent class to short circuit if 
     # node not initialized
@@ -420,6 +427,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.START, self.start, address)
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
+        polyglot.subscribe(polyglot.DELETE, self.delete)
 
     '''
     node_queue() and wait_for_node_event() create a simple way to wait
@@ -473,6 +481,12 @@ class PanelNodeForBreakers(udi_interface.Node):
     def start(self):
         # set the initlized flag to allow setDriver to work
         self._initialized = True
+        
+    def delete(self, address):
+        if address == self.address:
+            LOGGER.warning("\n\tDELETE COMMAND RECEIVED for self ('" + self.address + "')\n")
+        else:
+            LOGGER.debug("\n\tDELETE COMMAND RECEIVED for '" + address + "'\n")
     
     # overload the setDriver() of the parent class to short circuit if 
     # node not initialized
