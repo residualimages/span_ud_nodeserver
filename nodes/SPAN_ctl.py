@@ -220,7 +220,7 @@ class Controller(udi_interface.Node):
             prefixN = str(self.poly.profileNum)
             if len(prefixN) < 2:
                 prefixN = 'n00' + prefixN + '_'
-            elif len(prefix) < 3:
+            elif len(prefixN) < 3:
                 prefixN = 'n0' + prefixN + '_'
             
             suffixURL = '/rest/ns/' + str(self.poly.profileNum) + '/nodes/' + prefixN + self.address + '/report/status/GPV/' + str(newValue) + '/56/text/' + encodedStringToPublish
