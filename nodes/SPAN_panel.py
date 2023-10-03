@@ -148,10 +148,11 @@ class PanelNodeForCircuits(udi_interface.Node):
                 nodes = self.poly.getNodes()
                 currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
                 LOGGER.debug("\n\tWill be looking for Circuit nodes with this as the prefix: '" + currentPanelCircuitPrefix + "'.\n")
+                
                 if (currentPanelCircuitPrefix + '1') in nodes:
-                    LOGGER.debug("\n\tChecking if I can see if an object exists in a collection by name:\n\t\tHurray! As expected, " + currentPanelCircuitPrefix + "1 exists.\n")
+                    LOGGER.warning("\n\tChecking if I can see if an object exists in a collection by name:\n\t\tHurray! As expected, " + currentPanelCircuitPrefix + "1 exists.\n")
                 if (currentPanelCircuitPrefix + '10') not in nodes:
-                    LOGGER.debug("\n\tChecking if I can see if an object exists in a collection by name:\n\t\tHurray! As expected, " + currentPanelCircuitPrefix + "10 does not exist.\n")
+                    LOGGER.warning("\n\tChecking if I can see if an object exists in a collection by name:\n\t\tHurray! As expected, " + currentPanelCircuitPrefix + "10 does not exist.\n")
                     
                 for node in nodes:
                      if currentPanelCircuitPrefix in node:
