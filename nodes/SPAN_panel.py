@@ -19,6 +19,30 @@ import math,time,datetime
 
 LOGGER = udi_interface.LOGGER
 
+'''
+Notes from https://github.com/UniversalDevicesInc/udi_python_interface/blob/d620824c14a917add0b471295984da1d323a12a3/udi_interface/interface.py#L1140
+db_getNodeDrivers(self, addr = None, init = False):
+    Returns a list of nodes or a list of drivers that were saved in the
+    database.
+     If an address is specified, return the drivers for that node.
+     If an array of addresses is specified, return the matching array of
+       nodes.
+     If addr == None, return the entire list of nodes.
+    
+    document what is returned here and in the API doc!
+    
+    driver array [
+       {id, uuid, profileNum, address, driver, value, uom, timeAdded,
+        timeModified, dbVersion},
+    ]
+    
+    node array [
+       {id, uuid, profileNum, address, name, nodeDefId, nls, hint,
+        controller, primaryNode, private, isPrimary, enabled, timeAdded,
+        timeModified, dbVersion [drivers]},
+    ]
+'''
+
 ### Generic Nodeserver Helper Functions ###
 ### copied from Goose66 ###
 
@@ -145,10 +169,11 @@ class PanelNodeForCircuits(udi_interface.Node):
             self.updateAllCircuitsData()
             
             if self.allCircuitsData != '':
-                nodes = self.poly.getNodes()
+                LOGGER.warning("\n\tTRACKING: Trying to use self.poly.getNodes(self.address).\n")
+                nodes = self.poly.getNodes(self.address)
                 currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
                 LOGGER.debug("\n\tWill be looking for Circuit nodes with this as the prefix: '" + currentPanelCircuitPrefix + "'.\n")
-                
+                '''
                 for i in range(1,33):
                     if i <= int(self.getDriver('PULSCNT')):
                         node = currentPanelCircuitPrefix + str(i)
@@ -161,14 +186,14 @@ class PanelNodeForCircuits(udi_interface.Node):
                             second = self.getDriver('TIMEREM')
                             nodes[node].updateNode(self.allCircuitsData, epoch, hour, minute, second)
                         except Exception as e:
-                            LOGGER.warning('\n\t\tPOLL ERROR in Panel Circuits: Cannot seem to update node needed in for-loop due to error:\n\t\t{}\n'.format(e))
+                            LOGGER.warning('\n\tPOLL ERROR in Panel Circuits: Cannot seem to update node needed in for-loop due to error:\n\t\t{}\n'.format(e))
     
-                    elif self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':') > self.getDriver('PULSCNT'):
+                    elif self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':') > int(self.getDriver('PULSCNT')):
                         LOGGER.warning("\n\tCIRCUIT COUNT INCREASED - upon short poll with Panel Circuit Controller '" + self.address + "' @ " + self.ipAddress + ", it seems like there are now MORE distinct circuits in SPAN, for a total of " + str(self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + ", but originally this controller only had " + str(self.getDriver('PULSCNT')) + ".\n")
                         
                     else:
                         LOGGER.warning("\n\tCIRCUIT COUNT DECREASED - upon short poll with Panel Circuit Controller '" + self.address + "' @ " + self.ipAddress + ", it seems like there are now FEWER distinct circuits in SPAN, for a total of " + str(self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + ", but originally this controller had " + str(self.getDriver('PULSCNT')) + ".\n")
-                        
+                    '''
             else:
                  LOGGER.warning("\n\tUPDATE ALLCIRCUITSDATA failed to populate allCircuitsData.\n")
     '''
