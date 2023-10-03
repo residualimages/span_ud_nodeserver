@@ -169,10 +169,22 @@ class Controller(udi_interface.Node):
     '''
     def pushTextToGPV(self,stringToPublish):
         currentValue = int(self.getDriver('GPV'))
+        newValue = -1
         encodedStringToPublish = urllib.parse.quote(stringToPublish, safe='')
 
-        if currentValue != 0:
+        if currentValue == 0:
             message = {
+                'set': [{
+                    'address': self.address,
+                    'driver': 'GPV',
+                    'value': 1,
+                    'uom': 56,
+                    'text': encodedStringToPublish
+                }]
+            }
+            newValue = 1
+        else:
+             message = {
                 'set': [{
                     'address': self.address,
                     'driver': 'GPV',
@@ -181,17 +193,8 @@ class Controller(udi_interface.Node):
                     'text': encodedStringToPublish
                 }]
             }
-        else:
-             message = {
-                'set': [{
-                    'address': self.address,
-                    'driver': 'GPV',
-                    'value': 1,
-                    'uom': 56,
-                    'text': encodedStringToPublish
-                }]
-            }    
-        LOGGER.warning("\n\tPUSHING REPORT TO 'controller' status variable 'GPV' via self.poly.send('" + encodedStringToPublish + "','status').\n")
+            newValue = 0
+        LOGGER.warning("\n\tPUSHING REPORT TO 'controller' status variable 'GPV' via self.poly.send('" + encodedStringToPublish + "','status') with a value of '" + newValue + "'.\n")
         
         self.poly.send(message, 'status')
 
