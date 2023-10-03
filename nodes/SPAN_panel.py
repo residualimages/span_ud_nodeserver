@@ -380,7 +380,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             {'driver': 'FREQ', 'value': -1, 'uom': 56},
             {'driver': 'PULSCNT', 'value': 0, 'uom': 56},
             {'driver': 'GV0', 'value': 0, 'uom': 56},
-            {'driver': 'TIME', 'value': 0, 'uom': 151},
+            {'driver': 'TIME', 'value': 0, 'uom': 56},
             {'driver': 'GPV', 'value': -1, 'uom': 56}
             ]
 
