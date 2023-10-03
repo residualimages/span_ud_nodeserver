@@ -164,10 +164,10 @@ class PanelNodeForCircuits(udi_interface.Node):
                             LOGGER.warning('\n\t\tPOLL ERROR in Panel Circuits: Cannot seem to update node needed in for-loop due to error:\n\t\t{}\n'.format(e))
     
                     elif self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':') > self.getDriver('PULSCNT'):
-                        LOGGER.warning("\n\tCIRCUIT COUNT INCREASED - upon short poll with Panel Circuit Controller '" + self.address + "' @ " + self.ipAddress + ", it seems like there are now MORE distinct circuits in SPAN, for a total of " + str(self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + ", but originally this controller only had " + str(self.getDriver('PULSCNT')) + ".\n")
+                        LOGGER.warning("\n\tCIRCUIT COUNT INCREASED - upon short poll with Panel Circuit Controller '" + self.address + "' @ " + self.ipAddress + ", it seems like there are now MORE distinct circuits in SPAN, for a total of " + str(self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + ", but originally this controller only had " + self.getDriver('PULSCNT') + ".\n")
                         
                     else:
-                        LOGGER.warning("\n\tCIRCUIT COUNT DECREASED - upon short poll with Panel Circuit Controller '" + self.address + "' @ " + self.ipAddress + ", it seems like there are now FEWER distinct circuits in SPAN, for a total of " + str(self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + ", but originally this controller had " + str(self.getDriver('PULSCNT')) + ".\n")
+                        LOGGER.warning("\n\tCIRCUIT COUNT DECREASED - upon short poll with Panel Circuit Controller '" + self.address + "' @ " + self.ipAddress + ", it seems like there are now FEWER distinct circuits in SPAN, for a total of " + str(self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + ", but originally this controller had " + self.getDriver('PULSCNT') + ".\n")
                         
             else:
                  LOGGER.warning("\n\tUPDATE ALLCIRCUITSDATA failed to populate allCircuitsData.\n")
