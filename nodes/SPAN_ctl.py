@@ -77,11 +77,19 @@ class Controller(udi_interface.Node):
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.START, self.start, address)
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
+        polyglot.subscribe(polyglot.CUSTOMTYPEDPARAMS, self.manuallyAddedParametersHandler)
+        polyglot.subscribe(polyglot.NSINFO, self.nsInfo)
 
         # start processing events and create add our controller node
         polyglot.ready()
         self.poly.addNode(self)
 
+    def manuallyAddedParametersHandler(self, data):
+        LOGGER.warning("\n\tHANDLE MANUALLY ADDED PARAMETERS.\n")
+
+    def nsInfo(self, data):
+        LOGGER.warning("\n\tHANDLE NSINFO.\n")
+    
     '''
     node_queue() and wait_for_node_event() create a simple way to wait
     for a node to be created.  The nodeAdd() API call is asynchronous and
@@ -90,7 +98,7 @@ class Controller(udi_interface.Node):
     '''
     def node_queue(self, data):
         self.n_queue.append(data['address'])
-        LOGGER.warning("\n\tISY Object created under 'controller':\t" + self.ISY._isy_ip + ".\n")
+        LOGGER.warning("\n\tISY Object created under 'controller':\t" + self.ISY._isy_ip + ", which is itself NS #" + self.poly.profileNum + ".\n")
 
     def wait_for_node_done(self):
         self.pushTextToGPV('Waiting for root controller...')
