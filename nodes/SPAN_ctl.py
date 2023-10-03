@@ -195,7 +195,7 @@ class Controller(udi_interface.Node):
                     'uom': 56,
                     'text': encodedStringToPublish
                 }]
-            stat }
+            }
 
         self.setDriver('GPV',newValue)
 
