@@ -321,7 +321,9 @@ class Controller(udi_interface.Node):
                     LOGGER.warning('\n\tDELETING FAILED due to: {}\n'.format(e))
             else:
                 LOGGER.debug("\n\tRESET NodeServer - SKIP deleting '" + node + "' for now.\n")
-
+        
+        LOGGER.warning('\n\t\tRESET FOUND {} nodes, including 1 for the root controller for this NodeServer.\n'.format(countOfNodes))
+        
         controllers = self.poly.getNodes()
         for controller in controllers.copy():
             if controller != 'controller':   # but not the NS controller node itself
@@ -343,10 +345,10 @@ class Controller(udi_interface.Node):
                 self.pushTextToDriver('GPV',"STILL DELETING nodes; current count: " + str(countOfRemainingNodes) + "...")
         
         self.setDriver('GV0', 0, True, True)
-        self.pushTextToDriver('GPV','Stopping...')
+        self.pushTextToDriver('GPV','Stopping... will restart in 5 seconds.')
         self.stop()
         time.sleep(5)
-        self.start()
         self.pushTextToDriver('GPV','Starting...')
+        self.start()
 
     commands = {'RESET': reset}
