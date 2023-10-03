@@ -22,13 +22,10 @@ This is our Breaker device node.
 class BreakerNode(udi_interface.Node):
     id = 'breaker'
     drivers = [
-            {'driver': 'ST', 'value': 0, 'uom': 73},
-            {'driver': 'PULSCNT', 'value': 0, 'uom': 56},
-            {'driver': 'CLIEMD', 'value': 0, 'uom': 25},
-            {'driver': 'TIME', 'value': 0, 'uom': 151},
-            {'driver': 'HR', 'value': -1, 'uom': 56},
-            {'driver': 'MOON', 'value': -1, 'uom': 56},
-            {'driver': 'TIMEREM', 'value': -1, 'uom': 56},
+            {'driver': 'ST', 'value': -1, 'uom': 73},
+            {'driver': 'PULSCNT', 'value': -1, 'uom': 56},
+            {'driver': 'CLIEMD', 'value': -1, 'uom': 25},
+            {'driver': 'TIME', 'value': -1, 'uom': 56},
             {'driver': 'GPV', 'value': -1, 'uom': 56}
             ]
 
@@ -76,11 +73,7 @@ class BreakerNode(udi_interface.Node):
             LOGGER.debug("\n\tWAIT FOR NODE CREATION: Fully Complete for Breaker " + self.address + "\n")
             nowEpoch = int(time.time())
             nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-            self.setDriver('TIME', nowEpoch, True, True)
-            #nowDT.strftime("%m/%d/%Y %H:%M:%S")
-            self.setDriver('HR', int(nowDT.strftime("%H")), True, True)
-            self.setDriver('MOON', int(nowDT.strftime("%M")), True, True)
-            self.setDriver('TIMEREM', int(nowDT.strftime("%S")), True, True)
+            self.pushTextToDriver('TIME',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
             
             self.n_queue.append(data['address'])        
 
@@ -189,7 +182,7 @@ class BreakerNode(udi_interface.Node):
     '''
     This is where the real work happens.  When the parent controller gets a shortPoll, do some work with the passed data. 
     '''
-    def updateNode(self, passedAllBreakersData, epoch, hour, minute, second):
+    def updateNode(self, passedAllBreakersData, dateTimeString):
         self.allBreakersData = passedAllBreakersData
 
         if self.getDriver('PULSCNT') == 0:
@@ -197,10 +190,7 @@ class BreakerNode(udi_interface.Node):
             self.setDriver('PULSCNT', self.breakerID, True, True)
         
         self.poll('shortPoll')
-        self.setDriver('TIME', epoch, True, True)
-        self.setDriver('HR', hour, True, True)
-        self.setDriver('MOON', minute, True, True)
-        self.setDriver('TIMEREM', second, True, True)
+        self.pushTextToDriver('TIME', dateTimeString)
         
     def poll(self, polltype):
         if 'shortPoll' in polltype:
@@ -238,13 +228,12 @@ class BreakerNode(udi_interface.Node):
                 
                 nowEpoch = int(time.time())
                 nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-                self.pushTextToDriver('GPV',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                self.pushTextToDriver('TIME',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
 
             else:
                 LOGGER.warning("\n\tPOLL ERROR: Unable to get designatedBreakerInstantPowerW from designatedBreakerData:\n\t\t" + designatedBreakerData + "\n")
-                self.setDriver('HR', -1, True, True)
-                self.setDriver('MOON', -1, True, True)
-                self.setDriver('TIMEREM', -1, True, True)
+                self.setDriver('TIME', -1, True, True)
+                self.pushTextToDriver('GPV',"POLL ERROR DESIGNATEDBREAKER")
                 
     '''
     Change reported power draw 'ST' driver to 0 W
@@ -253,6 +242,4 @@ class BreakerNode(udi_interface.Node):
         LOGGER.warning("\n\tSTOP COMMAND received: Breaker Node '" + self.address + "'.\n")
         self.setDriver('ST', 0, True, True)
         self.setDriver('TIME', -1, True, True)
-        self.setDriver('HR', -1, True, True)
-        self.setDriver('MOON', -1, True, True)
-        self.setDriver('TIMEREM', -1, True, True)
+        self.pushTextToDriver('GPV',"NodeServer STOPPED")
