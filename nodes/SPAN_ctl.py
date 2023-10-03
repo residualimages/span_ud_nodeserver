@@ -11,7 +11,7 @@ import time
 import string
 import re
 
-import urllib.parse,http.client,math,time,datetime
+import urllib.parse,http.client,math,time,datetime,base64
 
 from nodes import SPAN_panel
 
@@ -104,8 +104,8 @@ class Controller(udi_interface.Node):
     '''
     def node_queue(self, data):
         self.n_queue.append(data['address'])
-        LOGGER.warning("\n\tISY Object created under 'controller':\t" + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", which is itself NS #" + str(self.poly.profileNum) + ".\n")   
-        LOGGER.warning("\n\t\tUSER: " + self.ISY._isy_user + "; PASS: " + self.ISY._isy_pass + "; UNAuthorized: " + str(self.ISY.unauthorized) + ".\n")
+        LOGGER.warning("\n\tISY Object created under 'controller':\t" + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", which is itself NS #" + str(self.poly.profileNum) + ", and has poly.id of '" + str(self.poly.id) + "'.\n")   
+        LOGGER.warning("\n\t\tUNAuthorized (expecting this to be false): " + str(self.ISY.unauthorized) + ".\n")
 
     def wait_for_node_done(self):
         self.pushTextToGPV('Waiting for root controller...')
@@ -198,26 +198,31 @@ class Controller(udi_interface.Node):
             }
 
         self.setDriver('GPV',newValue)
-        LOGGER.warning("\n\tPUSHING REPORT TO 'controller' status variable 'GPV' via self.poly.send('" + encodedStringToPublish + "','status') with a value of '" + str(newValue) + "'.\n")
-        self.poly.send(message, 'status')
 
-        '''
+        #PG3x could use this, but PG3 doesn't have the necessary 'text' handling within message, set above
+        #LOGGER.warning("\n\tPUSHING REPORT TO 'controller' status variable 'GPV' via self.poly.send('" + encodedStringToPublish + "','status') with a value of '" + str(newValue) + "'.\n")
+        #self.poly.send(message, 'status')
+
+        userpassword = self.ISY._isy_user + ":" + self.ISY._isy_pass
+        userpasswordAsBytes = userpassword.encode("ascii")
+        userpasswordAsBase64 = base64.b64encode(userpasswordAsBytes)
+
         localConnection = http.client.HTTPConnection('127.0.0.1',8080)
         payload = ''
-        LOGGER.warning("n\tPUSHING REPORT TO 'controller' status variable 'GPV' via 127.0.0.1:8080.\n")
-            
-        if currentValue != 0:
-            suffixURL = '/rest/ns/25/nodes/n025_controller/report/status/GPV/0/56/text/' + encodedStringToPublish
-        else:
-            suffixURL = '/rest/ns/25/nodes/n025_controller/report/status/GPV/0/56/text/' + encodedStringToPublish
+        headers = {
+            "Authorization": "Basic " + userpasswordAsBase64
+        }
+        
+        LOGGER.warning("n\tPUSHING REPORT TO 'controller' status variable 'GPV' via 127.0.0.1:8080, with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
+        
+        suffixURL = '/rest/ns/25/nodes/n025_controller/report/status/GPV/' + str(newValue) + '/56/text/' + encodedStringToPublish
 
-        localConnection.request("GET", suffixURL, payload)
+        localConnection.request("GET", suffixURL, payload, headers)
         localResponse = localConnection.getresponse()
         localResponseData = localResponse.read()
         localResponseData = localResponseData.decode("utf-8")
         
         LOGGER.warning("\n\t\tRESPONSE from report:\n\t\t\t" + localResponseData + "\n")
-        '''
     
     '''
     Create the controller nodes. 
