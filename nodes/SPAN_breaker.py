@@ -36,6 +36,8 @@ class BreakerNode(udi_interface.Node):
         # setup in the Polyglot DB and the ISY (as indicated by START event)
         self._initialized: bool = False
         
+        self._fullyCreated: bool = False
+        
         self.poly = polyglot
         self.n_queue = []
         self.parent = parent
@@ -60,8 +62,6 @@ class BreakerNode(udi_interface.Node):
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
         polyglot.subscribe(polyglot.DELETE, self.delete)
         
-        self.initialized = True
-        
     '''
     node_queue() and wait_for_node_event() create a simple way to wait
     for a node to be created.  The nodeAdd() API call is asynchronous and
@@ -74,6 +74,8 @@ class BreakerNode(udi_interface.Node):
             nowEpoch = int(time.time())
             nowDT = datetime.datetime.fromtimestamp(nowEpoch)
             self.pushTextToDriver('TIME',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+
+            self._fullyCreated = True
             
             self.n_queue.append(data['address'])        
 
@@ -106,6 +108,8 @@ class BreakerNode(udi_interface.Node):
     -1 is reserved for initializing.
     '''
     def pushTextToDriver(self,driver,stringToPublish):
+        if not(self._fullyCreated):
+            return
         stringToPublish = stringToPublish.replace('.','')
         if len(str(self.getDriver(driver))) <= 0:
             LOGGER.warning("\n\tPUSHING REPORT ERROR - a (correct) Driver was not passed.\n")
