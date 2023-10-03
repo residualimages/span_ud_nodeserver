@@ -519,12 +519,7 @@ class PanelNodeForBreakers(udi_interface.Node):
     def stop(self):
         LOGGER.debug("\n\tSTOP RECEIVED: Panel Breaker Controller handler '" + self.address + "'.\n")
         self.setDriver('ST', 0, True, True)
-        '''
-        currentPanelBreakerPrefix = "s" + self.address.replace('panelbreaker_','') + "_breaker_"
-        nodes = self.poly.getNodes()
-        self.setDriver('ST', 0, True, True)
-        for node in nodes:
-            if currentPanelBreakerPrefix in node:
-                nodes[node].setDriver('ST', 0, True, True)
-                LOGGER.debug("\n\tSTOP RECEIVED: Panel Breaker Controller setting " + node + "'s property ST = 0 W.\n")
-        '''
+        self.setDriver('TIME', -1, True, True)
+        self.setDriver('HR', -1, True, True)
+        self.setDriver('MOON', -1, True, True)
+        self.setDriver('TIMEREM', -1, True, True)
