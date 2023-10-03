@@ -58,6 +58,8 @@ class CircuitNode(udi_interface.Node):
         self.n_queue = []
         self.parent = parent
 
+        self.ISY = ISY(self.poly)
+
         LOGGER.debug("\n\tINIT Span Circuit's parent is '" + parent + "' when INIT'ing.\n")
 
         self.ipAddress = spanIPAddress
@@ -153,19 +155,19 @@ class CircuitNode(udi_interface.Node):
             #PG3x can use this, but PG3 doesn't have the necessary 'text' handling within message, set above, so we have the 'else' below
             LOGGER.debug("\n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3x via self.poly.send('" + encodedStringToPublish + "','status') with a value of '" + str(newValue) + "'.\n")
             self.poly.send(message, 'status')
-        elif not(self.parent.parent.ISY.unauthorized):
-            userpassword = self.parent.parent.ISY._isy_user + ":" + self.parent.parent.ISY._isy_pass
+        elif not(self.ISY.unauthorized):
+            userpassword = self.ISY._isy_user + ":" + self.ISY._isy_pass
             userpasswordAsBytes = userpassword.encode("ascii")
             userpasswordAsBase64Bytes = base64.b64encode(userpasswordAsBytes)
             userpasswordAsBase64String = userpasswordAsBase64Bytes.decode("ascii")
     
-            localConnection = http.client.HTTPConnection(self.parent.parent.ISY._isy_ip, self.parent.parent.ISY._isy_port)
+            localConnection = http.client.HTTPConnection(self.ISY._isy_ip, self.ISY._isy_port)
             payload = ''
             headers = {
                 "Authorization": "Basic " + userpasswordAsBase64String
             }
             
-            LOGGER.debug("n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3 via " + self.parent.parent.ISY._isy_ip + ":" + str(self.parent.parent.ISY._isy_port) + ", with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
+            LOGGER.debug("n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3 via " + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
     
             prefixN = str(self.poly.profileNum)
             if len(prefixN) < 2:
