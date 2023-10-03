@@ -315,18 +315,24 @@ class Controller(udi_interface.Node):
         nodes = self.poly.getNodes()
         for node in nodes.copy():
             if node != 'controller' and 'panel' not in node:   # but not the controller nodes at first
-                LOGGER.warning("\n\tRESET NodeServer - deleting '" + node + "'.\n")
-                self.poly.delNode(node)
+                LOGGER.warning("\n\tRESET NodeServer - deleting node '" + node + "'.\n")
+                try:
+                    self.poly.delNode(node)
+                except Exception as e:
+                    LOGGER.warning('\n\tDELETING FAILED due to: {}\n'.format(e))
             else:
-                LOGGER.warning("\n\tRESET NodeServer - SKIP deleting '" + node + "' for now.\n")
+                LOGGER.debug("\n\tRESET NodeServer - SKIP deleting '" + node + "' for now.\n")
 
-        nodes = self.poly.getNodes()
-        for node in nodes.copy():
-            if node != 'controller':   # but not the NS controller node itself
-                LOGGER.warning("\n\tRESET NodeServer - deleting '" + node + "'.\n")
-                self.poly.delNode(node)
+        controllers = self.poly.getNodes()
+        for controller in controllers.copy():
+            if controller != 'controller':   # but not the NS controller node itself
+                LOGGER.warning("\n\tRESET NodeServer - deleting controller '" + controller + "'.\n")
+                try:
+                    self.poly.delNode(controller)
+                except Exception as e:
+                    LOGGER.warning('\n\tDELETING FAILED due to: {}\n'.format(e))
             else:
-                LOGGER.warning("\n\tRESET NodeServer - SKIP deleting '" + node + "' for now.\n")
+                LOGGER.debug("\n\tRESET NodeServer - SKIP deleting '" + controller + "'.\n")
                 
         self.setDriver('GV0', 0, True, True)
         self.pushTextToDriver('GPV','Starting...')
