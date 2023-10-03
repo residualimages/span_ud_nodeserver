@@ -57,7 +57,7 @@ class Controller(udi_interface.Node):
     drivers = [
             {'driver': 'ST', 'value': 1, 'uom': 2},
             {'driver': 'GV0', 'value': 0, 'uom': 56},
-            {'driver': 'GPV', 'value': -1, 'uom': 56}
+            {'driver': 'BEEP', 'value': -1, 'uom': 56}
             ]
 
     def __init__(self, polyglot, parent, address, name):
@@ -95,7 +95,7 @@ class Controller(udi_interface.Node):
         if 'shortPoll' in polltype:
             nowEpoch = int(time.time())
             nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-            self.pushTextToDriver('GPV',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+            self.pushTextToDriver('BEEP',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
     '''
     node_queue() and wait_for_node_event() create a simple way to wait
     for a node to be created.  The nodeAdd() API call is asynchronous and
@@ -108,7 +108,7 @@ class Controller(udi_interface.Node):
         LOGGER.debug("\n\t\tUNAuthorized (expecting this to be false): " + str(self.ISY.unauthorized) + ".\n")
 
     def wait_for_node_done(self):
-        self.pushTextToDriver('GPV','Waiting for root controller...')
+        self.pushTextToDriver('BEEP','Waiting for root controller...')
         while len(self.n_queue) == 0:
             time.sleep(0.1)
         self.n_queue.pop()
@@ -229,7 +229,7 @@ class Controller(udi_interface.Node):
             elif len(prefixN) < 3:
                 prefixN = 'n0' + prefixN + '_'
             
-            suffixURL = '/rest/ns/' + str(self.poly.profileNum) + '/nodes/' + prefixN + self.address + '/report/status/GPV/' + str(newValue) + '/56/text/' + encodedStringToPublish
+            suffixURL = '/rest/ns/' + str(self.poly.profileNum) + '/nodes/' + prefixN + self.address + '/report/status/' + driver + '/' + str(newValue) + '/56/text/' + encodedStringToPublish
             
             LOGGER.debug("\n\t\tPUSHING REPORT Details - this is the 'suffixURL':\n\t\t\t" + suffixURL + "\n")
     
@@ -272,7 +272,7 @@ class Controller(udi_interface.Node):
             titleBreakers = 'SPAN Panel #{} - Breakers'.format(i+1)
             titleBreakers = getValidNodeName(titleBreakers)
             
-            self.pushTextToDriver('GPV','Creating Circuit Controller ' + str(i))
+            self.pushTextToDriver('BEEP','Creating Circuit Controller ' + str(i))
             try:
                 circuitController = SPAN_panel.PanelNodeForCircuits(self.poly, addressCircuits, addressCircuits, titleCircuits, current_IPaddress, current_BearerToken)
                 self.poly.addNode(circuitController)
@@ -280,7 +280,7 @@ class Controller(udi_interface.Node):
             except Exception as e:
                 LOGGER.warning('Failed to create Panel Circuits Controller {}: {}'.format(titleCircuits, e))
 
-            self.pushTextToDriver('GPV','Creating Panel Controller ' + str(i))
+            self.pushTextToDriver('BEEP','Creating Panel Controller ' + str(i))
             try:
                 LOGGER.debug("\n\t\ADD breakerController = SPAN_panel.PanelNodeForBreakers(self.poly, " + addressBreakers + ", " + addressBreakers + ", " + titleBreakers + ", " + current_IPaddress + ", " + current_BearerToken + ")\n")
                 breakerController = SPAN_panel.PanelNodeForBreakers(self.poly, addressBreakers, addressBreakers, titleBreakers, current_IPaddress, current_BearerToken)
@@ -290,7 +290,7 @@ class Controller(udi_interface.Node):
                 LOGGER.warning('Failed to create Panel Breakers Controller {}: {}'.format(titleBreakers, e))
         
         self.setDriver('GV0', how_many, True, True)
-        self.pushTextToDriver('GPV','Querying ACTIVE')
+        self.pushTextToDriver('BEEP','Querying ACTIVE')
 
     '''
     STOP Command Received
@@ -298,7 +298,7 @@ class Controller(udi_interface.Node):
     def stop(self):
         LOGGER.warning("\n\tSTOP COMMAND Received by '" + self.address + "'.\n")
         self.setDriver('ST', 0, True, True)
-        self.pushTextToDriver('GPV','Querying INACTIVE')
+        self.pushTextToDriver('BEEP','Querying INACTIVE')
         self.poly.stop()
         
     '''
@@ -306,7 +306,7 @@ class Controller(udi_interface.Node):
     '''
     def reset(self, comamndDetails):
         LOGGER.warning('\n\t\tRESET COMMAND ISSUED: Will Delete and Recreate All Sub-Nodes.\n')
-        self.pushTextToDriver('GPV','Resetting...')
+        self.pushTextToDriver('BEEP','Resetting...')
         self.n_queue = []
         self.poly.stop()
         
@@ -324,7 +324,7 @@ class Controller(udi_interface.Node):
                 self.poly.delNode(node)
                 
         self.setDriver('GV0', 0, True, True)
-        self.pushTextToDriver('GPV','Starting...')
+        self.pushTextToDriver('BEEP','Starting...')
         polyglot.ready()
         self.poly.addNode(self)
 
