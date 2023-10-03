@@ -205,12 +205,13 @@ class Controller(udi_interface.Node):
 
         userpassword = self.ISY._isy_user + ":" + self.ISY._isy_pass
         userpasswordAsBytes = userpassword.encode("ascii")
-        userpasswordAsBase64 = base64.b64encode(userpasswordAsBytes)
+        userpasswordAsBase64Bytes = base64.b64encode(userpasswordAsBytes)
+        userpasswordAsBase64String = userpasswordAsBase64Bytes.decode("ascii")
 
         localConnection = http.client.HTTPConnection('127.0.0.1',8080)
         payload = ''
         headers = {
-            "Authorization": "Basic " + userpasswordAsBase64
+            "Authorization": "Basic " + userpasswordAsBase64String
         }
         
         LOGGER.warning("n\tPUSHING REPORT TO 'controller' status variable 'GPV' via 127.0.0.1:8080, with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
