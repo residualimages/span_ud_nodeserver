@@ -4,7 +4,7 @@
     <sts>
       <st id="ST" editor="bool" />
       <st id="GV0" editor="raw" />
-      <st id="GPV" editor="rawStringToIoX" />
+      <st id="BEEP" editor="rawStringToIoX" />
 	</sts>
     <cmds>
       <sends />
