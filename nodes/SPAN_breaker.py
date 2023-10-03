@@ -157,3 +157,7 @@ class BreakerNode(udi_interface.Node):
     def stop(self):
         LOGGER.warning("\n\tSTOP COMMAND received: Breaker Node '" + self.address + "'.\n")
         self.setDriver('ST', 0, True, True)
+        self.setDriver('TIME', -1, True, True)
+        self.setDriver('HR', -1, True, True)
+        self.setDriver('MOON', -1, True, True)
+        self.setDriver('TIMEREM', -1, True, True)
