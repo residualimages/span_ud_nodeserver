@@ -107,7 +107,7 @@ class CircuitNode(udi_interface.Node):
     '''
     This is where the real work happens.  When the parent controller gets a shortPoll, do some work with the passed data. 
     '''
-    def updateNode(self, passedAllCircuitsData):
+    def updateNode(self, passedAllCircuitsData, epoch, hour, minute, second):
         self.allCircuitsData = passedAllCircuitsData
 
         if self.getDriver('TIMEREM') == -1:
@@ -137,20 +137,16 @@ class CircuitNode(udi_interface.Node):
                 designatedCircuitTabsCount = len(designatedCircuitTabsArray)
         
                 for i in range(0,designatedCircuitTabsCount):
-                    LOGGER.debug("\n\t\tIn Circuit " + self.circuitID + ", Tab # " + str(i) + " corresponds to breaker number:\n\t\t\t" + designatedCircuitTabsArray[i] + "\n")
+                    LOGGER.debug("\n\tIn Circuit " + self.circuitID + ", Tab # " + str(i) + " corresponds to breaker number:\n\t\t" + designatedCircuitTabsArray[i] + "\n")
                     try:
                         self.setDriver('GV' + str(i+1), designatedCircuitTabsArray[i], True, True)
                     except:
                         LOGGER.warning("\n\t\tERROR Setting Tab (Physical Breaker #" + str(i+1) + ") for " + self.circuitID + ".\n")
                 
-                nowEpoch = int(time.time())
-                nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-                
-                self.setDriver('TIME', nowEpoch, True, True)
-                #nowDT.strftime("%m/%d/%Y %H:%M:%S")
-                self.setDriver('HR', int(nowDT.strftime("%H")), True, True)
-                self.setDriver('MOON', int(nowDT.strftime("%M")), True, True)
-                self.setDriver('TIMEREM', int(nowDT.strftime("%S")), True, True)
+                self.setDriver('TIME', epoch, True, True)
+                self.setDriver('HR', hour, True, True)
+                self.setDriver('MOON', minute, True, True)
+                self.setDriver('TIMEREM', second, True, True)
             else:
                 LOGGER.warning("\n\tINIT Issue getting data for circuit '" + self.circuitID + "'.\n")
                 self.setDriver('HR', -1, True, True)
@@ -208,20 +204,6 @@ class CircuitNode(udi_interface.Node):
                 LOGGER.debug("\n\tPOLL About to set ST to " + str(designatedCircuitInstantPowerW) + " for Circuit " + self.circuitID + ".\n")
                 self.setDriver('ST', round(abs(designatedCircuitInstantPowerW),2), True, True)
 
-                if len(str(designatedCircuitInstantPowerW)) > 0:
-                    nowEpoch = int(time.time())
-                    nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-                    LOGGER.debug("\n\tPOLL about to set TIME and ST; TIME = '" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "'.\n")
-                    self.setDriver('TIME', nowEpoch, True, True)
-                    #nowDT.strftime("%m/%d/%Y %H:%M:%S")
-                    self.setDriver('HR', int(nowDT.strftime("%H")), True, True)
-                    self.setDriver('MOON', int(nowDT.strftime("%M")), True, True)
-                    self.setDriver('TIMEREM', int(nowDT.strftime("%S")), True, True)
-                else:
-                    LOGGER.warning("\n\tPOLL ERROR: Unable to get designatedCircuitInstantPowerW from designatedCircuitData:\n\t\t" + designatedCircuitData + "\n")
-                    self.setDriver('HR', -2, True, True)
-                    self.setDriver('MOON', -2, True, True)
-                    self.setDriver('TIMEREM', -2, True, True)
             else:
                 LOGGER.warning("\n\tPOLL Issue getting data for circuit '" + self.circuitID + "'.\n")
                 self.setDriver('HR', -3, True, True)
@@ -301,3 +283,7 @@ class CircuitNode(udi_interface.Node):
     def stop(self):
         LOGGER.warning("\n\tSTOP COMMAND received: Circuit Node '" + self.address + "'.\n")
         self.setDriver('ST', 0, True, True)
+        self.setDriver('TIME', -1, True, True)
+        self.setDriver('HR', -1, True, True)
+        self.setDriver('MOON', -1, True, True)
+        self.setDriver('TIMEREM', -1, True, True)
