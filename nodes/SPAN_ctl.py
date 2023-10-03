@@ -340,7 +340,7 @@ class Controller(udi_interface.Node):
             for node in nodes.copy():
                 countOfRemainingNodes += 1
             if countOfRemainingNodes > 1:
-                LOGGER.warning("\n\t\tSTILL DELETING nodes, not yet at 1 remaining. Current count: " + countOfRemainingNodes + "...\n")
+                LOGGER.warning("\n\t\tSTILL DELETING nodes, not yet at 1 remaining. Current count: " + str(countOfRemainingNodes) + "...\n")
         
         self.setDriver('GV0', 0, True, True)
         self.pushTextToDriver('GPV','Re-starting...')
