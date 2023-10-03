@@ -183,6 +183,7 @@ class Controller(udi_interface.Node):
                 }]
             }
             newValue = 1
+            
         else:
              message = {
                 'set': [{
@@ -194,6 +195,7 @@ class Controller(udi_interface.Node):
                 }]
             }
             newValue = 0
+        
         LOGGER.warning("\n\tPUSHING REPORT TO 'controller' status variable 'GPV' via self.poly.send('" + encodedStringToPublish + "','status') with a value of '" + str(newValue) + "'.\n")
         
         self.poly.send(message, 'status')
