@@ -317,16 +317,20 @@ class Controller(udi_interface.Node):
             if node != 'controller' and 'panel' not in node:   # but not the controller nodes at first
                 LOGGER.warning("\n\tRESET NodeServer - deleting '" + node + "'.\n")
                 self.poly.delNode(node)
+            else:
+                LOGGER.warning("\n\tRESET NodeServer - SKIP deleting '" + node + "' for now.\n")
 
         nodes = self.poly.getNodes()
         for node in nodes.copy():
             if node != 'controller':   # but not the NS controller node itself
                 LOGGER.warning("\n\tRESET NodeServer - deleting '" + node + "'.\n")
                 self.poly.delNode(node)
+            else:
+                LOGGER.warning("\n\tRESET NodeServer - SKIP deleting '" + node + "' for now.\n")
                 
         self.setDriver('GV0', 0, True, True)
         self.pushTextToDriver('GPV','Starting...')
-        polyglot.ready()
+        self.poly.ready()
         self.poly.addNode(self)
 
     commands = {'RESET': reset}
