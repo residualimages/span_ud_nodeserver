@@ -293,6 +293,10 @@ class CircuitNode(udi_interface.Node):
                 
                 LOGGER.debug("\n\tPOLL About to set ST to " + str(designatedCircuitInstantPowerW) + " for Circuit " + self.circuitID + ".\n")
                 self.setDriver('ST', round(abs(designatedCircuitInstantPowerW),2), True, True)
+                
+                nowEpoch = int(time.time())
+                nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+                self.pushTextToDriver('GPV',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
 
             else:
                 LOGGER.warning("\n\tPOLL Issue getting data for circuit '" + self.circuitID + "'.\n")
