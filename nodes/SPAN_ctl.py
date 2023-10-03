@@ -89,7 +89,7 @@ class Controller(udi_interface.Node):
         LOGGER.warning("\n\tHANDLE MANUALLY ADDED PARAMETERS.\n\t\t{}\n".format(data))
 
     def nsInfo(self, data):
-        LOGGER.warning("\n\tHANDLE NSINFO.\n\t\t{}\n".format(data)
+        LOGGER.warning("\n\tHANDLE NSINFO.\n\t\t{}\n".format(data))
     
     def poll(self, polltype):
         if 'shortPoll' in polltype:
