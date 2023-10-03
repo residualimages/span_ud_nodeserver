@@ -79,7 +79,7 @@ class Controller(udi_interface.Node):
         polyglot.subscribe(polyglot.START, self.start, address)
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
         polyglot.subscribe(polyglot.CUSTOMTYPEDPARAMS, self.manuallyAddedParametersHandler)
-        polyglot.subscribe(polyglot.NSINFO, self.nsInfo)
+        #polyglot.subscribe(polyglot.NSINFO, self.nsInfo)
         polyglot.subscribe(polyglot.POLL, self.poll)
 
         # start processing events and create add our controller node
@@ -89,8 +89,8 @@ class Controller(udi_interface.Node):
     def manuallyAddedParametersHandler(self, data):
         LOGGER.debug("\n\tHANDLE MANUALLY ADDED PARAMETERS.\n\t\t{}\n".format(data))
 
-    def nsInfo(self, data):
-        LOGGER.debug("\n\tHANDLE NSINFO.\n\t\t{}\n".format(data))
+    #def nsInfo(self, data):
+        #LOGGER.debug("\n\tHANDLE NSINFO.\n\t\t{}\n".format(data))
     
     def poll(self, polltype):
         if 'shortPoll' in polltype:
