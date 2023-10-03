@@ -171,7 +171,7 @@ class BreakerNode(udi_interface.Node):
             elif len(prefixN) < 3:
                 prefixN = 'n0' + prefixN + '_'
             
-            suffixURL = '/rest/ns/' + str(self.poly.profileNum) + '/nodes/' + prefixN + self.address + '/report/status/GPV/' + str(newValue) + '/56/text/' + encodedStringToPublish
+            suffixURL = '/rest/ns/' + str(self.poly.profileNum) + '/nodes/' + prefixN + self.address + '/report/status/' + driver + '/' + str(newValue) + '/56/text/' + encodedStringToPublish
     
             localConnection.request("GET", suffixURL, payload, headers)
             localResponse = localConnection.getresponse()
