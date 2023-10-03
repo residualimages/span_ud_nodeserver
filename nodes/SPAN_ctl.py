@@ -158,11 +158,11 @@ class Controller(udi_interface.Node):
         LOGGER.warning("n\tPUSHING REPORT TO 'controller' status variable 'GPV' via 127.0.0.1:8080.\n")
             
         if currentValue != 0:
-            suffixURL = 'rest/ns/25/nodes/n025_controller/report/status/GPV/0/56/text/' + encodedStringToPublish
+            suffixURL = '/rest/ns/25/nodes/n025_controller/report/status/GPV/0/56/text/' + encodedStringToPublish
         else:
-            suffixURL = 'rest/ns/25/nodes/n025_controller/report/status/GPV/0/56/text/' + encodedStringToPublish
+            suffixURL = '/rest/ns/25/nodes/n025_controller/report/status/GPV/0/56/text/' + encodedStringToPublish
 
-        localConnection.request("GET", suffixURL) #, payload, headers)
+        localConnection.request("GET", suffixURL, payload, headers)
         localResponse = localConnection.getresponse()
         localResponseData = localResponse.read()
         localResponseData = localResponseData.decode("utf-8")
