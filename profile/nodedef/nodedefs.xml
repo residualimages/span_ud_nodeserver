@@ -4,7 +4,7 @@
     <sts>
       <st id="ST" editor="bool" />
       <st id="GV0" editor="raw" />
-      <st id="BEEP" editor="rawStringToIoX" />
+      <st id="GPV" editor="rawStringToIoX" />
 	</sts>
     <cmds>
       <sends />
@@ -23,7 +23,7 @@
       <st id="MOON" editor="minute" />
       <st id="TIMEREM" editor="seconds" />
       <st id="FREQ" editor="octet" />
-      <st id="BEEP" editor="rawStringToIoX" />
+      <st id="GPV" editor="rawStringToIoX" />
 	  </sts>
   </nodeDef>
 	
@@ -41,7 +41,7 @@
       <st id="GV2" editor="raw" />
       <st id="GV3" editor="raw" />
       <st id="GV4" editor="raw" />
-      <st id="BEEP" editor="rawStringToIoX" />
+      <st id="GPV" editor="rawStringToIoX" />
 	  </sts>
     <cmds>
       <sends />
@@ -60,12 +60,12 @@
     <sts>
       <st id="ST" editor="watt" />
       <st id="PULSCNT" editor="raw" />
-      <st id="GPV" editor="raw" />
+      <st id="GV0" editor="raw" />
       <st id="HR" editor="hour" />
       <st id="MOON" editor="minute" />
       <st id="TIMEREM" editor="seconds" />
       <st id="FREQ" editor="octet" />
-      <st id="BEEP" editor="rawStringToIoX" />
+      <st id="GPV" editor="rawStringToIoX" />
 	  </sts>
   </nodeDef>
 	
@@ -77,7 +77,7 @@
       <st id="HR" editor="hour" />
       <st id="MOON" editor="minute" />
       <st id="TIMEREM" editor="seconds" />
-      <st id="BEEP" editor="rawStringToIoX" />
+      <st id="GPV" editor="rawStringToIoX" />
 	  </sts>
   </nodeDef>
 </nodeDefs>
