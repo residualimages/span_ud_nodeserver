@@ -334,7 +334,6 @@ class Controller(udi_interface.Node):
                 
         self.setDriver('GV0', 0, True, True)
         self.pushTextToDriver('GPV','Re-starting...')
-        self.poly.stop()
-        self.poly.start()
+        self.start()
 
     commands = {'RESET': reset}
