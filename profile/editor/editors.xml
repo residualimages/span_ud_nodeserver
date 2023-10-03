@@ -6,26 +6,17 @@
 	<editor id="raw">
 		<range uom="56" min="-1" max="20000" prec="0" /> 
 	</editor>
-	<editor id="hour">
-		<range uom="56" min="-3" max="25" prec="0" /> 
-	</editor>
-	<editor id="minute">
-		<range uom="56" min="-3" max="60" prec="0" /> 
-	</editor>
-	<editor id="seconds">
-		<range uom="56" min="-3" max="61" prec="0" /> 
-	</editor>
-	<editor id="octet">
-		<range uom="56" min="-1" max="256" prec="0" /> 
-	</editor>
 	<editor id="watt">
 		<range uom="73" min="-24000" max="24000" prec="2" /> 
 	</editor>
-	<editor id="timestamp">
-		<range uom="151" min="-1" max="2147483647" prec="0" /> 
+	<editor id="ipAddress">
+		<range uom="56" min="-1" max="2" prec="0" /> 
 	</editor>
-	<editor id="string">
-		<range uom="145" min="-1" max="10000" prec="0" /> 
+	<editor id="timestamp">
+		<range uom="56" min="-1" max="2" prec="0" /> 
+	</editor>
+	<editor id="rawStringToIoX">
+		<range uom="56" min="-1" max="1" prec="0" /> 
 	</editor>
 	<editor id="SPAN_PANELGRIDSTATUS">
 		<range uom="25" subset="1-2" nls="IX_SPAN_PANELGRIDSTATUS" />
@@ -38,8 +29,5 @@
 	</editor>
 	<editor id="SPAN_BREAKERSTATUS">
 		<range uom="25" subset="0-2" nls="IX_SPAN_BREAKERSTATUS" />
-	</editor>
-	<editor id="rawStringToIoX">
-		<range uom="56" min="-1" max="1" prec="0" /> 
 	</editor>
 </editors>
