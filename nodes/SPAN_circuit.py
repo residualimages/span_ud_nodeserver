@@ -11,7 +11,7 @@ import sys
 # Standard Library
 from typing import Optional, Any, TYPE_CHECKING
 
-import math,time,datetime,urllib.parse,http.client
+import math,time,datetime,urllib.parse,http.client,base64
 
 LOGGER = udi_interface.LOGGER
 ISY = udi_interface.ISY
