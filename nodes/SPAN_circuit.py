@@ -50,6 +50,8 @@ class CircuitNode(udi_interface.Node):
         # set a flag to short circuit setDriver() until the node has been fully
         # setup in the Polyglot DB and the ISY (as indicated by START event)
         self._initialized: bool = False
+
+        self._fullyCreated:bool = False
         
         self.poly = polyglot
         self.n_queue = []
@@ -73,8 +75,7 @@ class CircuitNode(udi_interface.Node):
         polyglot.subscribe(polyglot.STOP, self.stop, address)
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
         polyglot.subscribe(polyglot.DELETE, self.delete)
-        
-        self.initialized = True
+
         
     '''
     node_queue() and wait_for_node_event() create a simple way to wait
@@ -86,6 +87,7 @@ class CircuitNode(udi_interface.Node):
         if self.address == data['address']:
             LOGGER.debug("\n\tWAIT FOR NODE CREATION: Fully Complete for Circuit " + self.address + "\n")
             self.pushTextToDriver('GV0',self.circuitID)
+            self._fullyCreated = True
             self.n_queue.append(data['address'])
 
     def wait_for_node_done(self):
@@ -117,6 +119,8 @@ class CircuitNode(udi_interface.Node):
     -1 is reserved for initializing.
     '''
     def pushTextToDriver(self,driver,stringToPublish):
+        if not(self._fullyCreated):
+            return
         stringToPublish = stringToPublish.replace('.','')
         if len(str(self.getDriver(driver))) <= 0:
             LOGGER.warning("\n\tPUSHING REPORT ERROR under '" + self.address + "' - a (correct) Driver was not passed.\n")
