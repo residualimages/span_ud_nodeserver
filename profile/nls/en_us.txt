@@ -1,6 +1,6 @@
 ND-ctl-NAME = SPAN Smart Panel NodeServer Controller
 ND-ctl-ICON = Electricity
-ST-ctl-ST-NAME = NodeServer Online
+ST-ctl-ST-NAME = NodeServer Actively Querying
 ST-ctl-GV0-NAME = Number of SPAN Panels
 
 ND-panelForCircuits-NAME = SPAN Panel - CIRCUITS Controller
