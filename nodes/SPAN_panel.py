@@ -150,7 +150,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                 LOGGER.debug("\n\tWill be looking for Circuit nodes with this as the prefix: '" + currentPanelCircuitPrefix + "'.\n")
                 
                 for i in range(1,33):
-                    if i <= self.getDriver('PULSCNT'):
+                    if i <= int(self.getDriver('PULSCNT')):
                         node = currentPanelCircuitPrefix + str(i)
                         LOGGER.debug("\n\tUpdating '" + node + "' (which should be a Circuit node under this Panel controller: " + self.address + ").\n")
                         
