@@ -169,8 +169,8 @@ class PanelNodeForCircuits(udi_interface.Node):
             self.updateAllCircuitsData()
             
             if self.allCircuitsData != '':
-                LOGGER.warning("\n\tTRACKING: Trying to use self.poly.getNodes(self.address).\n")
-                nodes = self.poly.getNodes(self.address)
+                LOGGER.warning("\n\tTRACKING: Trying to use self.getNodes().\n")
+                nodes = self.getNodes()
                 currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
                 LOGGER.debug("\n\tWill be looking for Circuit nodes with this as the prefix: '" + currentPanelCircuitPrefix + "'.\n")
                 '''
