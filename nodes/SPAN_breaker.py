@@ -28,7 +28,7 @@ class BreakerNode(udi_interface.Node):
             {'driver': 'HR', 'value': -1, 'uom': 56},
             {'driver': 'MOON', 'value': -1, 'uom': 56},
             {'driver': 'TIMEREM', 'value': -1, 'uom': 56},
-            {'driver': 'BEEP', 'value': -1, 'uom': 56}
+            {'driver': 'GPV', 'value': -1, 'uom': 56}
             ]
 
     def __init__(self, polyglot, parent, address, name, spanIPAddress, bearerToken, spanBreakerID):
