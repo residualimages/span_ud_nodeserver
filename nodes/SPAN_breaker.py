@@ -97,6 +97,84 @@ class BreakerNode(udi_interface.Node):
             super().setDriver(driver, value, report, force, uom, text)
 
     '''
+    Handling for <text /> attribute across PG3 and PG3x.
+    Note that to be reported to IoX, the value has to change; this is why we flip from 0 to 1 or 1 to 0.
+    -1 is reserved for initializing.
+    '''
+    def pushTextToDriver(self,driver,stringToPublish):
+        if len(str(self.getDriver(driver))) <= 0:
+            LOGGER.warning("\n\tPUSHING REPORT ERROR - a (correct) Driver was not passed.\n")
+            return
+        else:
+            LOGGER.debug("\n\tLEN of self.getDriver('" + driver + "') is greater than 0; driver value = " + str(self.getDriver(driver)) + "\n")
+            
+        currentValue = int(self.getDriver(driver))
+        newValue = -1
+        encodedStringToPublish = urllib.parse.quote(stringToPublish, safe='')
+
+        if currentValue != 1:
+            newValue = 1
+            message = {
+                'set': [{
+                    'address': self.address,
+                    'driver': driver,
+                    'value': 1,
+                    'uom': 56,
+                    'text': encodedStringToPublish
+                }]
+            }
+            
+        else:
+            newValue = 0
+            message = {
+                'set': [{
+                    'address': self.address,
+                    'driver': driver,
+                    'value': 0,
+                    'uom': 56,
+                    'text': encodedStringToPublish
+                }]
+            }
+
+        self.setDriver(driver, newValue, False)
+
+        if 'isPG3x' in self.poly.pg3init and self.poly.pg3init['isPG3x'] is True:
+            #PG3x can use this, but PG3 doesn't have the necessary 'text' handling within message, set above, so we have the 'else' below
+            LOGGER.debug("\n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3x via self.poly.send('" + encodedStringToPublish + "','status') with a value of '" + str(newValue) + "'.\n")
+            self.poly.send(message, 'status')
+        elif not(self.ISY.unauthorized):
+            userpassword = self.parent.parent.ISY._isy_user + ":" + self.parent.parent.ISY._isy_pass
+            userpasswordAsBytes = userpassword.encode("ascii")
+            userpasswordAsBase64Bytes = base64.b64encode(userpasswordAsBytes)
+            userpasswordAsBase64String = userpasswordAsBase64Bytes.decode("ascii")
+    
+            localConnection = http.client.HTTPConnection(self.parent.parent.ISY._isy_ip, self.parent.parent.ISY._isy_port)
+            payload = ''
+            headers = {
+                "Authorization": "Basic " + userpasswordAsBase64String
+            }
+            
+            LOGGER.debug("n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3 via " + self.parent.parent.ISY._isy_ip + ":" + str(self.parent..parent.ISY._isy_port) + ", with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
+    
+            prefixN = str(self.poly.profileNum)
+            if len(prefixN) < 2:
+                prefixN = 'n00' + prefixN + '_'
+            elif len(prefixN) < 3:
+                prefixN = 'n0' + prefixN + '_'
+            
+            suffixURL = '/rest/ns/' + str(self.poly.profileNum) + '/nodes/' + prefixN + self.address + '/report/status/GPV/' + str(newValue) + '/56/text/' + encodedStringToPublish
+    
+            localConnection.request("GET", suffixURL, payload, headers)
+            localResponse = localConnection.getresponse()
+            localResponseData = localResponse.read()
+            localResponseData = localResponseData.decode("utf-8")
+            
+            if '<status>200</status>' not in localResponseData:
+                LOGGER.warning("\n\t\tPUSHING REPORT ERROR - RESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
+        else:
+            LOGGER.warning("\n\t\PUSHING REPORT ERROR: looks like this is a PG3 install but the ISY authorization state seems to currently be 'Unauthorized': 'True'.\n")
+
+    '''
     This is where the real work happens.  When the parent controller gets a shortPoll, do some work with the passed data. 
     '''
     def updateNode(self, passedAllBreakersData, epoch, hour, minute, second):
