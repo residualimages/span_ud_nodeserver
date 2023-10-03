@@ -345,8 +345,8 @@ class Controller(udi_interface.Node):
                 self.pushTextToDriver('GPV',"STILL DELETING nodes; current count: " + str(countOfRemainingNodes) + "...")
         
         self.setDriver('GV0', 0, True, True)
-        self.pushTextToDriver('GPV','Stopping... will restart in 5 seconds.')
-        self.stop()
+        self.pushTextToDriver('GPV','Will restart in 5 seconds...')
+        #self.stop()
         time.sleep(5)
         self.pushTextToDriver('GPV','Starting...')
         self.start()
