@@ -234,6 +234,10 @@ class BreakerNode(udi_interface.Node):
                 
                 LOGGER.debug("\n\tPOLL About to set ST to " + str(abs(designatedBreakerInstantPowerW)) + " for Breaker " + str(self.breakerID) + ".\n")
                 self.setDriver('ST', round(abs(designatedBreakerInstantPowerW),2), True, True)
+                
+                nowEpoch = int(time.time())
+                nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+                self.pushTextToDriver('GPV',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
 
             else:
                 LOGGER.warning("\n\tPOLL ERROR: Unable to get designatedBreakerInstantPowerW from designatedBreakerData:\n\t\t" + designatedBreakerData + "\n")
