@@ -152,7 +152,32 @@ class Controller(udi_interface.Node):
     def pushTextToGPV(self,stringToPublish):
         currentValue = int(self.getDriver('GPV'))
         encodedStringToPublish = urllib.parse.quote(stringToPublish, safe='')
+
+        if currentValue != 0:
+            message = {
+                'set': [{
+                    'address': self.address,
+                    'driver': 'GPV',
+                    'value': 0,
+                    'uom': 56,
+                    'text': encodedStringToPublish
+                }]
+            }
+        else:
+             message = {
+                'set': [{
+                    'address': self.address,
+                    'driver': 'GPV',
+                    'value': 1,
+                    'uom': 56,
+                    'text': encodedStringToPublish
+                }]
+            }    
+        LOGGER.warning("n\tPUSHING REPORT TO 'controller' status variable 'GPV' via self.poly.send('" + encodedStringToPublish + "','status').\n")
         
+        self.poly.send(message, 'status')
+
+        '''
         localConnection = http.client.HTTPConnection('127.0.0.1',8080)
         payload = ''
         LOGGER.warning("n\tPUSHING REPORT TO 'controller' status variable 'GPV' via 127.0.0.1:8080.\n")
@@ -168,6 +193,7 @@ class Controller(udi_interface.Node):
         localResponseData = localResponseData.decode("utf-8")
         
         LOGGER.warning("\n\t\tRESPONSE from report:\n\t\t\t" + localResponseData + "\n")
+        '''
     
     '''
     Create the controller nodes. 
