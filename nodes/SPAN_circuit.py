@@ -67,9 +67,6 @@ class CircuitNode(udi_interface.Node):
         
         tokenLastTen = self.token[-10:]
         LOGGER.debug("\n\tINIT IP Address for circuit:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen + "; Circuit ID: " + self.circuitID)
-
-        LOGGER.debug("\n\t\tINIT About to call setDriver for '" + self.address + "' with a UOM of 145 and a value of '" + str(self.circuitIndex) + "' and a text attribute of '" + self.circuitID + "'.\n")
-        self.setDriver('GPV', self.circuitIndex, True, True, 145, self.circuitID)
             
         # subscribe to the events we want
         polyglot.subscribe(polyglot.START, self.start, address)
