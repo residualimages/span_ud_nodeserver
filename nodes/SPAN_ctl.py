@@ -169,9 +169,12 @@ class Controller(udi_interface.Node):
     -1 is reserved for initializing.
     '''
     def pushTextToDriver(self,driver,stringToPublish):
-        if len(str(self.getDriver(driver)))<0:
-            LOGGER.warning("\n\t\tPUSHING REPORT ERROR - a (correct) Driver was not passed.\n")
+        if len(str(self.getDriver(driver)))<=0:
+            LOGGER.warning("\n\tPUSHING REPORT ERROR - a (correct) Driver was not passed.\n")
             return
+        else:
+            LOGGER.debug("\n\tLEN of driver is supposedly greater than 0:\t" + str(self.getDriver(driver)) + "\n")
+            
         currentValue = int(self.getDriver(driver))
         newValue = -1
         encodedStringToPublish = urllib.parse.quote(stringToPublish, safe='')
