@@ -173,6 +173,7 @@ class Controller(udi_interface.Node):
         encodedStringToPublish = urllib.parse.quote(stringToPublish, safe='')
 
         if currentValue == 0:
+            newValue = 1
             message = {
                 'set': [{
                     'address': self.address,
@@ -182,10 +183,10 @@ class Controller(udi_interface.Node):
                     'text': encodedStringToPublish
                 }]
             }
-            newValue = 1
             
         else:
-             message = {
+            newValue = 0
+            message = {
                 'set': [{
                     'address': self.address,
                     'driver': 'GPV',
@@ -194,7 +195,6 @@ class Controller(udi_interface.Node):
                     'text': encodedStringToPublish
                 }]
             }
-            newValue = 0
         
         LOGGER.warning("\n\tPUSHING REPORT TO 'controller' status variable 'GPV' via self.poly.send('" + encodedStringToPublish + "','status') with a value of '" + str(newValue) + "'.\n")
         
