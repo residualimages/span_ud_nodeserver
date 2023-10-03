@@ -162,7 +162,7 @@ class Controller(udi_interface.Node):
         else:
             suffixURL = '/rest/ns/25/nodes/n025_controller/report/status/GPV/0/56/text/' + encodedStringToPublish
 
-        localConnection.request("GET", suffixURL, payload, headers)
+        localConnection.request("GET", suffixURL, payload)
         localResponse = localConnection.getresponse()
         localResponseData = localResponse.read()
         localResponseData = localResponseData.decode("utf-8")
