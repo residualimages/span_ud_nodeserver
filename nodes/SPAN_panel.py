@@ -201,7 +201,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             #PG3x can use this, but PG3 doesn't have the necessary 'text' handling within message, set above, so we have the 'else' below
             LOGGER.debug("\n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3x via self.poly.send('" + encodedStringToPublish + "','status') with a value of '" + str(newValue) + "'.\n")
             self.poly.send(message, 'status')
-        elif not(self.ISY.unauthorized):
+        elif not(self.parent.ISY.unauthorized):
             userpassword = self.parent.ISY._isy_user + ":" + self.parent.ISY._isy_pass
             userpasswordAsBytes = userpassword.encode("ascii")
             userpasswordAsBase64Bytes = base64.b64encode(userpasswordAsBytes)
@@ -527,7 +527,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             #PG3x can use this, but PG3 doesn't have the necessary 'text' handling within message, set above, so we have the 'else' below
             LOGGER.debug("\n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3x via self.poly.send('" + encodedStringToPublish + "','status') with a value of '" + str(newValue) + "'.\n")
             self.poly.send(message, 'status')
-        elif not(self.ISY.unauthorized):
+        elif not(self.parent.ISY.unauthorized):
             userpassword = self.parent.ISY._isy_user + ":" + self.parent.ISY._isy_pass
             userpasswordAsBytes = userpassword.encode("ascii")
             userpasswordAsBase64Bytes = base64.b64encode(userpasswordAsBytes)
