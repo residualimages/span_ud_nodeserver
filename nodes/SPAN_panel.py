@@ -151,7 +151,8 @@ class PanelNodeForCircuits(udi_interface.Node):
                 
                 for i in range(1,33):
                     if (currentPanelCircuitPrefix + str(i)) in nodes:
-                        LOGGER.debug("\n\tUpdating " + node + " (which should be a Circuit node under this Panel controller: " + self.address + ").\n")
+                        node = currentPanelCircuitPrefix + str(i)
+                        LOGGER.debug("\n\tUpdating '" + node + "' (which should be a Circuit node under this Panel controller: " + self.address + ").\n")
                         
                         try:
                             epoch = self.getDriver('TIME')
