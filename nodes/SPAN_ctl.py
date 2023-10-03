@@ -71,6 +71,7 @@ class Controller(udi_interface.Node):
         self.Parameters = Custom(polyglot, 'customparams')
 
         self.ISY = ISY(self.poly)
+        self.parent = parent
 
         # subscribe to the events we want
         polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
