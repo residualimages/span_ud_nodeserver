@@ -164,11 +164,14 @@ class Controller(udi_interface.Node):
         self.poly.updateProfile()
         
     '''
-    Testing for <text /> attribute.
+    Handling for <text /> attribute.
     Note that to be reported to IoX, the value has to change; this is why we flip from 0 to 1 or 1 to 0.
     -1 is reserved for initializing.
     '''
     def pushTextToDriver(self,driver,stringToPublish):
+        if len(driver)<0:
+            LOGGER.warning("\n\t\tPUSHING REPORT ERROR - 'Driver' was not passed.\n")
+            return
         currentValue = int(self.getDriver(driver))
         newValue = -1
         encodedStringToPublish = urllib.parse.quote(stringToPublish, safe='')
