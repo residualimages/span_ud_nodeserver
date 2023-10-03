@@ -351,7 +351,7 @@ class Controller(udi_interface.Node):
                     address = 's' + str(controllerIndex) + '_breaker_' + entityIndex
                     if address in self.poly.nodes_internal:
                         del self.poly.nodes_internal[address]        
-                        LOGGER.warning"\n\tFound an orphaned breaker node (#" + str(entityIndex) + ") under Breaker Controller #" + str(controllerIndex) + ".\n")
+                        LOGGER.warning("\n\tFound an orphaned breaker node (#" + str(entityIndex) + ") under Breaker Controller #" + str(controllerIndex) + ".\n")
                 except KeyError:
                     LOGGER.debug("\n\tNo orphaned breaker node with address '{}' found.\n".format(address))
                     
@@ -359,7 +359,7 @@ class Controller(udi_interface.Node):
                     address = 's' + str(controllerIndex) + '_circuit_' + entityIndex
                     if address in self.poly.nodes_internal:
                         del self.poly.nodes_internal[address]        
-                        LOGGER.warning"\n\tFound an orphaned circuit node (#" + str(entityIndex) + ") under Circuit Controller #" + str(controllerIndex) + ".\n")
+                        LOGGER.warning("\n\tFound an orphaned circuit node (#" + str(entityIndex) + ") under Circuit Controller #" + str(controllerIndex) + ".\n")
                 except KeyError:
                     LOGGER.debug("\n\tNo orphaned circuit node with address '{}' found.\n".format(address))
 
@@ -367,7 +367,7 @@ class Controller(udi_interface.Node):
                 address = 'panelbreaker_' + entityIndex
                 if address in self.poly.nodes_internal:
                     del self.poly.nodes_internal[address]        
-                    LOGGER.warning"\n\tFound an orphaned Breaker Controller #" + str(controllerIndex) + "; removing.\n")
+                    LOGGER.warning("\n\tFound an orphaned Breaker Controller #" + str(controllerIndex) + "; removing.\n")
             except KeyError:
                 LOGGER.debug("\n\tNo orphaned Breaker Controller with address '{}' found.\n".format(address))
                 
@@ -375,7 +375,7 @@ class Controller(udi_interface.Node):
                 address = 'panelcircuit_' + entityIndex
                 if address in self.poly.nodes_internal:
                     del self.poly.nodes_internal[address]        
-                    LOGGER.warning"\n\tFound an orphaned Circuit Controller #" + str(controllerIndex) + "; removing.\n")        
+                    LOGGER.warning("\n\tFound an orphaned Circuit Controller #" + str(controllerIndex) + "; removing.\n")        
             except KeyError:
                 LOGGER.debug("\n\tNo orphaned Circuit Controller with address '{}' found.\n".format(address))
                 
