@@ -96,7 +96,7 @@ class Controller(udi_interface.Node):
         if 'shortPoll' in polltype:
             nowEpoch = int(time.time())
             nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-            self.pushTextToDriver('GPV',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+            self.pushTextToDriver('GPV',"Last Short Poll Date / Time: " + nowDT.strftime("%m/%d/%Y %H:%M:%S"))
     '''
     node_queue() and wait_for_node_event() create a simple way to wait
     for a node to be created.  The nodeAdd() API call is asynchronous and
@@ -292,7 +292,7 @@ class Controller(udi_interface.Node):
                 LOGGER.warning('Failed to create Panel Breakers Controller {}: {}'.format(titleBreakers, e))
         
         self.setDriver('GV0', how_many, True, True)
-        self.pushTextToDriver('GPV','Querying ACTIVE')
+        self.pushTextToDriver('GPV','Awaiting short poll')
 
     '''
     STOP Command Received
