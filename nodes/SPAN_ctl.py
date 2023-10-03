@@ -345,7 +345,7 @@ class Controller(udi_interface.Node):
                 self.pushTextToDriver('GPV',"STILL DELETING nodes; current count: " + str(countOfRemainingNodes) + "...")
 
         # Iterate over polyglot's internal list of nodes to check for orphaned ones belonging to this NodeServer
-        for controllerIndex in range (1,2):
+        for controllerIndex in range(1,2):
             for entityIndex in range(1,33):
                 try:
                     address = 's' + str(controllerIndex) + '_breaker_' + str(entityIndex)
