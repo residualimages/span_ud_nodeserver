@@ -93,6 +93,7 @@ class Controller(udi_interface.Node):
     
     def poll(self, polltype):
         if 'shortPoll' in polltype:
+            nowEpoch = int(time.time())
             nowDT = datetime.datetime.fromtimestamp(nowEpoch)
             self.pushTextToGPV(nowDT.strftime("%m/%d/%Y %H:%M:%S"))
     '''
