@@ -273,7 +273,7 @@ class Controller(udi_interface.Node):
             titleBreakers = 'SPAN Panel #{} - Breakers'.format(i+1)
             titleBreakers = getValidNodeName(titleBreakers)
             
-            self.pushTextToDriver('GPV','Creating Circuit Controller ' + str(i))
+            self.pushTextToDriver('GPV','Creating Circuit Controller ' + str(i+1))
             try:
                 circuitController = SPAN_panel.PanelNodeForCircuits(self.poly, addressCircuits, addressCircuits, titleCircuits, current_IPaddress, current_BearerToken)
                 self.poly.addNode(circuitController)
@@ -281,7 +281,7 @@ class Controller(udi_interface.Node):
             except Exception as e:
                 LOGGER.warning('Failed to create Panel Circuits Controller {}: {}'.format(titleCircuits, e))
 
-            self.pushTextToDriver('GPV','Creating Panel Controller ' + str(i))
+            self.pushTextToDriver('GPV','Creating Panel Controller ' + str(i+1))
             try:
                 LOGGER.debug("\n\t\ADD breakerController = SPAN_panel.PanelNodeForBreakers(self.poly, " + addressBreakers + ", " + addressBreakers + ", " + titleBreakers + ", " + current_IPaddress + ", " + current_BearerToken + ")\n")
                 breakerController = SPAN_panel.PanelNodeForBreakers(self.poly, addressBreakers, addressBreakers, titleBreakers, current_IPaddress, current_BearerToken)
