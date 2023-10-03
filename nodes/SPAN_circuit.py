@@ -31,15 +31,12 @@ Notes about API:
 class CircuitNode(udi_interface.Node):
     id = 'circuit'
     drivers = [
-            {'driver': 'ST', 'value': 0, 'uom': 73},
-            {'driver': 'PULSCNT', 'value': 0, 'uom': 56},
+            {'driver': 'ST', 'value': -1, 'uom': 73},
+            {'driver': 'PULSCNT', 'value': -1, 'uom': 56},
             {'driver': 'CLIEMD', 'value': 0, 'uom': 25},
             {'driver': 'AWAKE', 'value': 0, 'uom': 25},
-            {'driver': 'TIME', 'value': 0, 'uom': 151},
-            {'driver': 'HR', 'value': -1, 'uom': 56},
-            {'driver': 'MOON', 'value': -1, 'uom': 56},
-            {'driver': 'TIMEREM', 'value': -1, 'uom': 56},
-            {'driver': 'GP0', 'value': 0, 'uom': 145},
+            {'driver': 'TIME', 'value': -1, 'uom': 56},
+            {'driver': 'GV0', 'value': '', 'uom': 56},
             {'driver': 'GV1', 'value': '', 'uom': 56},
             {'driver': 'GV2', 'value': '', 'uom': 56},
             {'driver': 'GV3', 'value': '', 'uom': 56},
@@ -91,6 +88,7 @@ class CircuitNode(udi_interface.Node):
     def node_queue(self, data):
         if self.address == data['address']:
             LOGGER.debug("\n\tWAIT FOR NODE CREATION: Fully Complete for Circuit " + self.address + "\n")
+            self.pushTextToDriver('GV0',self.circuitID)
             self.n_queue.append(data['address'])
 
     def wait_for_node_done(self):
@@ -198,7 +196,7 @@ class CircuitNode(udi_interface.Node):
     '''
     This is where the real work happens.  When the parent controller gets a shortPoll, do some work with the passed data. 
     '''
-    def updateNode(self, passedAllCircuitsData, epoch, hour, minute, second):
+    def updateNode(self, passedAllCircuitsData, dateTimeString):
         self.allCircuitsData = passedAllCircuitsData
 
         if self.getDriver('TIMEREM') == -1:
@@ -209,10 +207,9 @@ class CircuitNode(udi_interface.Node):
     
             LOGGER.debug("\n\tAbout to search for 'name' in:\n\t\t" + designatedCircuitData + "\n")
 
-            if self.getDriver('GPV') == 0:
-                LOGGER.debug("\n\tSetting GPV because it is currently ''.\n")
-                LOGGER.debug("\n\t\tFIRST UPDATE About to call setDriver for '" + self.address + "' with a UOM of 145 and a value of '" + str(self.circuitIndex) + "' and a text attribute of '" + self.circuitID + "'.\n")
-                self.setDriver('GPV', self.circuitIndex, True, True, 145, self.circuitID)
+            if len(self.getDriver('GV0')) == 0:
+                LOGGER.debug("\n\tSetting SPAN Circuit ID (GV0) because it is currently blank.\n")
+                self.pushTextToDriver('GV0',self.circuitID)
     
             if "name" in designatedCircuitData:
                 designatedCircuitTabs_tuple = designatedCircuitData.partition(chr(34) + "tabs" + chr(34) + ":")
@@ -233,18 +230,14 @@ class CircuitNode(udi_interface.Node):
                         self.setDriver('GV' + str(i+1), designatedCircuitTabsArray[i], True, True)
                     except:
                         LOGGER.warning("\n\t\tERROR Setting Tab (Physical Breaker #" + str(i+1) + ") for " + self.circuitID + ".\n")
-                
-                self.setDriver('TIME', epoch, True, True)
-                self.setDriver('HR', hour, True, True)
-                self.setDriver('MOON', minute, True, True)
-                self.setDriver('TIMEREM', second, True, True)
             else:
                 LOGGER.warning("\n\tINIT Issue getting data for circuit '" + self.circuitID + "'.\n")
-                self.setDriver('HR', -1, True, True)
-                self.setDriver('MOON', -1, True, True)
-                self.setDriver('TIMEREM', -1, True, True)
+                self.setDriver('TIME', -1, True, True)
         
         self.poll('shortPoll')
+        
+        if "name" in self.allCircuitsData:
+            self.pushTextToDriver('TIME', dateTimeString)
         
     def poll(self, polltype):
         if 'shortPoll' in polltype:
@@ -294,16 +287,11 @@ class CircuitNode(udi_interface.Node):
                 
                 LOGGER.debug("\n\tPOLL About to set ST to " + str(designatedCircuitInstantPowerW) + " for Circuit " + self.circuitID + ".\n")
                 self.setDriver('ST', round(abs(designatedCircuitInstantPowerW),2), True, True)
-                
-                nowEpoch = int(time.time())
-                nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-                self.pushTextToDriver('GPV',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
 
             else:
                 LOGGER.warning("\n\tPOLL Issue getting data for circuit '" + self.circuitID + "'.\n")
-                self.setDriver('HR', -3, True, True)
-                self.setDriver('MOON', -3, True, True)
-                self.setDriver('TIMEREM', -3, True, True)
+                self.setDriver('HR', -1, True, True)
+                self.pushTextToDriver('GPV',"POLL ERROR ALLCIRCUITDATA")
 
     def cmd_update_circuit_status(self,commandDetails):
         LOGGER.debug(f'\n\t{self.address} being set via cmd_update_circuit_status to commandDetails={commandDetails}\n')
@@ -379,6 +367,4 @@ class CircuitNode(udi_interface.Node):
         LOGGER.warning("\n\tSTOP COMMAND received: Circuit Node '" + self.address + "'.\n")
         self.setDriver('ST', 0, True, True)
         self.setDriver('TIME', -1, True, True)
-        self.setDriver('HR', -1, True, True)
-        self.setDriver('MOON', -1, True, True)
-        self.setDriver('TIMEREM', -1, True, True)
+        self.pushTextToDriver('GPV',"NodeServer STOPPED")
