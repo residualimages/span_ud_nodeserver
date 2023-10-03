@@ -104,7 +104,7 @@ class Controller(udi_interface.Node):
     '''
     def node_queue(self, data):
         self.n_queue.append(data['address'])
-        LOGGER.warning("\n\tISY Object created under 'controller':\t" + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", which is itself NS #" + str(self.poly.profileNum) + ", and has poly.id of '" + str(self.poly.id) + "'.\n")   
+        LOGGER.warning("\n\tISY Object created under 'controller':\t" + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", which is itself NS #" + str(self.poly.profileNum) + ", and has poly.uuid of '" + str(self.poly.uuid) + "'.\n")   
         LOGGER.warning("\n\t\tUNAuthorized (expecting this to be false): " + str(self.ISY.unauthorized) + ".\n")
 
     def wait_for_node_done(self):
