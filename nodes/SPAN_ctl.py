@@ -104,7 +104,7 @@ class Controller(udi_interface.Node):
     '''
     def node_queue(self, data):
         self.n_queue.append(data['address'])
-        LOGGER.warning("\n\tISY Object created under 'controller':\t" + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", which is itself NS #" + str(self.poly.profileNum) + ", and has poly.uuid of '" + str(self.poly.uuid) + "'.\n")   
+        LOGGER.warning("\n\tISY Object created under 'controller':\t" + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", which is itself NS #" + str(self.poly.profileNum) + ", and has self.address of '" + str(self.address) + "'.\n")   
         LOGGER.warning("\n\t\tUNAuthorized (expecting this to be false): " + str(self.ISY.unauthorized) + ".\n")
 
     def wait_for_node_done(self):
@@ -195,35 +195,44 @@ class Controller(udi_interface.Node):
                     'uom': 56,
                     'text': encodedStringToPublish
                 }]
-            }
+            stat }
 
         self.setDriver('GPV',newValue)
 
-        #PG3x could use this, but PG3 doesn't have the necessary 'text' handling within message, set above
-        #LOGGER.warning("\n\tPUSHING REPORT TO 'controller' status variable 'GPV' via self.poly.send('" + encodedStringToPublish + "','status') with a value of '" + str(newValue) + "'.\n")
-        #self.poly.send(message, 'status')
-
-        userpassword = self.ISY._isy_user + ":" + self.ISY._isy_pass
-        userpasswordAsBytes = userpassword.encode("ascii")
-        userpasswordAsBase64Bytes = base64.b64encode(userpasswordAsBytes)
-        userpasswordAsBase64String = userpasswordAsBase64Bytes.decode("ascii")
-
-        localConnection = http.client.HTTPConnection('127.0.0.1',8080)
-        payload = ''
-        headers = {
-            "Authorization": "Basic " + userpasswordAsBase64String
-        }
-        
-        LOGGER.warning("n\tPUSHING REPORT TO 'controller' status variable 'GPV' via 127.0.0.1:8080, with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
-        
-        suffixURL = '/rest/ns/25/nodes/n025_controller/report/status/GPV/' + str(newValue) + '/56/text/' + encodedStringToPublish
-
-        localConnection.request("GET", suffixURL, payload, headers)
-        localResponse = localConnection.getresponse()
-        localResponseData = localResponse.read()
-        localResponseData = localResponseData.decode("utf-8")
-        
-        LOGGER.warning("\n\t\tRESPONSE from report:\n\t\t\t" + localResponseData + "\n")
+        if 'isPG3x' in self.poly.pg3init and self.poly.pg3init['isPG3x'] is True:
+            #PG3x can use this, but PG3 doesn't have the necessary 'text' handling within message, set above, so we have the 'else' below
+            LOGGER.warning("\n\tPUSHING REPORT TO 'controller' status variable 'GPV' with PG3x via self.poly.send('" + encodedStringToPublish + "','status') with a value of '" + str(newValue) + "'.\n")
+            self.poly.send(message, 'status')
+        elif not(self.ISY.unauthorized):
+            userpassword = self.ISY._isy_user + ":" + self.ISY._isy_pass
+            userpasswordAsBytes = userpassword.encode("ascii")
+            userpasswordAsBase64Bytes = base64.b64encode(userpasswordAsBytes)
+            userpasswordAsBase64String = userpasswordAsBase64Bytes.decode("ascii")
+    
+            localConnection = http.client.HTTPConnection(self.ISY._isy_ip, self.ISY._isy_port)
+            payload = ''
+            headers = {
+                "Authorization": "Basic " + userpasswordAsBase64String
+            }
+            
+            LOGGER.warning("n\tPUSHING REPORT TO 'controller' status variable 'GPV' with PG3 via " + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
+    
+            prefixN = str(self.poly.profileNum)
+            if len(prefixN) < 2:
+                prefixN = 'n00' + prefixN + '_'
+            elif len(prefix) < 3:
+                prefixN = 'n0' + prefixN + '_'
+            
+            suffixURL = '/rest/ns/' + str(self.poly.profileNum) + '/nodes/' + prefixN + self.address + '/report/status/GPV/' + str(newValue) + '/56/text/' + encodedStringToPublish
+    
+            localConnection.request("GET", suffixURL, payload, headers)
+            localResponse = localConnection.getresponse()
+            localResponseData = localResponse.read()
+            localResponseData = localResponseData.decode("utf-8")
+            
+            LOGGER.warning("\n\t\tRESPONSE from report:\n\t\t\t" + localResponseData + "\n")
+        else:
+            LOGGER.warning("\n\t\PUSHING REPORT ERROR: looks like this is a PG3 install but the ISY authorization state seems to currently be 'Unauthorized': 'True'.\n")
     
     '''
     Create the controller nodes. 
