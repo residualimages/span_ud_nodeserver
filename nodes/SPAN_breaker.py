@@ -61,6 +61,7 @@ class BreakerNode(udi_interface.Node):
         polyglot.subscribe(polyglot.START, self.start, address)
         polyglot.subscribe(polyglot.STOP, self.stop, address)
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
+        polyglot.subscribe(polyglot.DELETE, self.delete)
         
         self.initialized = True
         
@@ -100,6 +101,12 @@ class BreakerNode(udi_interface.Node):
         if self._initialized:
             super().setDriver(driver, value, report, force, uom, text)
 
+    def delete(self, address):
+        if address == self.address:
+            LOGGER.warning("\n\tDELETE COMMAND RECEIVED for self ('" + self.address + "')\n")
+        else:
+            LOGGER.debug("\n\tDELETE COMMAND RECEIVED for '" + address + "'\n")
+        
     '''
     Handling for <text /> attribute across PG3 and PG3x.
     Note that to be reported to IoX, the value has to change; this is why we flip from 0 to 1 or 1 to 0.
