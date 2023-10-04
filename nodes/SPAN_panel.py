@@ -223,29 +223,30 @@ class PanelNodeForCircuits(udi_interface.Node):
             userpasswordAsBase64Bytes = base64.b64encode(userpasswordAsBytes)
             userpasswordAsBase64String = userpasswordAsBase64Bytes.decode("ascii")
     
-            localConnection = http.client.HTTPConnection(self.ISY._isy_ip, self.ISY._isy_port)
-            payload = ''
-            headers = {
-                "Authorization": "Basic " + userpasswordAsBase64String
-            }
-            
-            LOGGER.debug("\n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3 via " + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
-    
-            prefixN = str(self.poly.profileNum)
-            if len(prefixN) < 2:
-                prefixN = 'n00' + prefixN + '_'
-            elif len(prefixN) < 3:
-                prefixN = 'n0' + prefixN + '_'
-            
-            suffixURL = '/rest/ns/' + str(self.poly.profileNum) + '/nodes/' + prefixN + self.address + '/report/status/' + driver + '/' + str(newValue) + '/56/text/' + encodedStringToPublish
-    
-            localConnection.request("GET", suffixURL, payload, headers)
-            localResponse = localConnection.getresponse()
-            localResponseData = localResponse.read()
-            localResponseData = localResponseData.decode("utf-8")
-            
-            if '<status>200</status>' not in localResponseData:
-                LOGGER.warning("\n\t\tPUSHING REPORT ERROR - RESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
+            if len(self.ISY._isy_ip) > 0 and len(userpasswordAsBase64String) > 0:
+                localConnection = http.client.HTTPConnection(self.ISY._isy_ip, self.ISY._isy_port)
+                payload = ''
+                headers = {
+                    "Authorization": "Basic " + userpasswordAsBase64String
+                }
+                
+                LOGGER.debug("\n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3 via " + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
+        
+                prefixN = str(self.poly.profileNum)
+                if len(prefixN) < 2:
+                    prefixN = 'n00' + prefixN + '_'
+                elif len(prefixN) < 3:
+                    prefixN = 'n0' + prefixN + '_'
+                
+                suffixURL = '/rest/ns/' + str(self.poly.profileNum) + '/nodes/' + prefixN + self.address + '/report/status/' + driver + '/' + str(newValue) + '/56/text/' + encodedStringToPublish
+        
+                localConnection.request("GET", suffixURL, payload, headers)
+                localResponse = localConnection.getresponse()
+                localResponseData = localResponse.read()
+                localResponseData = localResponseData.decode("utf-8")
+                
+                if '<status>200</status>' not in localResponseData:
+                    LOGGER.warning("\n\t\tPUSHING REPORT ERROR - RESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
         else:
             LOGGER.warning("\n\t\PUSHING REPORT ERROR: looks like this is a PG3 install but the ISY authorization state seems to currently be 'Unauthorized': 'True'.\n")
     
@@ -560,29 +561,30 @@ class PanelNodeForBreakers(udi_interface.Node):
             userpasswordAsBase64Bytes = base64.b64encode(userpasswordAsBytes)
             userpasswordAsBase64String = userpasswordAsBase64Bytes.decode("ascii")
     
-            localConnection = http.client.HTTPConnection(self.ISY._isy_ip, self.ISY._isy_port)
-            payload = ''
-            headers = {
-                "Authorization": "Basic " + userpasswordAsBase64String
-            }
-            
-            LOGGER.debug("\n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3 via " + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
-    
-            prefixN = str(self.poly.profileNum)
-            if len(prefixN) < 2:
-                prefixN = 'n00' + prefixN + '_'
-            elif len(prefixN) < 3:
-                prefixN = 'n0' + prefixN + '_'
-            
-            suffixURL = '/rest/ns/' + str(self.poly.profileNum) + '/nodes/' + prefixN + self.address + '/report/status/' + driver + '/' + str(newValue) + '/56/text/' + encodedStringToPublish
-    
-            localConnection.request("GET", suffixURL, payload, headers)
-            localResponse = localConnection.getresponse()
-            localResponseData = localResponse.read()
-            localResponseData = localResponseData.decode("utf-8")
-            
-            if '<status>200</status>' not in localResponseData:
-                LOGGER.warning("\n\t\tPUSHING REPORT ERROR - RESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
+            if len(self.ISY._isy_ip) > 0 and len(userpasswordAsBase64String) > 0:
+                localConnection = http.client.HTTPConnection(self.ISY._isy_ip, self.ISY._isy_port)
+                payload = ''
+                headers = {
+                    "Authorization": "Basic " + userpasswordAsBase64String
+                }
+                
+                LOGGER.debug("\n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3 via " + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
+        
+                prefixN = str(self.poly.profileNum)
+                if len(prefixN) < 2:
+                    prefixN = 'n00' + prefixN + '_'
+                elif len(prefixN) < 3:
+                    prefixN = 'n0' + prefixN + '_'
+                
+                suffixURL = '/rest/ns/' + str(self.poly.profileNum) + '/nodes/' + prefixN + self.address + '/report/status/' + driver + '/' + str(newValue) + '/56/text/' + encodedStringToPublish
+        
+                localConnection.request("GET", suffixURL, payload, headers)
+                localResponse = localConnection.getresponse()
+                localResponseData = localResponse.read()
+                localResponseData = localResponseData.decode("utf-8")
+                
+                if '<status>200</status>' not in localResponseData:
+                    LOGGER.warning("\n\t\tPUSHING REPORT ERROR - RESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
         else:
             LOGGER.warning("\n\t\PUSHING REPORT ERROR: looks like this is a PG3 install but the ISY authorization state seems to currently be 'Unauthorized': 'True'.\n")
 
