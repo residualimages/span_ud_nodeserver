@@ -17,7 +17,7 @@ if __name__ == "__main__":
         polyglot.start()
 
         # Create the controller node if not created
-        nodes = self.poly.getNodes()
+        nodes = polyglot.getNodes()
         if 'controller' not in nodes:
             SPAN_ctl.Controller(polyglot, 'controller', 'controller', 'SPAN Panel - Nodeserver')
 
