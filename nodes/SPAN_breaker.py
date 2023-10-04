@@ -198,7 +198,7 @@ class BreakerNode(udi_interface.Node):
         self.poll('shortPoll')
 
         if "-1" in str(self.getDriver('GPV')):
-            self.pushTextToDriver('GPV',' ')
+            self.pushTextToDriver('GPV','NodeServer RUNNING')
         
         if "instantPowerW" in self.allBreakersData:
             self.pushTextToDriver('TIME', dateTimeString)
