@@ -191,7 +191,7 @@ class BreakerNode(udi_interface.Node):
     def updateBreakerNode(self, passedAllBreakersData, dateTimeString):
         self.allBreakersData = passedAllBreakersData
 
-        if self.getDriver('PULSCNT') <= 0:
+        if int(self.getDriver('PULSCNT')) <= 0:
             LOGGER.debug("\n\tFor updateNode under '" + self.address + "', setting Breaker ID (PULSCNT) because it is currently 0.\n")
             self.setDriver('PULSCNT', self.breakerID, True, True)
         
