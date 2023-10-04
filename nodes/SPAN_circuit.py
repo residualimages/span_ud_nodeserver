@@ -124,7 +124,7 @@ class CircuitNode(udi_interface.Node):
     def pushTextToDriver(self,driver,stringToPublish):
         if not(self._fullyCreated):
             return
-        stringToPublish = stringToPublish.replace('.','')
+        stringToPublish = stringToPublish.replace('.',' ')
         if len(str(self.getDriver(driver))) <= 0:
             LOGGER.warning("\n\tPUSHING REPORT ERROR under '" + self.address + "' - a (correct) Driver was not passed.\n")
             return
@@ -224,7 +224,7 @@ class CircuitNode(udi_interface.Node):
               
                 LOGGER.debug("\n\tINIT Designated Circuit Data: \n\t\t" + designatedCircuitData + "\n\t\tCount of Circuit Breakers In Circuit: " + str(designatedCircuitTabs.count(',')+1) + "\n")
     
-                designatedCircuitTabs = designatedCircuitTabs.replace('[','')
+                designatedCircuitTabs = designatedCircuitTabs.replace('[',' ')
                 designatedCircuitTabsArray = designatedCircuitTabs.split(',')
                 designatedCircuitTabsCount = len(designatedCircuitTabsArray)
 
@@ -243,7 +243,7 @@ class CircuitNode(udi_interface.Node):
         self.poll('shortPoll')
 
         if "-1" in str(self.getDriver('GPV')):
-            self.pushTextToDriver('GPV','')
+            self.pushTextToDriver('GPV',' ')
         
         if "name" in self.allCircuitsData:
             self.pushTextToDriver('TIME', dateTimeString)
