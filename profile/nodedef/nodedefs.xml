@@ -33,10 +33,10 @@
       <st id="TIME" editor="dateTimeStamp" />
       <st id="PULSCNT" editor="raw" />
       <st id="GV0" editor="rawStringToIoX" />
-      <st id="GV1" editor="raw" />
-      <st id="GV2" editor="raw" />
-      <st id="GV3" editor="raw" />
-      <st id="GV4" editor="raw" />
+      <st id="GV1" editor="rawStringToIoX" />
+      <st id="GV2" editor="rawStringToIoX" />
+      <st id="GV3" editor="rawStringToIoX" />
+      <st id="GV4" editor="rawStringToIoX" />
       <st id="GPV" editor="rawStringToIoX" />
 	  </sts>
     <cmds>
