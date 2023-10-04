@@ -7,7 +7,8 @@ MIT License
 """
 import udi_interface
 import sys
-import http.client
+import time
+import string
 import re
 
 from nodes import SPAN_circuit,SPAN_breaker
