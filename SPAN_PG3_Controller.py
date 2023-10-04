@@ -13,6 +13,8 @@ import re
 
 from nodes import SPAN_ctl
 
+import urllib.parse,http.client,math,time,datetime,base64
+
 LOGGER = udi_interface.LOGGER
 
 if __name__ == "__main__":
