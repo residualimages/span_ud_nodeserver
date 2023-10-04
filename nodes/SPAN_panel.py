@@ -295,12 +295,13 @@ class PanelNodeForCircuits(udi_interface.Node):
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                     if node in nodes:
                         try:
+                            LOGGER.warning("\n\tPOLL ATTEMPT FOR Circuits Controller '" + self.address + "' for '" + node + "'.\n")
                             nodes[node].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
-                            LOGGER.warning("\n\tPOLL SUCCESS in Circuits Controller '" + self.address + "' for '" + node + "'.\n")
+                            LOGGER.warning("\n\t\tPOLL SUCCESS in Circuits Controller '" + self.address + "' for '" + node + "'.\n")
                         except Exception as e:
                             LOGGER.warning("\n\tPOLL ERROR in Circuits Controller '" + self.address + "': Cannot seem to update node '" + node + "' needed in for-loop due to error:\n\t\t" + format(e) + "\n")
                     else:
-                        LOGGER.warning("\n\tSKIPPING NON-EXISTENT CIRCUIT '" + node + "'.\n")
+                        LOGGER.info("\n\tSKIPPING NON-EXISTENT CIRCUIT '" + node + "'.\n")
                             
             else:
                 tokenLastTen = self.token[-10:]
