@@ -443,5 +443,8 @@ class PanelNodeForCircuits(udi_interface.Node):
     def stop(self):
         LOGGER.debug("\n\tSTOP RECEIVED: Panel Circuit Controller handler '" + self.address + "'.\n")
         self.setDriver('ST', -1, True, True)
+        self.setDriver('FREQ', -1, True, True)
+        self.setDriver('PULSCNT', -1, True, True)
+        self.setDriver('CLIEMD', -1, True, True)
         self.setDriver('TIME', -1, True, True)
         self.pushTextToDriver('GPV',"NodeServer STOPPED")
