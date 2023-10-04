@@ -285,11 +285,11 @@ class PanelNodeForBreakers(udi_interface.Node):
     This is where the real work happens.  When we get a shortPoll, do some work. 
     '''
     def pollBreakerController(self, polltype):
-        LOGGER.warning("\n\tPOLL BREAKER CONTROLLER: " + polltype + " for '" + self.address + "'.\n")
+        LOGGER.debug("\n\tPOLL BREAKER CONTROLLER: " + polltype + " for '" + self.address + "'.\n")
         if 'shortPoll' in polltype:
             
             if "|poll passed from root controller" in polltype:
-                LOGGER.warning("\n\tBREAKER CONTROLLER '" + self.address + "' - HANDLING SHORT POLL passed from root controller\n")
+                LOGGER.debug("\n\tBREAKER CONTROLLER '" + self.address + "' - HANDLING SHORT POLL passed from root controller\n")
                             
             if "-1" in str(self.getDriver('FREQ')):
                 self.pushTextToDriver('FREQ',self.ipAddress.replace('.','-'))
