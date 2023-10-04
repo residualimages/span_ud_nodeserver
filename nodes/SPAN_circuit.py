@@ -373,5 +373,5 @@ class CircuitNode(udi_interface.Node):
 
     commands = {
         "UPDATE_CIRCUIT_STATUS": cmd_update_circuit_status,
-        "UPDATE_CIRCUIT_PRIORITY": cmd_update_circuit_status,
+        "UPDATE_CIRCUIT_PRIORITY": cmd_update_circuit_status
     }
