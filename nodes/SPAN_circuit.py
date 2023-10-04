@@ -36,7 +36,7 @@ class CircuitNode(udi_interface.Node):
             {'driver': 'CLIEMD', 'value': 0, 'uom': 25},
             {'driver': 'AWAKE', 'value': 0, 'uom': 25},
             {'driver': 'TIME', 'value': -1, 'uom': 56},
-            {'driver': 'GV0', 'value': '', 'uom': 56},
+            {'driver': 'GV0', 'value': '-1', 'uom': 56},
             {'driver': 'GV1', 'value': '', 'uom': 56},
             {'driver': 'GV2', 'value': '', 'uom': 56},
             {'driver': 'GV3', 'value': '', 'uom': 56},
@@ -208,7 +208,7 @@ class CircuitNode(udi_interface.Node):
     
             LOGGER.debug("\n\tAbout to search for 'name' in:\n\t\t" + designatedCircuitData + "\n")
 
-            if len(string(self.getDriver('GV0'))) == 0 or str(self.getDriver('GV0')) = '0':
+            if len(string(self.getDriver('GV0'))) == 0 or str(self.getDriver('GV0')) = '0' or str(self.getDriver('GV0')) = '-1':
                 LOGGER.debug("\n\tSetting SPAN Circuit ID (GV0) because it is currently not set.\n")
                 self.pushTextToDriver('GV0',self.circuitID)
     
