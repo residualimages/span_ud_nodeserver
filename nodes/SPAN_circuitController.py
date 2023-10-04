@@ -98,6 +98,8 @@ class PanelNodeForCircuits(udi_interface.Node):
         self.poly = polyglot
         self.n_queue = []
         self.parent = parent
+
+        self.childCircuitNodes: SPAN_circuit.CircuitNode = []
         
         self.ISY = ISY(self.poly)
 
@@ -286,7 +288,8 @@ class PanelNodeForCircuits(udi_interface.Node):
                 nowEpoch = int(time.time())
                 nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                 self.pushTextToDriver('TIME',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
-                
+
+                '''
                 nodeCollection = self.poly.getNodes()
                 currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
                 LOGGER.debug("\n\tWill be looking for Circuit nodes with this as the prefix: '" + currentPanelCircuitPrefix + "'.\n")
@@ -304,6 +307,15 @@ class PanelNodeForCircuits(udi_interface.Node):
                             LOGGER.warning("\n\tPOLL ERROR in Circuits Controller '" + self.address + "': Cannot seem to update node '" + nodeAddress + "' needed in for-loop due to error:\n\t\t" + format(e) + "\n")
                     else:
                         LOGGER.info("\n\tSKIPPING NON-EXISTENT CIRCUIT '" + nodeAddress + "'.\n")
+                '''
+                circuitCount = len(self.childCircuitNodes)
+                currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
+                for i in range(0, circuitCount):
+                    try:
+                        self.childCircuitNodes[i].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
+                        LOGGER.warning("\n\t\tPOLL SUCCESS in Circuits Controller '" + self.address + "' for '" + self.childCircuitNodes[i].address + "'.\n")
+                    except Exception as f:
+                        LOGGER.warning("\n\tPOLL ERROR in Circuits Controller '" + self.address + "': Cannot seem to update node '" + currentPanelCircuitPrefix + str(i) + "' needed in for-loop due to error:\n\t\t" + format(e) + "\n")
                             
             else:
                 tokenLastTen = self.token[-10:]
@@ -356,7 +368,10 @@ class PanelNodeForCircuits(udi_interface.Node):
             try:
                 node = SPAN_circuit.CircuitNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken, current_circuitID, i)
                 self.poly.addNode(node)
+                
                 node.wait_for_node_done()
+
+                self.childCircuitNodes.append(node)
                 
                 LOGGER.debug('\n\tCreated a Circuit child node {} under Panel Circuit Controller {}\n'.format(title, panelNumberPrefix))
             except Exception as e:
