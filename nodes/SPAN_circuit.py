@@ -205,7 +205,7 @@ class CircuitNode(udi_interface.Node):
     This is where the real work happens.  When the parent controller gets a shortPoll, do some work with the passed data. 
     '''
     def updateCircuitNode(self, passedAllCircuitsData, dateTimeString, passedAllBreakersData):
-        LOGGER.warning("\n\tUPDATE CIRCUIT NODE called for '" + self.address + "'.\n")
+        LOGGER.debug("\n\tUPDATE CIRCUIT NODE called for '" + self.address + "'.\n")
         self.allCircuitsData = passedAllCircuitsData
         self.allBreakersData = passedAllBreakersData
 
@@ -215,10 +215,10 @@ class CircuitNode(udi_interface.Node):
             designatedCircuitData_tuple = designatedCircuitData.partition('},')
             designatedCircuitData = designatedCircuitData_tuple[0] + '}'
     
-            LOGGER.warning("\n\tUPDATE CIRCUIT NODE proceeding for '" + self.address + "'; about to search for 'name' in:\n\t\t" + designatedCircuitData + "\n")
+            LOGGER.debug("\n\tUPDATE CIRCUIT NODE proceeding for '" + self.address + "'; about to search for 'name' in:\n\t\t" + designatedCircuitData + "\n")
 
             #if len(string(self.getDriver('GV0'))) == 0 or str(self.getDriver('GV0')) == '0' or str(self.getDriver('GV0')) == '-1':
-            #    LOGGER.warning("\n\tSetting SPAN Circuit ID (GV0) for '" + self.address + ", because it is currently not set.\n")
+            #    LOGGER.debug("\n\tSetting SPAN Circuit ID (GV0) for '" + self.address + ", because it is currently not set.\n")
             self.pushTextToDriver('GV0',self.circuitID)
     
             if "name" in designatedCircuitData:
@@ -227,7 +227,7 @@ class CircuitNode(udi_interface.Node):
                 designatedCircuitTabs_tuple = designatedCircuitTabs.partition("],")
                 designatedCircuitTabs = designatedCircuitTabs_tuple[0]
               
-                LOGGER.warning("\n\tDesignated Circuit Data: \n\t\t" + designatedCircuitData + "\n\t\tCount of Circuit Breakers In Circuit: " + str(designatedCircuitTabs.count(',')+1) + "\n")
+                LOGGER.debug("\n\tDesignated Circuit Data: \n\t\t" + designatedCircuitData + "\n\t\tCount of Circuit Breakers In Circuit: " + str(designatedCircuitTabs.count(',')+1) + "\n")
     
                 designatedCircuitTabs = designatedCircuitTabs.replace('[',' ')
                 designatedCircuitTabsArray = designatedCircuitTabs.split(',')
@@ -236,7 +236,7 @@ class CircuitNode(udi_interface.Node):
                 self.setDriver('PULSCNT',designatedCircuitTabsCount, True, True)
         
                 for i in range(0,designatedCircuitTabsCount):
-                    LOGGER.warning("\n\tIn Circuit " + self.circuitID + ", Tab # " + str(i) + " corresponds to breaker number:\n\t\t" + designatedCircuitTabsArray[i] + "\n")
+                    LOGGER.debug("\n\tIn Circuit " + self.circuitID + ", Tab # " + str(i) + " corresponds to breaker number:\n\t\t" + designatedCircuitTabsArray[i] + "\n")
                     self.pushTextToDriver('GV' + str(i+1), designatedCircuitTabsArray[i].replace(' ',''))
                         
                 for i in range(designatedCircuitTabsCount+1,4):
@@ -257,16 +257,16 @@ class CircuitNode(udi_interface.Node):
             self.pushTextToDriver('TIME', dateTimeString)
         
     def poll(self, polltype):
-        LOGGER.warning("\n\tPOLL CIRCUIT NODE: " + polltype + " for '" + self.address + "'.\n")
+        LOGGER.debug("\n\tPOLL CIRCUIT NODE: " + polltype + " for '" + self.address + "'.\n")
         if 'shortPoll' in polltype:
             tokenLastTen = self.token[-10:]
-            LOGGER.warning('\n\tPOLL About to parse {} Circuit node of {}, using token ending in {}'.format(self.circuitID,self.ipAddress,tokenLastTen))
+            LOGGER.debug('\n\tPOLL About to parse {} Circuit node of {}, using token ending in {}'.format(self.circuitID,self.ipAddress,tokenLastTen))
             designatedCircuitData_tuple = self.allCircuitsData.partition(chr(34) + self.circuitID + chr(34) + ':')
             designatedCircuitData = designatedCircuitData_tuple[2]
             designatedCircuitData_tuple = designatedCircuitData.partition('},')
             designatedCircuitData = designatedCircuitData_tuple[0] + '}'
         
-            LOGGER.warning("\n\tPOLL Circuit Data: \n\t\t" + designatedCircuitData + "\n")
+            LOGGER.debug("\n\tPOLL Circuit Data: \n\t\t" + designatedCircuitData + "\n")
         
             if "name" in designatedCircuitData:
                 designatedCircuitStatus_tuple = designatedCircuitData.partition(chr(34) + "relayState" + chr(34) + ":")
@@ -285,7 +285,7 @@ class CircuitNode(udi_interface.Node):
                 designatedCircuitInstantPowerW = designatedCircuitInstantPowerW_tuple[0]
                 designatedCircuitInstantPowerW = math.ceil(float(designatedCircuitInstantPowerW)*100)/100
               
-                LOGGER.warning("\n\tPOLL about to evaluate Circuit Status (" + designatedCircuitStatus + ") and set CLIEMD appropriately.\n")
+                LOGGER.debug("\n\tPOLL about to evaluate Circuit Status (" + designatedCircuitStatus + ") and set CLIEMD appropriately.\n")
                 if "CLOSED" in designatedCircuitStatus:
                   self.setDriver('CLIEMD', 2, True, True)
                 elif "OPEN" in designatedCircuitStatus:
@@ -293,7 +293,7 @@ class CircuitNode(udi_interface.Node):
                 else:
                   self.setDriver('CLIEMD', 0, True, True)
                     
-                LOGGER.warning("\n\tPOLL about to evaluate Circuit Priority (" + designatedCircuitPriority + ") and set MODE appropriately.\n")
+                LOGGER.debug("\n\tPOLL about to evaluate Circuit Priority (" + designatedCircuitPriority + ") and set MODE appropriately.\n")
                 if "MUST" in designatedCircuitPriority:
                   self.setDriver('AWAKE', 3, True, True)
                 elif "NICE" in designatedCircuitPriority:
@@ -303,7 +303,7 @@ class CircuitNode(udi_interface.Node):
                 else:
                   self.setDriver('AWAKE', 0, True, True)
                 
-                LOGGER.warning("\n\tPOLL About to set ST to " + str(designatedCircuitInstantPowerW) + " for Circuit " + self.circuitID + ".\n")
+                LOGGER.debug("\n\tPOLL About to set ST to " + str(designatedCircuitInstantPowerW) + " for Circuit " + self.circuitID + ".\n")
                 self.setDriver('ST', round(abs(designatedCircuitInstantPowerW),2), True, True)
 
             else:
@@ -331,7 +331,7 @@ class CircuitNode(udi_interface.Node):
             LOGGER.error("\n\tCOMMAND was expected to set circuit status, but the value is not 1 or 2; it is: '" + format(value) + "' from:\n\t\t" + format(commandDetails) + "\n")
             return
      
-        LOGGER.warning("\n\tCOMMAND About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
+        LOGGER.debug("\n\tCOMMAND About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
         spanConnection.request("POST", "/api/v1/circuits/" + self.circuitID, payload, headers)
 
         updateCircuitResponse = spanConnection.getresponse()
@@ -363,7 +363,7 @@ class CircuitNode(udi_interface.Node):
             LOGGER.error("\n\tCOMMAND was expected to set circuit priority, but the value is not 1, 2, or 3; it is: '" + format(value) + "' from:\n\t\t" + format(commandDetails) + "\n")
             return
     
-        LOGGER.warning("\n\tCOMMAND About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
+        LOGGER.debug("\n\tCOMMAND About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
         spanConnection.request("POST", "/api/v1/circuits/" + self.circuitID, payload, headers)
 
         updateCircuitResponse = spanConnection.getresponse()
