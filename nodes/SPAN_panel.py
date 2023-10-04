@@ -110,7 +110,7 @@ class PanelNodeForCircuits(udi_interface.Node):
         self.allCircuitsData = ''
         
         # subscribe to the events we want
-        polyglot.subscribe(polyglot.POLL, self.poll)
+        polyglot.subscribe(polyglot.POLL, self.pollCircuitController)
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.START, self.start, address)
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
@@ -256,7 +256,7 @@ class PanelNodeForCircuits(udi_interface.Node):
     This is where the real work happens.  When we get a shortPoll, do some work.
     Note: the Circuit and Breaker controllers will query and then pass data to the child nodes of Circuits and Breakers, respectively, so that we don't async hammer the http connection of SPAN panels. 
     '''
-    def poll(self, polltype):
+    def pollCircuitController(self, polltype):
         if 'shortPoll' in polltype:
 
             if "-1" in str(self.getDriver('FREQ')):
@@ -430,7 +430,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         self.allBreakersData = ''
         
         # subscribe to the events we want
-        polyglot.subscribe(polyglot.POLL, self.poll)
+        polyglot.subscribe(polyglot.POLL, self.pollBreakerController)
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.START, self.start, address)
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
@@ -599,7 +599,7 @@ class PanelNodeForBreakers(udi_interface.Node):
     '''
     This is where the real work happens.  When we get a shortPoll, do some work. 
     '''
-    def poll(self, polltype):
+    def pollBreakerController(self, polltype):
         if 'shortPoll' in polltype:
             
             if "-1" in str(self.getDriver('FREQ')):
