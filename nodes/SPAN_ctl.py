@@ -72,8 +72,6 @@ class Controller(udi_interface.Node):
 
         self.ISY = ISY(self.poly)
         self.parent = parent
-        
-        self.pushTextToDriver('GPV','NodeServer STARTING')
 
         # subscribe to the events we want
         polyglot.subscribe(polyglot.CUSTOMPARAMS, self.parameterHandler)
