@@ -312,20 +312,20 @@ class Controller(udi_interface.Node):
             self.pushTextToDriver('GPV','Traversing circuits in Circuit Controller #' + str(i+1))
             try:
                 LOGGER.debug("\n\t\ADD circuitController = SPAN_circuitController.PanelNodeForCircuits(self.poly, " + addressCircuits + ", " + addressCircuits + ", " + titleCircuits + ", " + current_IPaddress + ", " + current_BearerToken + ")\n")
-                panelCircuitController = SPAN_circuitController.Controller.PanelNodeForCircuits(self.poly, addressCircuits, addressCircuits, titleCircuits, current_IPaddress, current_BearerToken)
+                panelCircuitController = SPAN_circuitController.PanelNodeForCircuits(self.poly, addressCircuits, addressCircuits, titleCircuits, current_IPaddress, current_BearerToken)
                 self.poly.addNode(panelCircuitController)
                 panelCircuitController.wait_for_node_done()
+                
+                self.pushTextToDriver('GPV','Traversing breakers in Breaker Controller #' + str(i+1))
+                try:
+                    LOGGER.debug("\n\t\ADD breakerController = SPAN_breakerController.PanelNodeForBreakers(self.poly, " + addressBreakers + ", " + addressBreakers + ", " + titleBreakers + ", " + current_IPaddress + ", " + current_BearerToken + ")\n")
+                    panelBreakerController = SPAN_breakerController.PanelNodeForBreakers(self.poly, addressBreakers, addressBreakers, titleBreakers, current_IPaddress, current_BearerToken, panelCircuitController)
+                    self.poly.addNode(panelBreakerController)
+                    panelBreakerController.wait_for_node_done()
+                except Exception as ee:
+                    LOGGER.warning('Failed to create Panel Breakers Controller {}: {}'.format(titleBreakers, ee))
             except Exception as e:
                 LOGGER.warning('Failed to create Panel Circuits Controller {}: {}'.format(titleCircuits, e))
-
-            self.pushTextToDriver('GPV','Traversing breakers in Breaker Controller #' + str(i+1))
-            try:
-                LOGGER.debug("\n\t\ADD breakerController = SPAN_breakerController.PanelNodeForBreakers(self.poly, " + addressBreakers + ", " + addressBreakers + ", " + titleBreakers + ", " + current_IPaddress + ", " + current_BearerToken + ")\n")
-                panelBreakerController = SPAN_breakerController.PanelNodeForBreakers(self.poly, addressBreakers, addressBreakers, titleBreakers, current_IPaddress, current_BearerToken)
-                self.poly.addNode(panelBreakerController)
-                panelBreakerController.wait_for_node_done()
-            except Exception as e:
-                LOGGER.warning('Failed to create Panel Breakers Controller {}: {}'.format(titleBreakers, e))
         
         self.setDriver('GV0', how_many, True, True)
         self.pushTextToDriver('GPV','NodeServer started; AWAITING first short poll')
