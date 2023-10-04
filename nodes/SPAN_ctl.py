@@ -101,7 +101,7 @@ class Controller(udi_interface.Node):
             nodes = self.poly.getNodes()
             how_many = 0
             for node in nodes.copy():
-                if 'panel' in node:   # count number of controller nodes; it should have been set at createPanelControllers but it seems to lose track of itself.
+                if 'panelbreaker_' in node:   # count number of Breaker Controller nodes; 'GV0' should have been set at createPanelControllers but it seems to lose track of itself.
                     how_many += 1
             
             self.setDriver('GV0', how_many, True, True)
