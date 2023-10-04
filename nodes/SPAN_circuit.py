@@ -249,6 +249,9 @@ class CircuitNode(udi_interface.Node):
 
         if "-1" in str(self.getDriver('GPV')):
             self.pushTextToDriver('GPV','NodeServer RUNNING')
+
+        if "-1" in str(self.getDriver('GV0')):
+            self.pushTextToDriver('GP0',self.circuitID)
         
         if "name" in self.allCircuitsData:
             self.pushTextToDriver('TIME', dateTimeString)
