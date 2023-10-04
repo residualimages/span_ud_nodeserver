@@ -113,7 +113,7 @@ class BreakerNode(udi_interface.Node):
     def pushTextToDriver(self,driver,stringToPublish):
         if not(self._fullyCreated):
             return
-        stringToPublish = stringToPublish.replace('.','')
+        stringToPublish = stringToPublish.replace('.',' ')
         if len(str(self.getDriver(driver))) <= 0:
             LOGGER.warning("\n\tPUSHING REPORT ERROR - a (correct) Driver was not passed.\n")
             return
@@ -200,7 +200,7 @@ class BreakerNode(udi_interface.Node):
         self.poll('shortPoll')
 
         if "-1" in str(self.getDriver('GPV')):
-            self.pushTextToDriver('GPV','')
+            self.pushTextToDriver('GPV',' ')
         
         if "instantPowerW" in self.allBreakersData:
             self.pushTextToDriver('TIME', dateTimeString)
