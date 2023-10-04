@@ -285,23 +285,23 @@ class PanelNodeForCircuits(udi_interface.Node):
                 nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                 self.pushTextToDriver('TIME',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
                 
-                nodes = self.poly.getNodes()
+                nodeCollection = self.poly.getNodes()
                 currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
                 LOGGER.debug("\n\tWill be looking for Circuit nodes with this as the prefix: '" + currentPanelCircuitPrefix + "'.\n")
                 for i in range(1,33):
-                    node = currentPanelCircuitPrefix + str(i)
-                    LOGGER.debug("\n\tUpdating " + node + " (which should be a Circuit node under this Circuits controller: " + self.address + ").\n")
+                    nodeAddress = currentPanelCircuitPrefix + str(i)
+                    LOGGER.debug("\n\tUpdating " + nodeAddress + " (which should be a Circuit node under this Circuits controller: " + self.address + ").\n")
                     nowEpoch = int(time.time())
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-                    if node in nodes:
+                    if nodeAddress in nodeCollection:
                         try:
-                            LOGGER.warning("\n\tPOLL ATTEMPT FOR Circuits Controller '" + self.address + "' for '" + node + "'.\n")
-                            nodes[node].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
-                            LOGGER.warning("\n\t\tPOLL SUCCESS in Circuits Controller '" + self.address + "' for '" + node + "'.\n")
+                            LOGGER.warning("\n\tPOLL ATTEMPT FOR Circuits Controller '" + self.address + "' for '" + nodeAddress + "'.\n")
+                            nodeCollection[nodeAddress].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
+                            LOGGER.warning("\n\t\tPOLL SUCCESS in Circuits Controller '" + self.address + "' for '" + nodeAddress + "'.\n")
                         except Exception as e:
-                            LOGGER.warning("\n\tPOLL ERROR in Circuits Controller '" + self.address + "': Cannot seem to update node '" + node + "' needed in for-loop due to error:\n\t\t" + format(e) + "\n")
+                            LOGGER.warning("\n\tPOLL ERROR in Circuits Controller '" + self.address + "': Cannot seem to update node '" + nodeAddress + "' needed in for-loop due to error:\n\t\t" + format(e) + "\n")
                     else:
-                        LOGGER.info("\n\tSKIPPING NON-EXISTENT CIRCUIT '" + node + "'.\n")
+                        LOGGER.info("\n\tSKIPPING NON-EXISTENT CIRCUIT '" + nodeAddress + "'.\n")
                             
             else:
                 tokenLastTen = self.token[-10:]
