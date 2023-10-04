@@ -200,7 +200,7 @@ class CircuitNode(udi_interface.Node):
     def updateNode(self, passedAllCircuitsData, dateTimeString):
         self.allCircuitsData = passedAllCircuitsData
 
-        if self.getDriver('TIMEREM') == -1:
+        if self.getDriver('TIME') == -1 or self.getDriver('PULSCNT') == -1:
             designatedCircuitData_tuple = self.allCircuitsData.partition(chr(34) + self.circuitID + chr(34) + ':')
             designatedCircuitData = designatedCircuitData_tuple[2]
             designatedCircuitData_tuple = designatedCircuitData.partition('},')
@@ -208,8 +208,8 @@ class CircuitNode(udi_interface.Node):
     
             LOGGER.debug("\n\tAbout to search for 'name' in:\n\t\t" + designatedCircuitData + "\n")
 
-            if len(self.getDriver('GV0')) == 0:
-                LOGGER.debug("\n\tSetting SPAN Circuit ID (GV0) because it is currently blank.\n")
+            if len(string(self.getDriver('GV0'))) == 0 or str(self.getDriver('GV0')) = '0':
+                LOGGER.debug("\n\tSetting SPAN Circuit ID (GV0) because it is currently not set.\n")
                 self.pushTextToDriver('GV0',self.circuitID)
     
             if "name" in designatedCircuitData:
@@ -219,11 +219,12 @@ class CircuitNode(udi_interface.Node):
                 designatedCircuitTabs = designatedCircuitTabs_tuple[0]
               
                 LOGGER.debug("\n\tINIT Designated Circuit Data: \n\t\t" + designatedCircuitData + "\n\t\tCount of Circuit Breakers In Circuit: " + str(designatedCircuitTabs.count(',')+1) + "\n")
-                self.setDriver('PULSCNT', (designatedCircuitTabs.count(',')+1), True, True)
     
                 designatedCircuitTabs = designatedCircuitTabs.replace('[','')
                 designatedCircuitTabsArray = designatedCircuitTabs.split(',')
                 designatedCircuitTabsCount = len(designatedCircuitTabsArray)
+
+                self.setDriver('PULSCNT',designatedCircuitTabsCount, True, True)
         
                 for i in range(0,designatedCircuitTabsCount):
                     LOGGER.debug("\n\tIn Circuit " + self.circuitID + ", Tab # " + str(i) + " corresponds to breaker number:\n\t\t" + designatedCircuitTabsArray[i] + "\n")
@@ -236,6 +237,9 @@ class CircuitNode(udi_interface.Node):
                 self.setDriver('TIME', -1, True, True)
         
         self.poll('shortPoll')
+
+        if "-1" in str(self.getDriver('GPV')):
+            self.pushTextToDriver('GPV','')
         
         if "name" in self.allCircuitsData:
             self.pushTextToDriver('TIME', dateTimeString)
