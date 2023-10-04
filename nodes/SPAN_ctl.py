@@ -116,10 +116,9 @@ class Controller(udi_interface.Node):
     '''
     def node_queue(self, data):
         self.n_queue.append(data['address'])
-        LOGGER.debug("\n\tISY Object created under 'controller':\t" + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", which is itself NS #" + str(self.poly.profileNum) + ", and has self.address of '" + str(self.address) + "'.\n")   
-        LOGGER.debug("\n\t\tUNAuthorized (expecting this to be false): " + str(self.ISY.unauthorized) + ".\n")
-        
-        self.pushTextToDriver('GPV','NodeServer STARTING')
+        if data['address'] == self.address:
+            LOGGER.debug("\n\tISY Object created under 'controller':\t" + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", which is itself NS #" + str(self.poly.profileNum) + ", and has self.address of '" + str(self.address) + "'.\n")   
+            LOGGER.debug("\n\t\tUNAuthorized (expecting this to be false): " + str(self.ISY.unauthorized) + ".\n")
 
     def wait_for_node_done(self):
         self.pushTextToDriver('GPV','Waiting for root controller...')
@@ -173,7 +172,6 @@ class Controller(udi_interface.Node):
     the profiles to the ISY.
     '''
     def start(self):
-        self.pushTextToDriver('GPV','NodeServer STARTING')
         self.poly.setCustomParamsDoc()
         # Not necessary to call this since profile_version is used from server.json
         self.poly.updateProfile()
@@ -307,7 +305,7 @@ class Controller(udi_interface.Node):
                 LOGGER.warning('Failed to create Panel Breakers Controller {}: {}'.format(titleBreakers, e))
         
         self.setDriver('GV0', how_many, True, True)
-        self.pushTextToDriver('GPV','Awaiting short poll')
+        self.pushTextToDriver('GPV','NodeServer started; AWAITING first short poll')
 
     '''
     STOP Command Received
@@ -398,7 +396,7 @@ class Controller(udi_interface.Node):
             #self.stop()
             time.sleep(5)
             
-        self.pushTextToDriver('GPV','Starting...')
+        self.pushTextToDriver('GPV','NodeServer RESTARTING...')
         self.start()
 
     commands = {'RESET': reset}
