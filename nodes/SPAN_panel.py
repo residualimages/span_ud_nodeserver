@@ -258,8 +258,15 @@ class PanelNodeForCircuits(udi_interface.Node):
     Note: the Circuit and Breaker controllers will query and then pass data to the child nodes of Circuits and Breakers, respectively, so that we don't async hammer the http connection of SPAN panels. 
     '''
     def pollCircuitController(self, polltype):
+        LOGGER.warning("\n\tPOLL CIRCUIT CONTROLLER: " + polltype + "\n")
         if 'shortPoll' in polltype:
 
+            if "|poll passed from root controller" in polltype:
+                LOGGER.warning("\n\tCIRCUIT CONTROLLER - HANDLING SHORT POLL passed from root controller\n")
+
+            if "|poll passed from sister controller" in polltype:
+                LOGGER.warning("\n\tCIRCUIT CONTROLLER - HANDLING SHORT POLL passed from sister controller\n")
+            
             if "-1" in str(self.getDriver('FREQ')):
                 self.pushTextToDriver('FREQ',self.ipAddress.replace('.','-'))
 
@@ -276,7 +283,6 @@ class PanelNodeForCircuits(udi_interface.Node):
                 nowEpoch = int(time.time())
                 nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                 self.pushTextToDriver('TIME',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
-
                 
                 nodes = self.poly.getNodes()
                 currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
@@ -355,8 +361,10 @@ class PanelNodeForCircuits(udi_interface.Node):
         LOGGER.info("\n\t Using Shared Data from sister Breaker Controller to update 'ST' and 'TIME' on '" + self.address + "'.\n")
         self.setDriver('ST', totalPowerPassed, True, True)
         self.pushTextToDriver('TIME', dateTimeStringPassed)
+        
         self.allBreakersData = allBreakersDataPassed
-        self.pollCircuitController('shortPoll')
+        
+        self.pollCircuitController("shortPoll|poll passed from sister controller")
 
     '''
     This is how we update the allCircuitsData variable
@@ -601,6 +609,9 @@ class PanelNodeForBreakers(udi_interface.Node):
     def pollBreakerController(self, polltype):
         if 'shortPoll' in polltype:
             
+            if "|poll passed from root controller" in polltype:
+                LOGGER.warning("\n\tBREAKER CONTROLLER - HANDLING SHORT POLL passed from root controller\n")
+                            
             if "-1" in str(self.getDriver('FREQ')):
                 self.pushTextToDriver('FREQ',self.ipAddress.replace('.','-'))
 
