@@ -262,10 +262,10 @@ class PanelNodeForCircuits(udi_interface.Node):
         if 'shortPoll' in polltype:
 
             if "|poll passed from root controller" in polltype:
-                LOGGER.warning("\n\tCIRCUIT CONTROLLER - HANDLING SHORT POLL passed from root controller\n")
+                LOGGER.warning("\n\tCIRCUIT CONTROLLER '" + self.address + "' - HANDLING SHORT POLL passed from root controller\n")
 
             if "|poll passed from sister controller" in polltype:
-                LOGGER.warning("\n\tCIRCUIT CONTROLLER - HANDLING SHORT POLL passed from sister controller\n")
+                LOGGER.warning("\n\tCIRCUIT CONTROLLER '" + self.address + "' - HANDLING SHORT POLL passed from sister controller\n")
             
             if "-1" in str(self.getDriver('FREQ')):
                 self.pushTextToDriver('FREQ',self.ipAddress.replace('.','-'))
@@ -294,8 +294,9 @@ class PanelNodeForCircuits(udi_interface.Node):
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                     try:
                         nodes[node].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                        LOGGER.warning("\n\tPOLL SUCCESS in Circuits Controller '" + self.address + "' for '" + node + "'.\n")
                     except Exception as e:
-                        LOGGER.debug("\n\tPOLL ERROR in Circuits Controller '" + self.address + "': Cannot seem to update node '" + node + "' needed in for-loop due to error:\n\t\t{}\n".format(e))
+                        LOGGER.warning("\n\tPOLL ERROR in Circuits Controller '" + self.address + "': Cannot seem to update node '" + node + "' needed in for-loop due to error:\n\t\t{}\n".format(e))
                             
             else:
                 tokenLastTen = self.token[-10:]
@@ -370,6 +371,8 @@ class PanelNodeForCircuits(udi_interface.Node):
     This is how we update the allCircuitsData variable
     '''
     def updateAllCircuitsData(self):
+        LOGGER.warning("\n\tUPDATING ALLCIRCUITSDATA for '" + self.address + "'...\n")
+        
         spanConnection = http.client.HTTPConnection(self.ipAddress)
         payload = ''
         headers = {
@@ -381,7 +384,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             self.allCircuitsData = circuitsResponse.read()
             self.allCircuitsData = self.allCircuitsData.decode("utf-8")
             
-            LOGGER.info("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data: \n\t\t " + self.allCircuitsData + "\n")
+            LOGGER.warning("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data: \n\t\t " + self.allCircuitsData + "\n")
             
         except Exception as e:
             LOGGER.warning("\n\tUPDATE ALLCIRCUITSDATA ERROR: SPAN API GET request for Panel Circuits Controller '" + self.address + "' failed due to error:\n\t\t{}\n".format(e))
@@ -610,7 +613,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         if 'shortPoll' in polltype:
             
             if "|poll passed from root controller" in polltype:
-                LOGGER.warning("\n\tBREAKER CONTROLLER - HANDLING SHORT POLL passed from root controller\n")
+                LOGGER.warning("\n\tBREAKER CONTROLLER '" + self.address + "' - HANDLING SHORT POLL passed from root controller\n")
                             
             if "-1" in str(self.getDriver('FREQ')):
                 self.pushTextToDriver('FREQ',self.ipAddress.replace('.','-'))
