@@ -285,7 +285,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                      if (currentPanelCircuitPrefix + str(i)) in node:
                         LOGGER.debug("\n\tUpdating " + node + " (which should be a Circuit node under this Panel controller: " + self.address + ").\n")
                         try:
-                            nodes.[currentPanelCircuitPrefix + str(i)].updateNode(self.allCircuitsData,nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                            nodes[currentPanelCircuitPrefix + str(i)].updateNode(self.allCircuitsData,nowDT.strftime("%m/%d/%Y %H:%M:%S"))
                         except Exception as e:
                             LOGGER.warning("\n\t\tPOLL ERROR in Panel Circuits: Cannot seem to update '" + currentPanelCircuitPrefix + str(i) + "' needed in for-loop, due to error:\n\t\t{}\n".format(e))
             else:
