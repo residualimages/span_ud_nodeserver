@@ -96,7 +96,16 @@ class Controller(udi_interface.Node):
         if 'shortPoll' in polltype:
             nowEpoch = int(time.time())
             nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+            nodes = self.poly.getNodes()
+            how_many = 0
+            for node in nodes.copy():
+                if 'panel' in node:   # count number of controller nodes; it should have been set at createPanelControllers but it seems to lose track of itself.
+                    how_many += 1
+            
+            self.setDriver('GV0', how_many, True, True)
+
             self.pushTextToDriver('GPV',"Last Short Poll Date / Time: " + nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+            
     '''
     node_queue() and wait_for_node_event() create a simple way to wait
     for a node to be created.  The nodeAdd() API call is asynchronous and
