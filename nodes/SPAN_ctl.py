@@ -107,6 +107,8 @@ class Controller(udi_interface.Node):
             self.setDriver('GV0', how_many, True, True)
 
             self.pushTextToDriver('GPV',"Last Short Poll Date / Time: " + nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+        elif not(self.pg3ParameterErrors):
+            self.pushTextToDriver('GPV',"Please correct the NodeServer parameters in PG3(x)")
             
     '''
     node_queue() and wait_for_node_event() create a simple way to wait
