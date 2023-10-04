@@ -86,7 +86,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             {'driver': 'GPV', 'value': -1, 'uom': 56}
             ]
 
-    def __init__(self, polyglot, parent, address, name, spanIPAddress, bearerToken):
+    def __init__(self, polyglot, parent, address, name, spanIPAddress, bearerToken, sisterCircuitsControllerPassed):
         super(PanelNodeForBreakers, self).__init__(polyglot, parent, address, name)
 
         # set a flag to short circuit setDriver() until the node has been fully
@@ -98,6 +98,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         self.poly = polyglot
         self.n_queue = []
         self.parent = parent
+        self.sisterCircuitsController: SPAN_circuitController.PanelNodeForCircuits = sisterCircuitsControllerPassed
 
         self.ISY = ISY(self.poly)
 
@@ -424,11 +425,15 @@ class PanelNodeForBreakers(udi_interface.Node):
             
             try:
                 nodes = self.parent.poly.getNodes()
-                sisterCircuitsController = self.address.replace('panelbreaker_','panelcircuit_')
-                nodes[sisterCircuitsController].updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
+                #sisterCircuitsController = self.address.replace('panelbreaker_','panelcircuit_')
+                (nodes[self.sisterCircuitsController]).updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
                 LOGGER.info("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController '" + sisterCircuitsController + "', and tried to update its allBreakersData as well as its total power ('ST') and 'TIME' Status elements.\n")
             except Exception as e: 
-                LOGGER.warning("\n\tUPDATE ALLBREAKERSDATA ERROR: Panel Breaker Controller '" + self.address + "' cannot seem to find its sisterCircuitsController '" + self.address.replace('panelbreaker_','panelcircuit_') + "' to update, due to error:\n\t\t{}\n".format(e))
+                LOGGER.warning("\n\tUPDATE ALLBREAKERSDATA ERROR LEVEL 1: Panel Breaker Controller '" + self.address + "' cannot seem to find its sisterCircuitsController '" + self.sisterCircuitsController + "' (under the nodes group of objects) to update, due to error:\n\t\t{}\n".format(e))
+                try: 
+                    self.sisterCircuitsController.updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
+                except Exception as ee:
+                    LOGGER.warning("\n\tUPDATE ALLBREAKERSDATA ERROR LEVEL 2: Panel Breaker Controller '" + self.address + "' cannot seem to find its sisterCircuitsController '" + self.sisterCircuitsController + "' to update, due to error:\n\t\t" + format(ee) + "\n")
 
     '''
     STOP Received
