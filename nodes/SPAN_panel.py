@@ -13,6 +13,9 @@ import re
 
 from nodes import SPAN_circuit,SPAN_breaker
 
+from SPAN_circuit import CircuitNode
+from SPAN_breaker import BreakerNode
+
 # Standard Library
 from typing import Optional, Any, TYPE_CHECKING
 
