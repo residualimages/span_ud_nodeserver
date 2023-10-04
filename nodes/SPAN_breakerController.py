@@ -432,9 +432,9 @@ class PanelNodeForBreakers(udi_interface.Node):
                 #nodes = self.parent.poly.getNodes()
                 #sisterCircuitsController = self.address.replace('panelbreaker_','panelcircuit_')
                 self.sisterCircuitsController.updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
-                LOGGER.info("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController '" + self.sisterCircuitsController.address + "', and tried to update its allBreakersData as well as its total power ('ST') and 'TIME' Status elements.\n")
-            except Exception as e: 
-                LOGGER.warning("\n\tUPDATE ALLBREAKERSDATA ERROR: Panel Breaker Controller '" + self.address + "' cannot seem to find its sisterCircuitsController '" + self.sisterCircuitsController.address + "' (under the nodes group of objects) to update, due to error:\n\t\t{}\n".format(e))
+                LOGGER.info("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController, and tried to update its allBreakersData as well as its total power ('ST') and 'TIME' Status elements.\n")
+            except:
+                LOGGER.warning("\n\tUPDATE ALLBREAKERSDATA ERROR: Panel Breaker Controller '" + self.address + "' cannot seem to find its sisterCircuitsController (under the nodes group of objects) to update.\n")
     
     '''
     STOP Received
