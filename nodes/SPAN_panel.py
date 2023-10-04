@@ -263,7 +263,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                 self.pushTextToDriver('FREQ',self.ipAddress.replace('.','-'))
 
             if "-1" in str(self.getDriver('GPV')):
-                self.pushTextToDriver('GPV',' ')
+                self.pushTextToDriver('GPV','NodeServer RUNNING')
         
             tokenLastTen = self.token[-10:]
             LOGGER.debug("\n\tPOLL About to query Panel Circuits Controller '" + self.address + "' @ {}, using token ending in {}".format(self.ipAddress,tokenLastTen))
@@ -616,7 +616,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                 self.pushTextToDriver('FREQ',self.ipAddress.replace('.','-'))
 
             if "-1" in str(self.getDriver('GPV')):
-                self.pushTextToDriver('GPV','')
+                self.pushTextToDriver('GPV','NodeServer RUNNING')
             
             tokenLastTen = self.token[-10:]
             LOGGER.debug("\n\tPOLL About to query Panel Breaker Controller '" + self.address + "' @ {}, using token ending in {}".format(self.ipAddress,tokenLastTen))
