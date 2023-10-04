@@ -172,6 +172,7 @@ class Controller(udi_interface.Node):
         self.poly.setCustomParamsDoc()
         # Not necessary to call this since profile_version is used from server.json
         self.poly.updateProfile()
+        self.pushTextToDriver('GPV','NodeServer STARTING')
         
     '''
     Handling for <text /> attribute.
