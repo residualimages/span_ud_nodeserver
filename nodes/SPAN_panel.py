@@ -301,7 +301,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                         try:
                             nodes[node].updateNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
                         except Exception as e:
-                            LOGGER.warning("\n\t\tPOLL ERROR in Circuits Controller: Cannot seem to update '" + node + "' needed in for-loop, due to error:\n\t\t{}\n".format(e))
+                            LOGGER.warning("\n\tPOLL ERROR in Circuits Controller '" + self.address + "': Cannot seem to update '" + node + "' needed in for-loop, due to error:\n\t\t{}\n".format(e))
                     else:
                          LOGGER.debug("\n\tPOLL Skipping '" + node + "' (as it doesn't seem to be an existing Circuit node under this Circuits controller: " + self.address + ").\n")
                             
@@ -666,7 +666,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                         nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                         nodes[node].updateNode(self.allBreakersData, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
                     except Exception as e:
-                        LOGGER.debug("\n\t\tPOLL ERROR in Breakers Controller: Cannot seem to update node '" + node + "' needed in for-loop due to error:\n\t\t{}\n".format(e))
+                        LOGGER.debug("\n\tPOLL ERROR in Breakers Controller '" + self.address + "': Cannot seem to update node '" + node + "' needed in for-loop due to error:\n\t\t{}\n".format(e))
             else:
                 tokenLastTen = self.token[-10:]
                 LOGGER.warning("\n\tPOLL ERROR when querying Breakers Controller '" + self.address + "' @ IP address {}, using token {}.\n".format(self.ipAddress,tokenLastTen))
