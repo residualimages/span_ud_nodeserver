@@ -625,8 +625,6 @@ class PanelNodeForBreakers(udi_interface.Node):
            
             if "branches" in self.allBreakersData:
                 
-
-                
                 feedthroughPowerW_tuple = self.allBreakersData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
                 feedthroughPowerW = feedthroughPowerW_tuple[2]
                 feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
@@ -642,7 +640,7 @@ class PanelNodeForBreakers(udi_interface.Node):
 
                 allBranchesData_tuple = self.allBreakersData.partition(chr(34) + "branches" + chr(34) + ":")
                 allBranchesData = allBranchesData_tuple[2]
-                LOGGER.debug("\n\tSHORT POLL Panel Breaker Controller's Branches Data: \n\t\t" + allBranchesData + "\n\t\tCount of OPEN Breakers: " + str(allBranchesData.count(chr(34) + 'OPEN' + chr(34) + ',')) + "\n\t\tCount of CLOSED Breakers: " + str(allBranchesData.count(chr(34) + 'CLOSED' + chr(34) + ',')) + "\n")
+                LOGGER.debug("\n\tSHORT POLL Panel Breaker Controller '" + self.address + "' - Branches Data: \n\t\t" + allBranchesData + "\n\t\tCount of OPEN Breakers: " + str(allBranchesData.count(chr(34) + 'OPEN' + chr(34) + ',')) + "\n\t\tCount of CLOSED Breakers: " + str(allBranchesData.count(chr(34) + 'CLOSED' + chr(34) + ',')) + "\n")
                 self.setDriver('PULSCNT', allBranchesData.count(chr(34) + 'CLOSED' + chr(34) + ','), True, True)
                 self.setDriver('GV0', allBranchesData.count(chr(34) + 'OPEN' + chr(34) + ','), True, True)
                 
