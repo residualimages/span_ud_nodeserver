@@ -72,6 +72,9 @@ def getValidNodeName(s: str) -> str:
 
     return name
     
+'''
+This is our Panel Circuits controller node. 
+'''   
 class PanelNodeForCircuits(udi_interface.Node):
     id = 'panelForCircuits'
     drivers = [
