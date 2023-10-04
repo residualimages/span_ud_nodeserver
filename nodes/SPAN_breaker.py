@@ -189,11 +189,14 @@ class BreakerNode(udi_interface.Node):
     def updateNode(self, passedAllBreakersData, dateTimeString):
         self.allBreakersData = passedAllBreakersData
 
-        if self.getDriver('PULSCNT') == 0:
+        if self.getDriver('PULSCNT') <= 0:
             LOGGER.debug("\n\tFor updateNode under '" + self.address + "', setting Breaker ID (PULSCNT) because it is currently 0.\n")
             self.setDriver('PULSCNT', self.breakerID, True, True)
         
         self.poll('shortPoll')
+
+        if "-1" in str(self.getDriver('GPV')):
+            self.pushTextToDriver('GPV','')
         
         if "instantPowerW" in self.allBreakersData:
             self.pushTextToDriver('TIME', dateTimeString)
