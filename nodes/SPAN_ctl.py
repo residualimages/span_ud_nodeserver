@@ -103,12 +103,17 @@ class Controller(udi_interface.Node):
             for node in nodes.copy():
                 if 'panelbreaker_' in node:   # count number of Breaker Controller nodes; 'GV0' should have been set at createPanelControllers but it seems to lose track of itself.
                     how_many += 1
+                    nodes[node].pollBreakerController(polltype + "|poll passed from root controller")
+                    self.pushTextToDriver('GPV',"Last Short Poll Date / Time: " + nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+
+                    '''
                     try:
                         nodes[node].pollBreakerController(polltype + "|poll passed from root controller")
                         self.pushTextToDriver('GPV',"Last Short Poll Date / Time: " + nowDT.strftime("%m/%d/%Y %H:%M:%S"))
                     except Exception as e:
                         LOGGER.debug("\n\tPOLL ERROR in Node Server root controller ('" + self.address + "'): Cannot seem to kick off shortPoll in controller node '" + node + "' as necessary, due to error:\n\t\t{}\n".format(e))
                         self.pushTextToDriver('GPV',"POLL ERROR for '" + node + "'")
+                    '''
             
             self.setDriver('GV0', how_many, True, True)
 
