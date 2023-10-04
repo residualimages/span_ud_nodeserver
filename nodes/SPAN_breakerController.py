@@ -82,7 +82,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             {'driver': 'FREQ', 'value': -1, 'uom': 56},
             {'driver': 'PULSCNT', 'value': 0, 'uom': 56},
             {'driver': 'GV0', 'value': 0, 'uom': 56},
-            {'driver': 'TIME', 'value': 0, 'uom': 56},
+            {'driver': 'TIME', 'value': -1, 'uom': 56},
             {'driver': 'GPV', 'value': -1, 'uom': 56}
             ]
 
@@ -471,6 +471,9 @@ class PanelNodeForBreakers(udi_interface.Node):
     '''
     def stop(self):
         LOGGER.debug("\n\tSTOP RECEIVED: Panel Breaker Controller handler '" + self.address + "'.\n")
-        self.setDriver('ST', 0, True, True)
+        self.setDriver('ST', -1, True, True)
+        self.setDriver('FREQ', -1, True, True)
+        self.setDriver('PULSCNT', 0, True, True)
+        self.setDriver('GV0', 0, True, True)
         self.setDriver('TIME', -1, True, True)
         self.pushTextToDriver('GPV','NodeServer STOPPED')
