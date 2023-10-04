@@ -108,9 +108,10 @@ class PanelNodeForCircuits(udi_interface.Node):
         LOGGER.debug("\n\tINIT Panel Circuit Controller's IP Address:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen)
 
         self.allCircuitsData = ''
+        self.allBreakersData = ''
         
         # subscribe to the events we want
-        polyglot.subscribe(polyglot.POLL, self.pollCircuitController)
+        #polyglot.subscribe(polyglot.POLL, self.pollCircuitController)
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.START, self.start, address)
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
@@ -290,9 +291,9 @@ class PanelNodeForCircuits(udi_interface.Node):
                     except Exception as e:
                         LOGGER.debug("\n\tPOLL ERROR in Circuits Controller '" + self.address + "': Cannot seem to update node '" + node + "' needed in for-loop due to error:\n\t\t{}\n".format(e))
                             
-            else:
-                tokenLastTen = self.token[-10:]
-                LOGGER.warning("\n\tPOLL ERROR when querying Circuits Controller '" + self.address + "' @ IP address {}, using token {}.\n".format(self.ipAddress,tokenLastTen))
+                else:
+                    tokenLastTen = self.token[-10:]
+                    LOGGER.warning("\n\tPOLL ERROR when querying Circuits Controller '" + self.address + "' @ IP address {}, using token {}.\n".format(self.ipAddress,tokenLastTen))
     
     '''
     Create the circuit nodes.
@@ -350,10 +351,12 @@ class PanelNodeForCircuits(udi_interface.Node):
     '''
     This is how we handle whenever our 'sister' Breaker controller updates its allBreakersData variable
     '''
-    def updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(self, totalPower, dateTimeStringPassed):
+    def updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(self, totalPowerPassed, dateTimeStringPassed, allBreakersDataPassed):
         LOGGER.info("\n\t Using Shared Data from sister Breaker Controller to update 'ST' and 'TIME' on '" + self.address + "'.\n")
-        self.setDriver('ST', totalPower, True, True)
+        self.setDriver('ST', totalPowerPassed, True, True)
         self.pushTextToDriver('TIME', dateTimeStringPassed)
+        self.allBreakersData = allBreakersDataPassed
+        self.pollCircuitController('shortPoll')
 
     '''
     This is how we update the allCircuitsData variable
@@ -739,8 +742,8 @@ class PanelNodeForBreakers(udi_interface.Node):
             try:
                 nodes = self.poly.getNodes()
                 sisterCircuitsController = self.address.replace('panelbreaker_','panelcircuit_')
-                nodes[sisterCircuitsController].updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
-                LOGGER.info("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController '" + sisterCircuitsController + "', and tried to update its total power 'ST', as well as time-based, Status elements.\n")
+                nodes[sisterCircuitsController].updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
+                LOGGER.info("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController '" + sisterCircuitsController + "', and tried to update its allBreakersData as well as its total power ('ST') and 'TIME' Status elements.\n")
             except Exception as e: 
                 LOGGER.warning("\n\tUPDATE ALLBREAKERSDATA ERROR: Panel Breaker Controller '" + self.address + "' cannot seem to find its sisterCircuitsController '" + self.address.replace('panelcircuit_','panelbreaker_') + "' to update, due to error:\n\t\t{}\n".format(e))
 
