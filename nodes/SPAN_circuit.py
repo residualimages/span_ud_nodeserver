@@ -200,6 +200,7 @@ class CircuitNode(udi_interface.Node):
     This is where the real work happens.  When the parent controller gets a shortPoll, do some work with the passed data. 
     '''
     def updateCircuitNode(self, passedAllCircuitsData, dateTimeString):
+        LOGGER.warning("\n\tUPDATE CIRCUIT NODE called for '" + self.address + "'.\n")
         self.allCircuitsData = passedAllCircuitsData
 
         if self.getDriver('TIME') == -1 or self.getDriver('PULSCNT') == -1:
