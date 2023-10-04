@@ -251,7 +251,7 @@ class PanelNodeForCircuits(udi_interface.Node):
         else:
             LOGGER.warning("\n\t\PUSHING REPORT ERROR: looks like this is a PG3 install but the ISY authorization state seems to currently be 'Unauthorized': 'True'.\n")
     
-    def updateNode(self, passedAllCircuitsData):
+    def updateNode(self, passedAllCircuitsData, dateTimeString):
         self.allCircuitsData = passedAllCircuitsData
 
     '''
@@ -603,7 +603,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         else:
             LOGGER.warning("\n\t\PUSHING REPORT ERROR: looks like this is a PG3 install but the ISY authorization state seems to currently be 'Unauthorized': 'True'.\n")
 
-    def updateNode(self, passedAllBreakersData):
+    def updateNode(self, passedAllBreakersData, dateTimeString):
         self.allBreakersData = passedAllBreakersData
 
     '''
