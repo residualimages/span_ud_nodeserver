@@ -11,7 +11,7 @@ import time
 import string
 import re
 
-from nodes import SPAN_breaker
+from nodes import SPAN_breaker, SPAN_circuitController
 
 # Standard Library
 from typing import Optional, Any, TYPE_CHECKING
