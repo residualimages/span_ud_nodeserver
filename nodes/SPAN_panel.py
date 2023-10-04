@@ -363,7 +363,7 @@ class PanelNodeForCircuits(udi_interface.Node):
     This is how we handle whenever our 'sister' Breaker controller updates its allBreakersData variable
     '''
     def updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(self, totalPower, dateTimeStringPassed):
-        LOGGER.debug("\n\t Using Shared Data from Breaker Controller to update 'ST' and 'TIME'.\n")
+        LOGGER.debug("\n\t Using Shared Data from sister Breaker Controller to update 'ST' and 'TIME' on '" + self.address + "'.\n")
         self.setDriver('ST', totalPower, True, True)
         self.pushTextToDriver('TIME', dateTimeStringPassed)
 
