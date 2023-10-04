@@ -289,6 +289,8 @@ class Controller(udi_interface.Node):
 
         LOGGER.debug('\n\tCreating {} Panel nodes (which will be controllers for Circuit nodes)'.format(how_many))
         for i in range(0, how_many):
+            self.pg3ParameterErrors = False
+            
             current_IPaddress = listOfIPAddresses[i]
             current_BearerToken = listOfBearerTokens[i]
             
