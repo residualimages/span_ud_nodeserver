@@ -201,7 +201,7 @@ class Controller(udi_interface.Node):
     def pushTextToDriver(self,driver,stringToPublish):
         stringToPublish = stringToPublish.replace('.','')
         if len(str(self.getDriver(driver))) <= 0:
-            LOGGER.warning("\n\tPUSHING REPORT ERROR - a (correct) Driver was not passed.\n")
+            LOGGER.warning("\n\tPUSHING REPORT ERROR - a (correct) Driver was not passed for '" + self.address + "' trying to update driver " + driver + ".\n")
             return
             
         currentValue = int(self.getDriver(driver))
@@ -236,7 +236,7 @@ class Controller(udi_interface.Node):
 
         if 'isPG3x' in self.poly.pg3init and self.poly.pg3init['isPG3x'] is True:
             #PG3x can use this, but PG3 doesn't have the necessary 'text' handling within message, set above, so we have the 'else' below
-            LOGGER.debug("\n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3x via self.poly.send('" + encodedStringToPublish + "','status') with a value of '" + str(newValue) + "'.\n")
+            LOGGER.debug("\n\tPUSHING REPORT TO '" + self.address + "' for driver " + driver + ", with PG3x via self.poly.send('" + encodedStringToPublish + "','status') with a value of '" + str(newValue) + "'.\n")
             self.poly.send(message, 'status')
         elif not(self.ISY.unauthorized):
             userpassword = self.ISY._isy_user + ":" + self.ISY._isy_pass
@@ -251,7 +251,7 @@ class Controller(udi_interface.Node):
                     "Authorization": "Basic " + userpasswordAsBase64String
                 }
                 
-                LOGGER.debug("\n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3 via " + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
+                LOGGER.debug("\n\tPUSHING REPORT TO '" + self.address + "' for driver " + driver + ", with PG3 via " + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
         
                 prefixN = str(self.poly.profileNum)
                 if len(prefixN) < 2:
@@ -269,11 +269,11 @@ class Controller(udi_interface.Node):
                 localResponseData = localResponseData.decode("utf-8")
                 
                 if '<status>200</status>' not in localResponseData:
-                    LOGGER.warning("\n\t\tPUSHING REPORT ERROR - RESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
+                    LOGGER.warning("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + ": RESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
                 else:
-                    LOGGER.debug("\n\t\tPUSHING REPORT - RESPONSE from report:\n\t\t\t" + localResponseData + "\n")
+                    LOGGER.debug("\n\t\tPUSHING REPORT on '" + self.address + "' for driver " + driver + ": RESPONSE from report:\n\t\t\t" + localResponseData + "\n")
         else:
-            LOGGER.warning("\n\t\PUSHING REPORT ERROR: looks like this is a PG3 install but the ISY authorization state seems to currently be 'Unauthorized': 'True'.\n")
+            LOGGER.warning("\n\t\PUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + ": looks like this is a PG3 install but the ISY authorization state seems to currently be 'Unauthorized': 'True'.\n")
     
     '''
     Create the controller nodes. 
