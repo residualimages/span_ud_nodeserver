@@ -65,6 +65,8 @@ class Controller(udi_interface.Node):
 
         self.poly = polyglot
         self.n_queue = []
+        
+        self.pg3ParameterErrors = True
 
         #LOGGER.debug("\n\tController's parent is '" + parent + "' when INIT'ing.\n")
 
@@ -93,7 +95,7 @@ class Controller(udi_interface.Node):
         #LOGGER.debug("\n\tHANDLE NSINFO.\n\t\t{}\n".format(data))
     
     def poll(self, polltype):
-        if 'shortPoll' in polltype:
+        if 'shortPoll' in polltype and not(self.pg3ParameterErrors):
             nowEpoch = int(time.time())
             nowDT = datetime.datetime.fromtimestamp(nowEpoch)
             nodes = self.poly.getNodes()
@@ -133,27 +135,39 @@ class Controller(udi_interface.Node):
         self.Parameters.load(params)
         validIP_Addresses = False
         validAccess_Tokens = False
+        ioxErrorMessage = ''
 
         if self.Parameters['IP_Addresses'] is not None:
             if len(self.Parameters['IP_Addresses']) > 6:
                 validIP_Addresses = True
             else:
                 LOGGER.warning('\n\tCONFIGURATION INCOMPLETE OR INVALID: Invalid values for IP_Addresses parameter.')
+                ioxErrorMessage = 'INVALID IP_Addresses Parameter'
         else:
             LOGGER.warning('\n\tCONFIGURATION MISSING: Missing IP_Addresses parameter.')
+            ioxErrorMessage = 'MISSING IP_Addresses Parameter'
 
         if self.Parameters['Access_Tokens'] is not None:
             if len(self.Parameters['Access_Tokens']) > 120:
                 validAccess_Tokens = True
             else:
                 LOGGER.warning('\n\tCONFIGURATION INCOMPLETE OR INVALID: Invalid values for Access_Tokens parameter.')
+                if len(ioxErrorMessage) > 0:
+                    ioxErroMessage = ioxErrorMessage + '; '
+                ioxErrorMessage = ioxErrorMessage + 'INVALID Access_Tokens Parameter'
         else:
             LOGGER.warning('\n\tCONFIGURATION MISSING: Missing Access_Tokens parameter.')
+            if len(ioxErrorMessage) > 0:
+                ioxErroMessage = ioxErrorMessage + '; '
+            ioxErrorMessage = ioxErrorMessage + 'MISSING Access_Tokens Parameter'
+
         
         if validIP_Addresses and validAccess_Tokens:
             self.createPanelControllers()
             self.poly.Notices.clear()
+            self.pg3ParameterErrors = False
         else:
+            self.pushTextToDriver('GPV',ioxErrorMessage)
             if not(validIP_Addresses):
                 self.poly.Notices['IP_Addresses'] = 'Please populate the IP_Addresses parameter.'
             if not(validAccess_Tokens):
