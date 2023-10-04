@@ -133,7 +133,7 @@ class PanelNodeForCircuits(udi_interface.Node):
 
             self.updateAllCircuitsData()
             
-            if self.allCircuitsData != '':
+            if "circuits" in self.allCircuitsData:
                 LOGGER.debug("\n\tINIT Panel Circuit Controller's Circuits Data: \n\t\t" + self.allCircuitsData + "\n\t\tCount of circuits: " + str(self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
                 self.setDriver('PULSCNT', self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':'), True, True)
                 self.setDriver('CLIEMD', 1, True, True)
@@ -270,40 +270,12 @@ class PanelNodeForCircuits(udi_interface.Node):
             
             self.updateAllCircuitsData()
             
-            if self.allCircuitsData != '':
+            if "circuits" in self.allCircuitsData:
+                
                 nowEpoch = int(time.time())
                 nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                 self.pushTextToDriver('TIME',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
 
-                '''
-                nodes = self.poly.getNodes()
-                currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
-                LOGGER.debug("\n\tWill be looking for Circuit nodes with this as the prefix: '" + currentPanelCircuitPrefix + "'.\n")
-                for node in nodes:
-                     if currentPanelCircuitPrefix in node:
-                        LOGGER.debug("\n\tUpdating " + node + " (which should be a Circuit node under this Panel controller: " + self.address + ").\n")
-                        try:
-                            dateTimeString = nowDT.strftime("%m/%d/%Y %H:%M:%S")
-                            nodes[node].updateNode(self.allCircuitsData,dateTimeString)
-                        except Exception as e:
-                            LOGGER.warning("\n\t\tPOLL ERROR in Circuits Controller: Cannot seem to update node '" + node + "' needed in for-loop under '" + self.address + "', due to error:\n\t\t\t{}\n".format(e))
-                '''
-
-                '''
-                nodes = self.poly.getNodes()
-                currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
-                LOGGER.debug("\n\tWill be looking for Circuit nodes with this as the prefix: '" + currentPanelCircuitPrefix + "'.\n")
-                for i in range(1,33):
-                    node = currentPanelCircuitPrefix + str(i)
-                    if node in nodes: 
-                        LOGGER.debug("\n\tUpdating '" + node + "' (which should be a Circuit node under this Circuits Controller: " + self.address + ").\n")
-                        try:
-                            nodes[node].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
-                        except Exception as e:
-                            LOGGER.warning("\n\tPOLL ERROR in Circuits Controller '" + self.address + "': Cannot seem to update '" + node + "' needed in for-loop, due to error:\n\t\t{}\n".format(e))
-                    else:
-                         LOGGER.debug("\n\tPOLL Skipping '" + node + "' (as it doesn't seem to be an existing Circuit node under this Circuits controller: " + self.address + ").\n")
-                '''
                 
                 nodes = self.poly.getNodes()
                 currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
@@ -319,8 +291,9 @@ class PanelNodeForCircuits(udi_interface.Node):
                         LOGGER.debug("\n\tPOLL ERROR in Circuits Controller '" + self.address + "': Cannot seem to update node '" + node + "' needed in for-loop due to error:\n\t\t{}\n".format(e))
                             
             else:
-                LOGGER.warning("\n\tUPDATE ALLCIRCUITSDATA failed to populate allCircuitsData.\n")
-                self.pushTextToDriver('GPV',"UPDATE ALLCIRCUITSDATA ERROR")
+                tokenLastTen = self.token[-10:]
+                LOGGER.warning("\n\tPOLL ERROR when querying Circuits Controller '" + self.address + "' @ IP address {}, using token {}.\n".format(self.ipAddress,tokenLastTen))
+    
     '''
     Create the circuit nodes.
     TODO: Handle fewer circuit nodes by deleting (currently commented out)
@@ -369,6 +342,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                 node = SPAN_circuit.CircuitNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken, current_circuitID, i)
                 self.poly.addNode(node)
                 node.wait_for_node_done()
+                
                 LOGGER.debug('\n\tCreated a Circuit child node {} under Panel Circuit Controller {}\n'.format(title, panelNumberPrefix))
             except Exception as e:
                 LOGGER.warning('\n\tFailed to create Circuit child node {} under Panel Circuit Controller {} due to error:\n\t\t{}\n'.format(title, panelNumberPrefix, e))
@@ -377,7 +351,7 @@ class PanelNodeForCircuits(udi_interface.Node):
     This is how we handle whenever our 'sister' Breaker controller updates its allBreakersData variable
     '''
     def updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(self, totalPower, dateTimeStringPassed):
-        LOGGER.debug("\n\t Using Shared Data from sister Breaker Controller to update 'ST' and 'TIME' on '" + self.address + "'.\n")
+        LOGGER.info("\n\t Using Shared Data from sister Breaker Controller to update 'ST' and 'TIME' on '" + self.address + "'.\n")
         self.setDriver('ST', totalPower, True, True)
         self.pushTextToDriver('TIME', dateTimeStringPassed)
 
@@ -391,11 +365,12 @@ class PanelNodeForCircuits(udi_interface.Node):
             "Authorization": "Bearer " + self.token
         }
         try:
-            LOGGER.debug("\n\tUPDATING ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' being attempted to http://" + self.ipAddress + "/api/v1/circuits\n")
             spanConnection.request("GET", "/api/v1/circuits", payload, headers)
             circuitsResponse = spanConnection.getresponse()
             self.allCircuitsData = circuitsResponse.read()
             self.allCircuitsData = self.allCircuitsData.decode("utf-8")
+            
+            LOGGER.debug("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data: \n\t\t " + self.allCircuitsData + "\n")
             
             nowEpoch = int(time.time())
             nowDT = datetime.datetime.fromtimestamp(nowEpoch)
@@ -404,6 +379,7 @@ class PanelNodeForCircuits(udi_interface.Node):
         except Exception as e:
             LOGGER.warning("\n\tUPDATE ALLCIRCUITSDATA ERROR: SPAN API GET request for Panel Circuits Controller '" + self.address + "' failed due to error:\n\t\t{}\n".format(e))
             self.pushTextToDriver('GPV',"UPDATE ALLCIRCUITSDATA ERROR")
+            self.allCircuitsData = ''
             
     '''
     STOP Called
@@ -738,7 +714,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             self.allBreakersData = self.allBreakersData.decode("utf-8")
             LOGGER.debug("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.address + "' Panel Data: \n\t\t" + self.allBreakersData + "\n")
         except Exception as e:
-            LOGGER.warning("\n\tUPDATE ALLBREAKERSDATA ERROR: SPAN API GET request for Panel Circuits Controller '" + self.address + "' failed due to error:\n\t\t{}\n".format(e))
+            LOGGER.warning("\n\tUPDATE ALLBREAKERSDATA ERROR: SPAN API GET request for Panel Breakers Controller '" + self.address + "' failed due to error:\n\t\t{}\n".format(e))
             self.pushTextToDriver('GPV','UPDATE ALLBREAKERSDATA ERROR')
             self.allBreakersData = ''
             
@@ -764,7 +740,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                 nodes = self.poly.getNodes()
                 sisterCircuitsController = self.address.replace('panelbreaker_','panelcircuit_')
                 nodes[sisterCircuitsController].updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
-                LOGGER.debug("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController '" + sisterCircuitsController + "', and tried to update its total power 'ST', as well as time-based, Status elements.\n")
+                LOGGER.info("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController '" + sisterCircuitsController + "', and tried to update its total power 'ST', as well as time-based, Status elements.\n")
             except Exception as e: 
                 LOGGER.warning("\n\tUPDATE ALLBREAKERSDATA ERROR: Panel Breaker Controller '" + self.address + "' cannot seem to find its sisterCircuitsController '" + self.address.replace('panelcircuit_','panelbreaker_') + "' to update, due to error:\n\t\t{}\n".format(e))
 
