@@ -100,7 +100,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         self.parent = parent
         self.sisterCircuitsController: SPAN_circuitController.PanelNodeForCircuits = sisterCircuitsControllerPassed
 
-        self.childCircuitNodes: SPAN_circuit.CircuitNode = []
+        self.childBreakerNodes: SPAN_breaker.BreakerNode = []
 
         self.ISY = ISY(self.poly)
 
@@ -384,7 +384,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                 
                 node.wait_for_node_done()
                 
-                self.childCircuitNodes.append(node)
+                self.childBreakerNodes.append(node)
                 
                 LOGGER.debug('\n\tCreated a Breaker child node {} under Panel Breaker controller {}\n'.format(title, panelNumberPrefix))
             except Exception as e:
