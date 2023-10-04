@@ -217,9 +217,9 @@ class CircuitNode(udi_interface.Node):
     
             LOGGER.warning("\n\tUPDATE CIRCUIT NODE proceeding for '" + self.address + "'; about to search for 'name' in:\n\t\t" + designatedCircuitData + "\n")
 
-            if len(string(self.getDriver('GV0'))) == 0 or str(self.getDriver('GV0')) == '0' or str(self.getDriver('GV0')) == '-1':
-                LOGGER.warning("\n\tSetting SPAN Circuit ID (GV0) for '" + self.address + ", because it is currently not set.\n")
-                self.pushTextToDriver('GV0',self.circuitID)
+            #if len(string(self.getDriver('GV0'))) == 0 or str(self.getDriver('GV0')) == '0' or str(self.getDriver('GV0')) == '-1':
+            #    LOGGER.warning("\n\tSetting SPAN Circuit ID (GV0) for '" + self.address + ", because it is currently not set.\n")
+            self.pushTextToDriver('GV0',self.circuitID)
     
             if "name" in designatedCircuitData:
                 designatedCircuitTabs_tuple = designatedCircuitData.partition(chr(34) + "tabs" + chr(34) + ":")
