@@ -291,9 +291,9 @@ class PanelNodeForCircuits(udi_interface.Node):
                     except Exception as e:
                         LOGGER.debug("\n\tPOLL ERROR in Circuits Controller '" + self.address + "': Cannot seem to update node '" + node + "' needed in for-loop due to error:\n\t\t{}\n".format(e))
                             
-                else:
-                    tokenLastTen = self.token[-10:]
-                    LOGGER.warning("\n\tPOLL ERROR when querying Circuits Controller '" + self.address + "' @ IP address {}, using token {}.\n".format(self.ipAddress,tokenLastTen))
+            else:
+                tokenLastTen = self.token[-10:]
+                LOGGER.warning("\n\tPOLL ERROR when querying Circuits Controller '" + self.address + "' @ IP address {}, using token {}.\n".format(self.ipAddress,tokenLastTen))
     
     '''
     Create the circuit nodes.
@@ -373,11 +373,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             self.allCircuitsData = circuitsResponse.read()
             self.allCircuitsData = self.allCircuitsData.decode("utf-8")
             
-            LOGGER.debug("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data: \n\t\t " + self.allCircuitsData + "\n")
-            
-            nowEpoch = int(time.time())
-            nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-            self.pushTextToDriver('TIME',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+            LOGGER.info("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data: \n\t\t " + self.allCircuitsData + "\n")
             
         except Exception as e:
             LOGGER.warning("\n\tUPDATE ALLCIRCUITSDATA ERROR: SPAN API GET request for Panel Circuits Controller '" + self.address + "' failed due to error:\n\t\t{}\n".format(e))
