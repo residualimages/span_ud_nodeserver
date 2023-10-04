@@ -325,7 +325,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                     self.pushTextToDriver('TIME',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
 
-                nodes = self.poly.getNodes(self.parent)
+                nodes = self.parent.poly.getNodes()
                 currentPanelBreakerPrefix = "s" + self.address.replace('panelbreaker_','') + "_breaker_"
                 LOGGER.debug("\n\tWill be looking for Breaker nodes with this as the prefix: '" + currentPanelBreakerPrefix + "'.\n")
                 for i in range(1,33):
@@ -423,7 +423,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             totalPower = round((instantGridPowerW-abs(feedthroughPowerW)),2)
             
             try:
-                nodes = self.poly.getNodes(self.parent)
+                nodes = self.parent.poly.getNodes()
                 sisterCircuitsController = self.address.replace('panelbreaker_','panelcircuit_')
                 nodes[sisterCircuitsController].updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
                 LOGGER.info("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController '" + sisterCircuitsController + "', and tried to update its allBreakersData as well as its total power ('ST') and 'TIME' Status elements.\n")
