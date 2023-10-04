@@ -226,7 +226,7 @@ class Controller(udi_interface.Node):
             userpasswordAsBase64Bytes = base64.b64encode(userpasswordAsBytes)
             userpasswordAsBase64String = userpasswordAsBase64Bytes.decode("ascii")
 
-            if len(self.ISY._isy_ip) > 0 and len(userpasswordAsBase64String) > 1:
+            if len(self.ISY._isy_ip) > 0 and len(userpasswordAsBase64String) > 3:
                 localConnection = http.client.HTTPConnection(self.ISY._isy_ip, self.ISY._isy_port)
                 payload = ''
                 headers = {
