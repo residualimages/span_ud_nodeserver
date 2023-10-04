@@ -20,6 +20,8 @@ if __name__ == "__main__":
         nodes = polyglot.getNodes()
         if 'controller' not in nodes:
             SPAN_ctl.Controller(polyglot, 'controller', 'controller', 'SPAN Panel - Nodeserver')
+        else:
+            nodes['controller'].pushTextToDriver('GPV','NodeServer STARTING')
 
         # Just sit and wait for events
         polyglot.runForever()
