@@ -333,63 +333,65 @@ class Controller(udi_interface.Node):
                 LOGGER.debug("\n\tRESET NodeServer - SKIP deleting '" + node + "' for now.\n")
         
         LOGGER.warning('\n\t\tRESET FOUND {} nodes, including 1 for the root controller for this NodeServer.\n'.format(countOfNodes))
-        
-        controllers = self.poly.getNodes()
-        for controller in controllers.copy():
-            if controller != 'controller':   # but not the NS controller node itself
-                LOGGER.warning("\n\tRESET NodeServer - deleting controller '" + controller + "'.\n")
-                try:
-                    self.poly.delNode(controller)
-                except Exception as e:
-                    LOGGER.warning('\n\tDELETING FAILED due to: {}\n'.format(e))
-            else:
-                LOGGER.debug("\n\tRESET NodeServer - SKIP deleting '" + controller + "'.\n")      
 
-        countOfRemainingNodes = countOfNodes
-        while countOfRemainingNodes > 1:
-            nodes = self.poly.getNodes()
-            countOfRemainingNodes = 0
-            for node in nodes.copy():
-                countOfRemainingNodes += 1
-            if countOfRemainingNodes > 1:
-                LOGGER.warning("\n\t\tSTILL DELETING nodes, not yet at 1 remaining. Current count: " + str(countOfRemainingNodes) + "...\n")
-                self.pushTextToDriver('GPV',"STILL DELETING nodes; current count: " + str(countOfRemainingNodes) + "...")
-
-        # Iterate over polyglot's internal list of nodes to check for orphaned ones belonging to this NodeServer
-        for controllerIndex in range(1,2):
-            for entityIndex in range(1,33):
-                address = 's' + str(controllerIndex) + '_breaker_' + str(entityIndex)
+        if countOfNodes > 1:
+            controllers = self.poly.getNodes()
+            for controller in controllers.copy():
+                if controller != 'controller':   # but not the NS controller node itself
+                    LOGGER.warning("\n\tRESET NodeServer - deleting controller '" + controller + "'.\n")
+                    try:
+                        self.poly.delNode(controller)
+                    except Exception as e:
+                        LOGGER.warning('\n\tDELETING FAILED due to: {}\n'.format(e))
+                else:
+                    LOGGER.debug("\n\tRESET NodeServer - SKIP deleting '" + controller + "'.\n")      
+    
+            countOfRemainingNodes = countOfNodes
+            while countOfRemainingNodes > 1:
+                nodes = self.poly.getNodes()
+                countOfRemainingNodes = 0
+                for node in nodes.copy():
+                    countOfRemainingNodes += 1
+                if countOfRemainingNodes > 1:
+                    LOGGER.warning("\n\t\tSTILL DELETING nodes, not yet at 1 remaining. Current count: " + str(countOfRemainingNodes) + "...\n")
+                    self.pushTextToDriver('GPV',"STILL DELETING nodes; current count: " + str(countOfRemainingNodes) + "...")
+    
+            # Iterate over polyglot's internal list of nodes to check for orphaned ones belonging to this NodeServer
+            for controllerIndex in range(1,2):
+                for entityIndex in range(1,33):
+                    address = 's' + str(controllerIndex) + '_breaker_' + str(entityIndex)
+                    if address in self.poly.nodes_internal:
+                        del self.poly.nodes_internal[address]        
+                        LOGGER.warning("\n\tFound an orphaned breaker node (#" + str(entityIndex) + ") under Breaker Controller #" + str(controllerIndex) + ".\n")
+                    else:
+                        LOGGER.debug("\n\tNo orphaned breaker node with address '{}' found.\n".format(address))
+                        
+                    address = 's' + str(controllerIndex) + '_circuit_' + str(entityIndex)
+                    if address in self.poly.nodes_internal:
+                        del self.poly.nodes_internal[address]        
+                        LOGGER.warning("\n\tFound an orphaned circuit node (#" + str(entityIndex) + ") under Circuit Controller #" + str(controllerIndex) + ".\n")
+                    else:
+                        LOGGER.debug("\n\tNo orphaned circuit node with address '{}' found.\n".format(address))
+    
+                address = 'panelbreaker_' + str(controllerIndex)
                 if address in self.poly.nodes_internal:
                     del self.poly.nodes_internal[address]        
-                    LOGGER.warning("\n\tFound an orphaned breaker node (#" + str(entityIndex) + ") under Breaker Controller #" + str(controllerIndex) + ".\n")
+                    LOGGER.warning("\n\tFound an orphaned Breaker Controller #" + str(controllerIndex) + "; removing.\n")
                 else:
-                    LOGGER.debug("\n\tNo orphaned breaker node with address '{}' found.\n".format(address))
+                    LOGGER.debug("\n\tNo orphaned Breaker Controller with address '{}' found.\n".format(address))
                     
-                address = 's' + str(controllerIndex) + '_circuit_' + str(entityIndex)
+                address = 'panelcircuit_' + str(controllerIndex)
                 if address in self.poly.nodes_internal:
                     del self.poly.nodes_internal[address]        
-                    LOGGER.warning("\n\tFound an orphaned circuit node (#" + str(entityIndex) + ") under Circuit Controller #" + str(controllerIndex) + ".\n")
+                    LOGGER.warning("\n\tFound an orphaned Circuit Controller #" + str(controllerIndex) + "; removing.\n")        
                 else:
-                    LOGGER.debug("\n\tNo orphaned circuit node with address '{}' found.\n".format(address))
-
-            address = 'panelbreaker_' + str(controllerIndex)
-            if address in self.poly.nodes_internal:
-                del self.poly.nodes_internal[address]        
-                LOGGER.warning("\n\tFound an orphaned Breaker Controller #" + str(controllerIndex) + "; removing.\n")
-            else:
-                LOGGER.debug("\n\tNo orphaned Breaker Controller with address '{}' found.\n".format(address))
-                
-            address = 'panelcircuit_' + str(controllerIndex)
-            if address in self.poly.nodes_internal:
-                del self.poly.nodes_internal[address]        
-                LOGGER.warning("\n\tFound an orphaned Circuit Controller #" + str(controllerIndex) + "; removing.\n")        
-            else:
-                LOGGER.debug("\n\tNo orphaned Circuit Controller with address '{}' found.\n".format(address))
-                
-        self.setDriver('GV0', 0, True, True)
-        self.pushTextToDriver('GPV','Will restart in 5 seconds...')
-        #self.stop()
-        time.sleep(5)
+                    LOGGER.debug("\n\tNo orphaned Circuit Controller with address '{}' found.\n".format(address))
+                    
+            self.setDriver('GV0', 0, True, True)
+            self.pushTextToDriver('GPV','Will restart in 5 seconds...')
+            #self.stop()
+            time.sleep(5)
+            
         self.pushTextToDriver('GPV','Starting...')
         self.start()
 
