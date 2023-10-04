@@ -16,8 +16,10 @@ if __name__ == "__main__":
         polyglot = udi_interface.Interface([])
         polyglot.start()
 
-        # Create the controller node
-        SPAN_ctl.Controller(polyglot, 'controller', 'controller', 'SPAN Panel - Nodeserver')
+        # Create the controller node if not created
+        nodes = self.poly.getNodes()
+        if 'controller' not in nodes:
+            SPAN_ctl.Controller(polyglot, 'controller', 'controller', 'SPAN Panel - Nodeserver')
 
         # Just sit and wait for events
         polyglot.runForever()
