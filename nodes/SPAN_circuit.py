@@ -227,7 +227,7 @@ class CircuitNode(udi_interface.Node):
                 designatedCircuitTabs_tuple = designatedCircuitTabs.partition("],")
                 designatedCircuitTabs = designatedCircuitTabs_tuple[0]
               
-                LOGGER.warning("\n\Designated Circuit Data: \n\t\t" + designatedCircuitData + "\n\t\tCount of Circuit Breakers In Circuit: " + str(designatedCircuitTabs.count(',')+1) + "\n")
+                LOGGER.warning("\n\tDesignated Circuit Data: \n\t\t" + designatedCircuitData + "\n\t\tCount of Circuit Breakers In Circuit: " + str(designatedCircuitTabs.count(',')+1) + "\n")
     
                 designatedCircuitTabs = designatedCircuitTabs.replace('[',' ')
                 designatedCircuitTabsArray = designatedCircuitTabs.split(',')
@@ -238,9 +238,12 @@ class CircuitNode(udi_interface.Node):
                 for i in range(0,designatedCircuitTabsCount):
                     LOGGER.warning("\n\tIn Circuit " + self.circuitID + ", Tab # " + str(i) + " corresponds to breaker number:\n\t\t" + designatedCircuitTabsArray[i] + "\n")
                     try:
-                        self.setDriver('GV' + str(i+1), designatedCircuitTabsArray[i], True, True)
+                        self.setDriver('GV' + str(i+1), int(designatedCircuitTabsArray[i]), True, True)
                     except:
                         LOGGER.warning("\n\t\tERROR Setting Tab (Physical Breaker #" + str(i+1) + ") for " + self.circuitID + ".\n")
+                        
+                for i in range(designatedCircuitTabsCount+1,4):
+                    self.pushTextToDriver('GV' + str(i), '--')
             else:
                 LOGGER.warning("\n\tINIT Issue getting data for circuit '" + self.address + "'.\n")
                 #self.setDriver('TIME', -1, True, True)
