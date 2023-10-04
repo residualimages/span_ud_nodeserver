@@ -362,11 +362,6 @@ class CircuitNode(udi_interface.Node):
         LOGGER.debug("\n\tCOMMAND POST Update Circuit Priority Data: \n\t\t" + format(updateCircuitData) + "\n")
         self.setDriver('AWAKE', int(value), True, True)
 
-    commands = {
-        "UPDATE_CIRCUIT_STATUS": cmd_update_circuit_status,
-        "UPDATE_CIRCUIT_PRIORITY": cmd_update_circuit_status,
-    }
-
     '''
     Change self status driver to 0 W
     '''
@@ -375,3 +370,8 @@ class CircuitNode(udi_interface.Node):
         self.setDriver('ST', 0, True, True)
         self.setDriver('TIME', -1, True, True)
         self.pushTextToDriver('GPV',"NodeServer STOPPED")
+
+    commands = {
+        "UPDATE_CIRCUIT_STATUS": cmd_update_circuit_status,
+        "UPDATE_CIRCUIT_PRIORITY": cmd_update_circuit_status,
+    }
