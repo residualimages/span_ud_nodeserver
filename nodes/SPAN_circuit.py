@@ -239,7 +239,7 @@ class CircuitNode(udi_interface.Node):
                     LOGGER.debug("\n\tIn Circuit " + self.circuitID + ", Tab # " + str(i) + " corresponds to breaker number:\n\t\t" + designatedCircuitTabsArray[i] + "\n")
                     self.pushTextToDriver('GV' + str(i+1), designatedCircuitTabsArray[i].replace(' ',''))
                         
-                for i in range(designatedCircuitTabsCount+1,4):
+                for i in range(designatedCircuitTabsCount+1,5):
                     self.pushTextToDriver('GV' + str(i), '--')
             else:
                 LOGGER.warning("\n\tINIT Issue getting data for circuit '" + self.address + "'.\n")
