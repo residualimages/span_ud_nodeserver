@@ -433,7 +433,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         self.allBreakersData = ''
         
         # subscribe to the events we want
-        polyglot.subscribe(polyglot.POLL, self.pollBreakerController)
+        #polyglot.subscribe(polyglot.POLL, self.pollBreakerController)
         polyglot.subscribe(polyglot.STOP, self.stop)
         polyglot.subscribe(polyglot.START, self.start, address)
         polyglot.subscribe(polyglot.ADDNODEDONE, self.node_queue)
