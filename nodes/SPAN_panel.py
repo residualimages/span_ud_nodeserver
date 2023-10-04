@@ -281,13 +281,13 @@ class PanelNodeForCircuits(udi_interface.Node):
                 currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
                 LOGGER.debug("\n\tWill be looking for Circuit nodes with this as the prefix: '" + currentPanelCircuitPrefix + "'.\n")
                 
-                for node in nodes.copy():
-                     if currentPanelCircuitPrefix in node:
+                for i in range(1,33):
+                     if (currentPanelCircuitPrefix + str(i)) in node:
                         LOGGER.debug("\n\tUpdating " + node + " (which should be a Circuit node under this Panel controller: " + self.address + ").\n")
                         try:
-                            nodes.copy()[node].updateNode(self.allCircuitsData,nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                            nodes.[currentPanelCircuitPrefix + str(i)].updateNode(self.allCircuitsData,nowDT.strftime("%m/%d/%Y %H:%M:%S"))
                         except Exception as e:
-                            LOGGER.warning("\n\t\tPOLL ERROR in Panel Circuits: Cannot seem to update '" + node + "' needed in for-loop, due to error:\n\t\t{}\n".format(e))
+                            LOGGER.warning("\n\t\tPOLL ERROR in Panel Circuits: Cannot seem to update '" + currentPanelCircuitPrefix + str(i) + "' needed in for-loop, due to error:\n\t\t{}\n".format(e))
             else:
                 LOGGER.warning("\n\tUPDATE ALLCIRCUITSDATA failed to populate allCircuitsData.\n")
                 self.pushTextToDriver('GPV',"UPDATE ALLCIRCUITSDATA ERROR")
