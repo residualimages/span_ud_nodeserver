@@ -203,8 +203,6 @@ class Controller(udi_interface.Node):
         if len(str(self.getDriver(driver))) <= 0:
             LOGGER.warning("\n\tPUSHING REPORT ERROR - a (correct) Driver was not passed.\n")
             return
-        else:
-            LOGGER.debug("\n\tLEN of self.getDriver('" + driver + "') is greater than 0; driver value = " + str(self.getDriver(driver)) + "\n")
             
         currentValue = int(self.getDriver(driver))
         newValue = -1
