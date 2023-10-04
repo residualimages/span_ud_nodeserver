@@ -298,8 +298,8 @@ class PanelNodeForCircuits(udi_interface.Node):
                             LOGGER.warning("\n\tPOLL ATTEMPT FOR Circuits Controller '" + self.address + "' for '" + nodeAddress + "'.\n")
                             nodeCollection[nodeAddress].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
                             LOGGER.warning("\n\t\tPOLL SUCCESS in Circuits Controller '" + self.address + "' for '" + nodeAddress + "'.\n")
-                        except Exception as e:
-                            LOGGER.warning("\n\tPOLL ERROR in Circuits Controller '" + self.address + "': Cannot seem to update node '" + nodeAddress + "' needed in for-loop due to error:\n\t\t" + format(e) + "\n")
+                        except:
+                            LOGGER.warning("\n\tPOLL ERROR in Circuits Controller '" + self.address + "': Cannot seem to update node '" + nodeAddress + "' needed in for-loop due to error.\n")
                     else:
                         LOGGER.info("\n\tSKIPPING NON-EXISTENT CIRCUIT '" + nodeAddress + "'.\n")
                             
@@ -357,8 +357,8 @@ class PanelNodeForCircuits(udi_interface.Node):
                 node.wait_for_node_done()
                 
                 LOGGER.debug('\n\tCreated a Circuit child node {} under Panel Circuit Controller {}\n'.format(title, panelNumberPrefix))
-            except Exception as e:
-                LOGGER.warning('\n\tFailed to create Circuit child node {} under Panel Circuit Controller {} due to error:\n\t\t{}\n'.format(title, panelNumberPrefix, e))
+            except:
+                LOGGER.warning('\n\tFailed to create Circuit child node {} under Panel Circuit Controller {} due to error.\n'.format(title, panelNumberPrefix))
 
     '''
     This is how we handle whenever our 'sister' Breaker controller updates its allBreakersData variable
@@ -391,8 +391,8 @@ class PanelNodeForCircuits(udi_interface.Node):
             
             LOGGER.warning("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data: \n\t\t " + self.allCircuitsData + "\n")
             
-        except Exception as e:
-            LOGGER.warning("\n\tUPDATE ALLCIRCUITSDATA ERROR: SPAN API GET request for Panel Circuits Controller '" + self.address + "' failed due to error:\n\t\t{}\n".format(e))
+        except:
+            LOGGER.warning("\n\tUPDATE ALLCIRCUITSDATA ERROR: SPAN API GET request for Panel Circuits Controller '" + self.address + "' failed due to error\n")
             self.pushTextToDriver('GPV',"UPDATE ALLCIRCUITSDATA ERROR")
             self.allCircuitsData = ''
             
@@ -668,8 +668,8 @@ class PanelNodeForBreakers(udi_interface.Node):
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                     try:
                         nodes[node].updateBreakerNode(self.allBreakersData, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
-                    except Exception as e:
-                        LOGGER.debug("\n\tPOLL ERROR in Breakers Controller '" + self.address + "': Cannot seem to update node '" + node + "' needed in for-loop due to error:\n\t\t{}\n".format(e))
+                    except:
+                        LOGGER.debug("\n\tPOLL ERROR in Breakers Controller '" + self.address + "': Cannot seem to update node '" + node + "' needed in for-loop due to error.")
             else:
                 tokenLastTen = self.token[-10:]
                 LOGGER.warning("\n\tPOLL ERROR when querying Breakers Controller '" + self.address + "' @ IP address {}, using token {}.\n".format(self.ipAddress,tokenLastTen))
@@ -714,8 +714,8 @@ class PanelNodeForBreakers(udi_interface.Node):
                 node.wait_for_node_done()
                 
                 LOGGER.debug('\n\tCreated a Breaker child node {} under Panel Breaker controller {}\n'.format(title, panelNumberPrefix))
-            except Exception as e:
-                LOGGER.warning('\n\tCHILD NODE CREATION ERROR: Failed to create Breaker child node {} under Panel Breaker controller {} due to error:\n\t\t{}\n'.format(title, panelNumberPrefix, e))
+            except:
+                LOGGER.warning('\n\tCHILD NODE CREATION ERROR: Failed to create Breaker child node {} under Panel Breaker controller {} due to error.\n'.format(title, panelNumberPrefix))
 
     '''
     This is how we update the allBreakersData variable
@@ -732,8 +732,8 @@ class PanelNodeForBreakers(udi_interface.Node):
             self.allBreakersData = panelResponse.read()
             self.allBreakersData = self.allBreakersData.decode("utf-8")
             LOGGER.debug("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.address + "' Panel Data: \n\t\t" + self.allBreakersData + "\n")
-        except Exception as e:
-            LOGGER.warning("\n\tUPDATE ALLBREAKERSDATA ERROR: SPAN API GET request for Panel Breakers Controller '" + self.address + "' failed due to error:\n\t\t{}\n".format(e))
+        except:
+            LOGGER.warning("\n\tUPDATE ALLBREAKERSDATA ERROR: SPAN API GET request for Panel Breakers Controller '" + self.address + "' failed due to error.\n")
             self.pushTextToDriver('GPV','UPDATE ALLBREAKERSDATA ERROR')
             self.allBreakersData = ''
             
@@ -760,7 +760,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                 sisterCircuitsController = self.address.replace('panelbreaker_','panelcircuit_')
                 nodes[sisterCircuitsController].updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
                 LOGGER.info("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController '" + sisterCircuitsController + "', and tried to update its allBreakersData as well as its total power ('ST') and 'TIME' Status elements.\n")
-            except Exception as e: 
+            except: 
                 LOGGER.warning("\n\tUPDATE ALLBREAKERSDATA ERROR: Panel Breaker Controller '" + self.address + "' cannot seem to find its sisterCircuitsController '" + self.address.replace('panelcircuit_','panelbreaker_') + "' to update, due to error:\n\t\t{}\n".format(e))
 
     '''
