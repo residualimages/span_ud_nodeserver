@@ -82,7 +82,7 @@ class Controller(udi_interface.Node):
         #polyglot.subscribe(polyglot.NSINFO, self.nsInfo)
         polyglot.subscribe(polyglot.POLL, self.poll)
 
-        # start processing events and create add our controller node
+        # start processing events and add our controller node
         polyglot.ready()
         self.poly.addNode(self)
 
@@ -116,6 +116,8 @@ class Controller(udi_interface.Node):
         self.n_queue.append(data['address'])
         LOGGER.debug("\n\tISY Object created under 'controller':\t" + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", which is itself NS #" + str(self.poly.profileNum) + ", and has self.address of '" + str(self.address) + "'.\n")   
         LOGGER.debug("\n\t\tUNAuthorized (expecting this to be false): " + str(self.ISY.unauthorized) + ".\n")
+        
+        self.pushTextToDriver('GPV','NodeServer STARTING')
 
     def wait_for_node_done(self):
         self.pushTextToDriver('GPV','Waiting for root controller...')
