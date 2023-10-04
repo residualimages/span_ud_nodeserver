@@ -258,7 +258,7 @@ class PanelNodeForCircuits(udi_interface.Node):
     Note: the Circuit and Breaker controllers will query and then pass data to the child nodes of Circuits and Breakers, respectively, so that we don't async hammer the http connection of SPAN panels. 
     '''
     def pollCircuitController(self, polltype):
-        LOGGER.warning("\n\tPOLL CIRCUIT CONTROLLER: " + polltype + "\n")
+        LOGGER.warning("\n\tPOLL CIRCUIT CONTROLLER: " + polltype + " for '" + self.address + "'.\n")
         if 'shortPoll' in polltype:
 
             if "|poll passed from root controller" in polltype:
@@ -292,11 +292,14 @@ class PanelNodeForCircuits(udi_interface.Node):
                     LOGGER.debug("\n\tUpdating " + node + " (which should be a Circuit node under this Circuits controller: " + self.address + ").\n")
                     nowEpoch = int(time.time())
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-                    try:
-                        nodes[node].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
-                        LOGGER.warning("\n\tPOLL SUCCESS in Circuits Controller '" + self.address + "' for '" + node + "'.\n")
-                    except Exception as e:
-                        LOGGER.warning("\n\tPOLL ERROR in Circuits Controller '" + self.address + "': Cannot seem to update node '" + node + "' needed in for-loop due to error:\n\t\t{}\n".format(e))
+                    if node in nodes:
+                        try:
+                            nodes[node].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
+                            LOGGER.warning("\n\tPOLL SUCCESS in Circuits Controller '" + self.address + "' for '" + node + "'.\n")
+                        except Exception as e:
+                            LOGGER.warning("\n\tPOLL ERROR in Circuits Controller '" + self.address + "': Cannot seem to update node '" + node + "' needed in for-loop due to error:\n\t\t" + format(e) + "\n")
+                    else:
+                        LOGGER.warning("\n\tSKIPPING NON-EXISTENT CIRCUIT '" + node + "'.\n")
                             
             else:
                 tokenLastTen = self.token[-10:]
@@ -610,6 +613,7 @@ class PanelNodeForBreakers(udi_interface.Node):
     This is where the real work happens.  When we get a shortPoll, do some work. 
     '''
     def pollBreakerController(self, polltype):
+        LOGGER.warning("\n\tPOLL BREAKER CONTROLLER: " + polltype + " for '" + self.address + "'.\n")
         if 'shortPoll' in polltype:
             
             if "|poll passed from root controller" in polltype:
