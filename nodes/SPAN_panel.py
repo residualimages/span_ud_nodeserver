@@ -127,6 +127,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             #lastOctet_array = self.ipAddress.split('.')
             #lastOctet = lastOctet_array[len(lastOctet_array)-1]
             #self.setDriver('FREQ', lastOctet, True, True, None, self.ipAddress)
+            
             self.pushTextToDriver('FREQ',self.ipAddress)
 
             self.updateAllCircuitsData()
@@ -257,6 +258,12 @@ class PanelNodeForCircuits(udi_interface.Node):
     '''
     def poll(self, polltype):
         if 'shortPoll' in polltype:
+
+            if "-1" in str(self.getDriver('FREQ')):
+                self.pushTextToDriver('FREQ',self.ipAddress)
+
+            if "-1" in str(self.getDriver('GPV')):
+                self.pushTextToDriver('GPV','')
         
             tokenLastTen = self.token[-10:]
             LOGGER.debug("\n\tPOLL About to query Panel Circuits Controller '" + self.address + "' @ {}, using token ending in {}".format(self.ipAddress,tokenLastTen))
@@ -587,6 +594,13 @@ class PanelNodeForBreakers(udi_interface.Node):
     '''
     def poll(self, polltype):
         if 'shortPoll' in polltype:
+            
+            if "-1" in str(self.getDriver('FREQ')):
+                self.pushTextToDriver('FREQ',self.ipAddress)
+
+            if "-1" in str(self.getDriver('GPV')):
+                self.pushTextToDriver('GPV','')
+            
             tokenLastTen = self.token[-10:]
             LOGGER.debug("\n\tPOLL About to query Panel Breaker Controller '" + self.address + "' @ {}, using token ending in {}".format(self.ipAddress,tokenLastTen))
 
