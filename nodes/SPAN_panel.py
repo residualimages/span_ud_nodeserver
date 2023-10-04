@@ -289,6 +289,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                             LOGGER.warning("\n\t\tPOLL ERROR in Circuits Controller: Cannot seem to update node '" + node + "' needed in for-loop under '" + self.address + "', due to error:\n\t\t\t{}\n".format(e))
                 '''
 
+                '''
                 nodes = self.poly.getNodes()
                 currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
                 LOGGER.debug("\n\tWill be looking for Circuit nodes with this as the prefix: '" + currentPanelCircuitPrefix + "'.\n")
@@ -302,7 +303,20 @@ class PanelNodeForCircuits(udi_interface.Node):
                             LOGGER.warning("\n\tPOLL ERROR in Circuits Controller '" + self.address + "': Cannot seem to update '" + node + "' needed in for-loop, due to error:\n\t\t{}\n".format(e))
                     else:
                          LOGGER.debug("\n\tPOLL Skipping '" + node + "' (as it doesn't seem to be an existing Circuit node under this Circuits controller: " + self.address + ").\n")
-                            
+                '''
+                
+                nodes = self.poly.getNodes()
+                currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
+                LOGGER.debug("\n\tWill be looking for Circuit nodes with this as the prefix: '" + currentPanelCircuitPrefix + "'.\n")
+                for i in range(1,33):
+                    node = currentPanelCircuitPrefix + str(i)
+                    LOGGER.debug("\n\tUpdating " + node + " (which should be a Circuit node under this Circuits controller: " + self.address + ").\n")
+                    nowEpoch = int(time.time())
+                    nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+                    try:
+                        nodes[node].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                    except Exception as e:
+                        LOGGER.debug("\n\tPOLL ERROR in Circuits Controller '" + self.address + "': Cannot seem to update node '" + node + "' needed in for-loop due to error:\n\t\t{}\n".format(e))
                             
             else:
                 LOGGER.warning("\n\tUPDATE ALLCIRCUITSDATA failed to populate allCircuitsData.\n")
@@ -654,7 +668,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                 LOGGER.debug("\n\tWill be looking for Breaker nodes with this as the prefix: '" + currentPanelBreakerPrefix + "'.\n")
                 for i in range(1,33):
                     node = currentPanelBreakerPrefix + str(i)
-                    LOGGER.debug("\n\tUpdating " + node + " (which should be a Breaker node under this Panel controller: " + self.address + ").\n")
+                    LOGGER.debug("\n\tUpdating " + node + " (which should be a Breaker node under this Breakers controller: " + self.address + ").\n")
                     nowEpoch = int(time.time())
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                     try:
