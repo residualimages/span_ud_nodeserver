@@ -193,12 +193,6 @@ class PanelNodeForBreakers(udi_interface.Node):
             super().setDriver(driver, value, report, force, uom, text)
 
     '''
-    Read the user entered custom parameters.
-    def parameterHandler(self, params):
-        self.Parameters.load(params)
-    '''
-
-    '''
     Handling for <text /> attribute across PG3 and PG3x.
     Note that to be reported to IoX, the value has to change; this is why we flip from 0 to 1 or 1 to 0.
     -1 is reserved for initializing.
@@ -338,12 +332,6 @@ class PanelNodeForBreakers(udi_interface.Node):
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                     nodes[node].updateBreakerNode(self.allBreakersData, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
 
-                    '''
-                    try:
-                        nodes[node].updateBreakerNode(self.allBreakersData, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
-                    except Exception as e:
-                        LOGGER.debug("\n\tPOLL ERROR in Breakers Controller '" + self.address + "': Cannot seem to update node '" + node + "' needed in for-loop due to error:\n\t\t{}\n".format(e))
-                    '''
             else:
                 tokenLastTen = self.token[-10:]
                 LOGGER.warning("\n\tPOLL ERROR when querying Breakers Controller '" + self.address + "' @ IP address {}, using token {}.\n".format(self.ipAddress,tokenLastTen))
@@ -392,20 +380,6 @@ class PanelNodeForBreakers(udi_interface.Node):
             
             LOGGER.debug('\n\tCreated a Breaker child node {} under Panel Breaker controller {}\n'.format(title, panelNumberPrefix))
 
-            '''
-            try:
-                node = SPAN_breaker.BreakerNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken, i)
-                self.poly.addNode(node)
-                
-                node.wait_for_node_done()
-                
-                self.childBreakerNodes.append(node)
-                
-                LOGGER.debug('\n\tCreated a Breaker child node {} under Panel Breaker controller {}\n'.format(title, panelNumberPrefix))
-            except Exception as e:
-                LOGGER.warning('\n\tCHILD NODE CREATION ERROR: Failed to create Breaker child node {} under Panel Breaker controller {} due to error:\n\t\t{}\n'.format(title, panelNumberPrefix, e))
-            '''
-
     '''
     This is how we update the allBreakersData variable
     '''
@@ -421,19 +395,6 @@ class PanelNodeForBreakers(udi_interface.Node):
         self.allBreakersData = panelResponse.read()
         self.allBreakersData = self.allBreakersData.decode("utf-8")
         LOGGER.debug("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.address + "' Panel Data: \n\t\t" + self.allBreakersData + "\n")
-
-        '''
-        try:
-            spanConnection.request("GET", "/api/v1/panel", payload, headers)
-            panelResponse = spanConnection.getresponse()
-            self.allBreakersData = panelResponse.read()
-            self.allBreakersData = self.allBreakersData.decode("utf-8")
-            LOGGER.debug("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.address + "' Panel Data: \n\t\t" + self.allBreakersData + "\n")
-        except Exception as e:
-            LOGGER.warning("\n\tUPDATE ALLBREAKERSDATA ERROR: SPAN API GET request for Panel Breakers Controller '" + self.address + "' failed due to error:\n\t\t{}\n".format(e))
-            self.pushTextToDriver('GPV','UPDATE ALLBREAKERSDATA ERROR')
-            self.allBreakersData = ''
-        '''
             
         if "branches" in self.allBreakersData:
             feedthroughPowerW_tuple = self.allBreakersData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
@@ -456,15 +417,6 @@ class PanelNodeForBreakers(udi_interface.Node):
             self.sisterCircuitsController.updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
             LOGGER.info("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController, and tried to update its allBreakersData as well as its total power ('ST') and 'TIME' Status elements.\n")
             
-            '''
-            try:
-                #nodes = self.poly.getNodes()
-                #sisterCircuitsController = self.address.replace('panelbreaker_','panelcircuit_')
-                self.sisterCircuitsController.updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
-                LOGGER.info("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController, and tried to update its allBreakersData as well as its total power ('ST') and 'TIME' Status elements.\n")
-            except:
-                LOGGER.warning("\n\tUPDATE ALLBREAKERSDATA ERROR: Panel Breaker Controller '" + self.address + "' cannot seem to find its sisterCircuitsController (under the nodes group of objects) to update.\n")
-            '''
     
     '''
     STOP Received
