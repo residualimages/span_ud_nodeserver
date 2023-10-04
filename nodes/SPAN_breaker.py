@@ -150,7 +150,7 @@ class BreakerNode(udi_interface.Node):
 
         if 'isPG3x' in self.poly.pg3init and self.poly.pg3init['isPG3x'] is True:
             #PG3x can use this, but PG3 doesn't have the necessary 'text' handling within message, set above, so we have the 'else' below
-            LOGGER.debug("\n\tPUSHING REPORT TO '" + self.address + "'for driver " + driver + ", via PG3x via self.poly.send('" + encodedStringToPublish + "','status') with a value of '" + str(newValue) + "'.\n")
+            LOGGER.debug("\n\tPUSHING REPORT TO '" + self.address + "' for driver " + driver + ", with PG3x via self.poly.send('" + encodedStringToPublish + "','status') with a value of '" + str(newValue) + "'.\n")
             self.poly.send(message, 'status')
         elif not(self.ISY.unauthorized):
             userpassword = self.ISY._isy_user + ":" + self.ISY._isy_pass
@@ -165,7 +165,7 @@ class BreakerNode(udi_interface.Node):
                     "Authorization": "Basic " + userpasswordAsBase64String
                 }
                 
-                LOGGER.debug("n\tPUSHING REPORT TO '" + self.address + "'-owned status variable / driver '" + driver + "' with PG3 via " + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
+                LOGGER.debug("n\tPUSHING REPORT TO '" + self.address + "' for driver " + driver + ", with PG3 via " + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", with a value of " + str(newValue) + ", and a text attribute (encoded) of '" + encodedStringToPublish + "'.\n")
         
                 prefixN = str(self.poly.profileNum)
                 if len(prefixN) < 2:
