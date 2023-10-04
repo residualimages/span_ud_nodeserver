@@ -190,6 +190,9 @@ class Controller(udi_interface.Node):
         # Not necessary to call this since profile_version is used from server.json
         # self.poly.updateProfile()
         
+        if self.pg3ParameterErrors:
+            self.pushTextToDriver('GPV',"Please correct the NodeServer parameters in PG3(x)")
+        
     '''
     Handling for <text /> attribute.
     Note that to be reported to IoX, the value has to change; this is why we flip from 0 to 1 or 1 to 0.
