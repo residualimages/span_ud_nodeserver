@@ -13,7 +13,7 @@ import re
 
 import urllib.parse,http.client,math,time,datetime,base64
 
-from nodes import SPAN_panel
+from nodes import SPAN_panel,SPAN_circuit
 
 LOGGER = udi_interface.LOGGER
 Custom = udi_interface.Custom
