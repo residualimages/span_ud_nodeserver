@@ -424,7 +424,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             totalPower = round((instantGridPowerW-abs(feedthroughPowerW)),2)
             
             try:
-                nodes = self.parent.poly.getNodes()
+                #nodes = self.parent.poly.getNodes()
                 #sisterCircuitsController = self.address.replace('panelbreaker_','panelcircuit_')
                 self.sisterCircuitsController.updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
                 LOGGER.info("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController '" + self.sisterCircuitsController.address + "', and tried to update its allBreakersData as well as its total power ('ST') and 'TIME' Status elements.\n")
