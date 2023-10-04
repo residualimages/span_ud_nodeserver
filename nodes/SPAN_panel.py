@@ -251,8 +251,8 @@ class PanelNodeForCircuits(udi_interface.Node):
         else:
             LOGGER.warning("\n\t\PUSHING REPORT ERROR: looks like this is a PG3 install but the ISY authorization state seems to currently be 'Unauthorized': 'True'.\n")
     
-    def updateNode(self, passedAllCircuitsData, dateTimeString):
-        self.allCircuitsData = passedAllCircuitsData
+    #def updateNode(self, passedAllCircuitsData, dateTimeString):
+    #    self.allCircuitsData = passedAllCircuitsData
 
     '''
     This is where the real work happens.  When we get a shortPoll, do some work.
@@ -299,7 +299,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                     if node in nodes: 
                         LOGGER.debug("\n\tUpdating '" + node + "' (which should be a Circuit node under this Circuits Controller: " + self.address + ").\n")
                         try:
-                            nodes[node].updateNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                            nodes[node].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
                         except Exception as e:
                             LOGGER.warning("\n\tPOLL ERROR in Circuits Controller '" + self.address + "': Cannot seem to update '" + node + "' needed in for-loop, due to error:\n\t\t{}\n".format(e))
                     else:
@@ -607,8 +607,8 @@ class PanelNodeForBreakers(udi_interface.Node):
         else:
             LOGGER.warning("\n\t\PUSHING REPORT ERROR: looks like this is a PG3 install but the ISY authorization state seems to currently be 'Unauthorized': 'True'.\n")
 
-    def updateNode(self, passedAllBreakersData, dateTimeString):
-        self.allBreakersData = passedAllBreakersData
+    #def updateNode(self, passedAllBreakersData, dateTimeString):
+    #    self.allBreakersData = passedAllBreakersData
 
     '''
     This is where the real work happens.  When we get a shortPoll, do some work. 
