@@ -263,14 +263,14 @@ class PanelNodeForCircuits(udi_interface.Node):
     Note: the Circuit and Breaker controllers will query and then pass data to the child nodes of Circuits and Breakers, respectively, so that we don't async hammer the http connection of SPAN panels. 
     '''
     def pollCircuitController(self, polltype):
-        LOGGER.warning("\n\tPOLL CIRCUIT CONTROLLER: " + polltype + " for '" + self.address + "'.\n")
+        LOGGER.debug("\n\tPOLL CIRCUIT CONTROLLER: " + polltype + " for '" + self.address + "'.\n")
         if 'shortPoll' in polltype:
 
             if "|poll passed from root controller" in polltype:
-                LOGGER.warning("\n\tCIRCUIT CONTROLLER '" + self.address + "' - HANDLING SHORT POLL passed from root controller\n")
+                LOGGER.debug("\n\tCIRCUIT CONTROLLER '" + self.address + "' - HANDLING SHORT POLL passed from root controller\n")
 
             if "|poll passed from sister controller" in polltype:
-                LOGGER.warning("\n\tCIRCUIT CONTROLLER '" + self.address + "' - HANDLING SHORT POLL passed from sister controller\n")
+                LOGGER.debug("\n\tCIRCUIT CONTROLLER '" + self.address + "' - HANDLING SHORT POLL passed from sister controller\n")
             
             if "-1" in str(self.getDriver('FREQ')):
                 self.pushTextToDriver('FREQ',self.ipAddress.replace('.','-'))
@@ -300,9 +300,9 @@ class PanelNodeForCircuits(udi_interface.Node):
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                     if nodeAddress in nodeCollection:
                         try:
-                            LOGGER.warning("\n\tPOLL ATTEMPT FOR Circuits Controller '" + self.address + "' for '" + nodeAddress + "'.\n")
+                            LOGGER.debug("\n\tPOLL ATTEMPT FOR Circuits Controller '" + self.address + "' for '" + nodeAddress + "'.\n")
                             nodeCollection[nodeAddress].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
-                            LOGGER.warning("\n\t\tPOLL SUCCESS in Circuits Controller '" + self.address + "' for '" + nodeAddress + "'.\n")
+                            LOGGER.debug("\n\t\tPOLL SUCCESS in Circuits Controller '" + self.address + "' for '" + nodeAddress + "'.\n")
                         except Exception as e:
                             LOGGER.warning("\n\tPOLL ERROR in Circuits Controller '" + self.address + "': Cannot seem to update node '" + nodeAddress + "' needed in for-loop due to error:\n\t\t" + format(e) + "\n")
                     else:
@@ -312,11 +312,11 @@ class PanelNodeForCircuits(udi_interface.Node):
                 currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
                 for i in range(0, circuitCount):
                     self.childCircuitNodes[i].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
-                    LOGGER.warning("\n\t\tPOLL SUCCESS in Circuits Controller '" + self.address + "' for '" + self.childCircuitNodes[i].address + "'.\n")
+                    LOGGER.debug("\n\t\tPOLL SUCCESS in Circuits Controller '" + self.address + "' for '" + self.childCircuitNodes[i].address + "'.\n")
                     '''
                     try:
                         self.childCircuitNodes[i].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
-                        LOGGER.warning("\n\t\tPOLL SUCCESS in Circuits Controller '" + self.address + "' for '" + self.childCircuitNodes[i].address + "'.\n")
+                        LOGGER.debug("\n\t\tPOLL SUCCESS in Circuits Controller '" + self.address + "' for '" + self.childCircuitNodes[i].address + "'.\n")
                     except Exception as f:
                         LOGGER.warning("\n\tPOLL ERROR in Circuits Controller '" + self.address + "': Cannot seem to update node '" + currentPanelCircuitPrefix + str(i) + "' needed in for-loop due to error:\n\t\t" + format(e) + "\n")
                     '''
@@ -409,7 +409,7 @@ class PanelNodeForCircuits(udi_interface.Node):
     This is how we update the allCircuitsData variable
     '''
     def updateAllCircuitsData(self):
-        LOGGER.warning("\n\tUPDATING ALLCIRCUITSDATA for '" + self.address + "'...\n")
+        LOGGER.debug("\n\tUPDATING ALLCIRCUITSDATA for '" + self.address + "'...\n")
         
         spanConnection = http.client.HTTPConnection(self.ipAddress)
         payload = ''
@@ -421,7 +421,7 @@ class PanelNodeForCircuits(udi_interface.Node):
         self.allCircuitsData = circuitsResponse.read()
         self.allCircuitsData = self.allCircuitsData.decode("utf-8")
         
-        LOGGER.warning("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data: \n\t\t " + self.allCircuitsData + "\n")
+        LOGGER.debug("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data: \n\t\t " + self.allCircuitsData + "\n")
         '''
         try:
             spanConnection.request("GET", "/api/v1/circuits", payload, headers)
@@ -429,7 +429,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             self.allCircuitsData = circuitsResponse.read()
             self.allCircuitsData = self.allCircuitsData.decode("utf-8")
             
-            LOGGER.warning("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data: \n\t\t " + self.allCircuitsData + "\n")
+            LOGGER.debug("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data: \n\t\t " + self.allCircuitsData + "\n")
             
         except Exception as e:
             LOGGER.warning("\n\tUPDATE ALLCIRCUITSDATA ERROR: SPAN API GET request for Panel Circuits Controller '" + self.address + "' failed due to error:\n\t\t{}\n".format(e))
