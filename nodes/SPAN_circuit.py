@@ -39,11 +39,11 @@ class CircuitNode(udi_interface.Node):
             {'driver': 'CLIEMD', 'value': 0, 'uom': 25},
             {'driver': 'AWAKE', 'value': 0, 'uom': 25},
             {'driver': 'TIME', 'value': -1, 'uom': 56},
-            {'driver': 'GV0', 'value': '-1', 'uom': 56},
-            {'driver': 'GV1', 'value': '', 'uom': 56},
-            {'driver': 'GV2', 'value': '', 'uom': 56},
-            {'driver': 'GV3', 'value': '', 'uom': 56},
-            {'driver': 'GV4', 'value': '', 'uom': 56},
+            {'driver': 'GV0', 'value': -1, 'uom': 56},
+            {'driver': 'GV1', 'value': -1, 'uom': 56},
+            {'driver': 'GV2', 'value': -1, 'uom': 56},
+            {'driver': 'GV3', 'value': -1, 'uom': 56},
+            {'driver': 'GV4', 'value': -1, 'uom': 56},
             {'driver': 'GPV', 'value': -1, 'uom': 56}
             ]
 
@@ -209,7 +209,7 @@ class CircuitNode(udi_interface.Node):
         self.allCircuitsData = passedAllCircuitsData
         self.allBreakersData = passedAllBreakersData
 
-        if self.getDriver('TIME') == -1 or self.getDriver('PULSCNT') == -1:
+        if self.getDriver('TIME') == -1 or self.getDriver('PULSCNT') == -1 or self.getDriver('GV0') == -1 or self.getDriver('GV1') == -1 or self.getDriver('GV2') == -1 or self.getDriver('GV3') == -1 or self.getDriver('GV4') == -1:
             designatedCircuitData_tuple = self.allCircuitsData.partition(chr(34) + self.circuitID + chr(34) + ':')
             designatedCircuitData = designatedCircuitData_tuple[2]
             designatedCircuitData_tuple = designatedCircuitData.partition('},')
@@ -237,10 +237,7 @@ class CircuitNode(udi_interface.Node):
         
                 for i in range(0,designatedCircuitTabsCount):
                     LOGGER.warning("\n\tIn Circuit " + self.circuitID + ", Tab # " + str(i) + " corresponds to breaker number:\n\t\t" + designatedCircuitTabsArray[i] + "\n")
-                    try:
-                        self.setDriver('GV' + str(i+1), int(designatedCircuitTabsArray[i]), True, True)
-                    except:
-                        LOGGER.warning("\n\t\tERROR Setting Tab (Physical Breaker #" + str(i+1) + ") for " + self.circuitID + ".\n")
+                    self.pushTextToDriver('GV' + str(i+1), designatedCircuitTabsArray[i].replace(' ',''))
                         
                 for i in range(designatedCircuitTabsCount+1,4):
                     self.pushTextToDriver('GV' + str(i), '--')
@@ -378,8 +375,17 @@ class CircuitNode(udi_interface.Node):
     '''
     def stop(self):
         LOGGER.warning("\n\tSTOP COMMAND received: Circuit Node '" + self.address + "'.\n")
-        self.setDriver('ST', 0, True, True)
+        self.setDriver('ST', -1, True, True)
+        self.setDriver('PULSCNT', -1, True, True)
+        self.setDriver('CLIEMD', 0, True, True)
+        self.setDriver('AWAKE', 0, True, True)
         self.setDriver('TIME', -1, True, True)
+        self.setDriver('GV0', -1, True, True)
+        self.setDriver('GV1', -1, True, True)
+        self.setDriver('GV2', -1, True, True)
+        self.setDriver('GV3', -1, True, True)
+        self.setDriver('GV4', -1, True, True)
+        
         self.pushTextToDriver('GPV',"NodeServer STOPPED")
 
     commands = {
