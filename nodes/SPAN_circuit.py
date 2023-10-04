@@ -338,8 +338,19 @@ class CircuitNode(udi_interface.Node):
         updateCircuitData = updateCircuitResponse.read()
         updateCircuitData = updateCircuitData.decode("utf-8")
 
-        LOGGER.debug("\n\tCOMMAND POST Update Circuit Status Data: \n\t\t" + format(updateCircuitData) + "\n")
-        self.setDriver('CLIEMD', int(value), True, True)
+        LOGGER.warning("\n\tCOMMAND POST Update Circuit Status Data: \n\t\t" + format(updateCircuitData) + "\n")
+        if "200" in updateCircuitData:
+            self.setDriver('CLIEMD', int(value), True, True)
+
+        spanConnection = http.client.HTTPConnection(self.ipAddress)
+        payload = ''
+        headers = {
+            "Authorization": "Bearer " + self.token
+        }
+        spanConnection.request("GET", "/api/v1/circuits", payload, headers)
+        circuitsResponse = spanConnection.getresponse()
+        self.allCircuitsData = circuitsResponse.read()
+        self.allCircuitsData = self.allCircuitsData.decode("utf-8")
 
     def cmd_update_circuit_priority(self,commandDetails):
         LOGGER.debug(f'\n\t{self.address} being set via cmd_update_circuit_priority to commandDetails={commandDetails}\n')
@@ -370,8 +381,19 @@ class CircuitNode(udi_interface.Node):
         updateCircuitData = updateCircuitResponse.read()
         updateCircuitData = updateCircuitData.decode("utf-8")
 
-        LOGGER.debug("\n\tCOMMAND POST Update Circuit Priority Data: \n\t\t" + format(updateCircuitData) + "\n")
-        self.setDriver('AWAKE', int(value), True, True)
+        LOGGER.warning("\n\tCOMMAND POST Update Circuit Priority Data: \n\t\t" + format(updateCircuitData) + "\n")
+        if "200" in updateCircuitData:
+            self.setDriver('AWAKE', int(value), True, True)
+
+        spanConnection = http.client.HTTPConnection(self.ipAddress)
+        payload = ''
+        headers = {
+            "Authorization": "Bearer " + self.token
+        }
+        spanConnection.request("GET", "/api/v1/circuits", payload, headers)
+        circuitsResponse = spanConnection.getresponse()
+        self.allCircuitsData = circuitsResponse.read()
+        self.allCircuitsData = self.allCircuitsData.decode("utf-8")
 
     '''
     Change self status driver to 0 W
