@@ -7,6 +7,10 @@ MIT License
 """
 import udi_interface
 import sys
+import time
+import string
+import re
+
 from nodes import SPAN_ctl
 
 LOGGER = udi_interface.LOGGER
