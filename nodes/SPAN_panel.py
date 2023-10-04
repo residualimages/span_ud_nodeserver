@@ -285,9 +285,9 @@ class PanelNodeForCircuits(udi_interface.Node):
                         LOGGER.debug("\n\tUpdating " + node + " (which should be a Circuit node under this Panel controller: " + self.address + ").\n")
                         try:
                             dateTimeString = nowDT.strftime("%m/%d/%Y %H:%M:%S")
-                            node.updateNode(self.allCircuitsData,dateTimeString)
+                            (nodes[node]).updateNode(self.allCircuitsData,dateTimeString)
                         except Exception as e:
-                            LOGGER.warning("\n\t\tPOLL ERROR in Panel Circuits: Cannot seem to update node '" + node + "' needed in for-loop under '" + self.address + "', due to error:\t\n{}\n".format(e))
+                            LOGGER.warning("\n\t\tPOLL ERROR in Panel Circuits: Cannot seem to update node '" + node + "' needed in for-loop under '" + self.address + "', due to error:\n\t\t\t{}\n".format(e))
                 
                 '''
                 nodes = self.poly.getNodes()
