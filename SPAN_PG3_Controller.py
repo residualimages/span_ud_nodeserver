@@ -22,6 +22,13 @@ if __name__ == "__main__":
         polyglot = udi_interface.Interface([])
         polyglot.start()
 
+        nodeDrivers = polyglot.getNodeDrivers()
+        allNodeDriversString = ''
+        for nodeDriver in nodeDrivers:
+            allNodeDriversString = allNodeDriversString + '\t\t' + nodeDriver + '\n'
+            
+        LOGGER.debug("\n\n\tAll Node Drivers under root polyglot object:\n" + allNodeDriversString + "\n")
+
         # Create the controller node if not created
         nodes = polyglot.getNodes()
         if 'controller' not in nodes:
