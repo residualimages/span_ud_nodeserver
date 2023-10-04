@@ -188,7 +188,7 @@ class BreakerNode(udi_interface.Node):
     '''
     This is where the real work happens.  When the parent controller gets a shortPoll, do some work with the passed data. 
     '''
-    def updateNode(self, passedAllBreakersData, dateTimeString):
+    def updateBreakerNode(self, passedAllBreakersData, dateTimeString):
         self.allBreakersData = passedAllBreakersData
 
         if self.getDriver('PULSCNT') <= 0:
