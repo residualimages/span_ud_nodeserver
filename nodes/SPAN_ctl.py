@@ -105,15 +105,6 @@ class Controller(udi_interface.Node):
                     how_many += 1
                     nodes[node].pollBreakerController(polltype + "|poll passed from root controller")
                     self.pushTextToDriver('GPV',"Last Short Poll Date / Time: " + nowDT.strftime("%m/%d/%Y %H:%M:%S"))
-
-                    '''
-                    try:
-                        nodes[node].pollBreakerController(polltype + "|poll passed from root controller")
-                        self.pushTextToDriver('GPV',"Last Short Poll Date / Time: " + nowDT.strftime("%m/%d/%Y %H:%M:%S"))
-                    except:
-                        LOGGER.debug("\n\tPOLL ERROR in Node Server root controller ('" + self.address + "'): Cannot seem to kick off shortPoll in controller node '" + node + "' as necessary, due to error.\n"))
-                        self.pushTextToDriver('GPV',"POLL ERROR for '" + node + "'")
-                    '''
             
             self.setDriver('GV0', how_many, True, True)
 
