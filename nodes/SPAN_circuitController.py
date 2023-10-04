@@ -287,7 +287,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                 nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                 self.pushTextToDriver('TIME',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
                 
-                nodeCollection = self.poly.getNodes()
+                nodeCollection = self.poly.getNodes(self.parent)
                 currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
                 LOGGER.debug("\n\tWill be looking for Circuit nodes with this as the prefix: '" + currentPanelCircuitPrefix + "'.\n")
                 for i in range(1,33):
@@ -317,7 +317,7 @@ class PanelNodeForCircuits(udi_interface.Node):
         '''
         # delete any existing nodes but only under this panel
         currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
-        nodes = self.poly.getNodes()
+        nodes = self.poly.getNodes(self.parent)
         for node in nodes:
              if currentPanelCircuitPrefix in node:
                 LOGGER.debug("\n\tDeleting " + node + " when creating child Circuit nodes for Panel Circuits controller at " + self.address + ".\n")
