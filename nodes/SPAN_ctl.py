@@ -110,8 +110,8 @@ class Controller(udi_interface.Node):
                     try:
                         nodes[node].pollBreakerController(polltype + "|poll passed from root controller")
                         self.pushTextToDriver('GPV',"Last Short Poll Date / Time: " + nowDT.strftime("%m/%d/%Y %H:%M:%S"))
-                    except Exception as e:
-                        LOGGER.debug("\n\tPOLL ERROR in Node Server root controller ('" + self.address + "'): Cannot seem to kick off shortPoll in controller node '" + node + "' as necessary, due to error:\n\t\t{}\n".format(e))
+                    except:
+                        LOGGER.debug("\n\tPOLL ERROR in Node Server root controller ('" + self.address + "'): Cannot seem to kick off shortPoll in controller node '" + node + "' as necessary, due to error.\n"))
                         self.pushTextToDriver('GPV',"POLL ERROR for '" + node + "'")
                     '''
             
@@ -327,10 +327,10 @@ class Controller(udi_interface.Node):
                     panelBreakerController = SPAN_breakerController.PanelNodeForBreakers(self.poly, addressBreakers, addressBreakers, titleBreakers, current_IPaddress, current_BearerToken, panelCircuitController)
                     self.poly.addNode(panelBreakerController)
                     panelBreakerController.wait_for_node_done()
-                except Exception as ee:
-                    LOGGER.warning('Failed to create Panel Breakers Controller {}: {}'.format(titleBreakers, ee))
-            except Exception as e:
-                LOGGER.warning('Failed to create Panel Circuits Controller {}: {}'.format(titleCircuits, e))
+                except:
+                    LOGGER.warning('Failed to create Panel Breakers Controller {}: {}'.format(titleBreakers))
+            except:
+                LOGGER.warning('Failed to create Panel Circuits Controller {}: {}'.format(titleCircuits))
         
         self.setDriver('GV0', how_many, True, True)
         self.pushTextToDriver('GPV','NodeServer started; AWAITING first short poll')
@@ -359,7 +359,7 @@ class Controller(udi_interface.Node):
                 LOGGER.warning("\n\tRESET NodeServer - deleting node '" + node + "'.\n")
                 try:
                     self.poly.delNode(node)
-                except Exception as e:
+                except:
                     LOGGER.warning('\n\tDELETING FAILED due to: {}\n'.format(e))
             else:
                 LOGGER.debug("\n\tRESET NodeServer - SKIP deleting '" + node + "' for now.\n")
@@ -373,7 +373,7 @@ class Controller(udi_interface.Node):
                     LOGGER.warning("\n\tRESET NodeServer - deleting controller '" + controller + "'.\n")
                     try:
                         self.poly.delNode(controller)
-                    except Exception as e:
+                    except:
                         LOGGER.warning('\n\tDELETING FAILED due to: {}\n'.format(e))
                 else:
                     LOGGER.debug("\n\tRESET NodeServer - SKIP deleting '" + controller + "'.\n")      
