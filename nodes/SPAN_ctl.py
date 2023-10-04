@@ -119,7 +119,6 @@ class Controller(udi_interface.Node):
             LOGGER.debug("\n\t\tUNAuthorized (expecting this to be false): " + str(self.ISY.unauthorized) + ".\n")
 
     def wait_for_node_done(self):
-        self.pushTextToDriver('GPV','Waiting for root controller...')
         while len(self.n_queue) == 0:
             time.sleep(0.1)
         self.n_queue.pop()
