@@ -378,16 +378,6 @@ class Controller(udi_interface.Node):
                 else:
                     LOGGER.debug("\n\tRESET NodeServer - SKIP deleting '" + controller + "'.\n")      
     
-            countOfRemainingNodes = countOfNodes
-            while countOfRemainingNodes > 1:
-                nodes = self.poly.getNodes()
-                countOfRemainingNodes = 0
-                for node in nodes.copy():
-                    countOfRemainingNodes += 1
-                if countOfRemainingNodes > 1:
-                    LOGGER.warning("\n\t\tSTILL DELETING nodes, not yet at 1 remaining. Current count: " + str(countOfRemainingNodes) + "...\n")
-                    self.pushTextToDriver('GPV',"STILL DELETING nodes; current count: " + str(countOfRemainingNodes) + "...")
-    
             # Iterate over polyglot's internal list of nodes to check for orphaned ones belonging to this NodeServer
             for controllerIndex in range(1,2):
                 for entityIndex in range(1,33):
