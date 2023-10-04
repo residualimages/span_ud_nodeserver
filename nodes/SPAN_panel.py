@@ -129,7 +129,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             #lastOctet = lastOctet_array[len(lastOctet_array)-1]
             #self.setDriver('FREQ', lastOctet, True, True, None, self.ipAddress)
             
-            self.pushTextToDriver('FREQ',self.ipAddress)
+            self.pushTextToDriver('FREQ',self.ipAddress.replace('.','-'))
 
             self.updateAllCircuitsData()
             
@@ -177,7 +177,7 @@ class PanelNodeForCircuits(udi_interface.Node):
     def pushTextToDriver(self,driver,stringToPublish):
         if not(self._fullyCreated):
             return
-        stringToPublish = stringToPublish.replace('.','')
+        stringToPublish = stringToPublish.replace('.',' ')
         if len(str(self.getDriver(driver))) <= 0:
             LOGGER.warning("\n\tPUSHING REPORT ERROR - a (correct) Driver was not passed.\n")
             return
@@ -262,10 +262,10 @@ class PanelNodeForCircuits(udi_interface.Node):
         if 'shortPoll' in polltype:
 
             if "-1" in str(self.getDriver('FREQ')):
-                self.pushTextToDriver('FREQ',self.ipAddress)
+                self.pushTextToDriver('FREQ',self.ipAddress.replace('.','-'))
 
             if "-1" in str(self.getDriver('GPV')):
-                self.pushTextToDriver('GPV','')
+                self.pushTextToDriver('GPV',' ')
         
             tokenLastTen = self.token[-10:]
             LOGGER.debug("\n\tPOLL About to query Panel Circuits Controller '" + self.address + "' @ {}, using token ending in {}".format(self.ipAddress,tokenLastTen))
@@ -443,7 +443,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             #lastOctet_array = self.ipAddress.split('.')
             #lastOctet = lastOctet_array[len(lastOctet_array)-1]
             #self.setDriver('FREQ', lastOctet, True, True, None, self.ipAddress)
-            self.pushTextToDriver('FREQ', self.ipAddress)
+            self.pushTextToDriver('FREQ', self.ipAddress.replace('.','-'))
 
             self.updateAllBreakersData()
         
@@ -599,7 +599,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         if 'shortPoll' in polltype:
             
             if "-1" in str(self.getDriver('FREQ')):
-                self.pushTextToDriver('FREQ',self.ipAddress)
+                self.pushTextToDriver('FREQ',self.ipAddress.replace('.','-'))
 
             if "-1" in str(self.getDriver('GPV')):
                 self.pushTextToDriver('GPV','')
