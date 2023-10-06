@@ -351,7 +351,8 @@ class PanelNodeForBreakers(udi_interface.Node):
                 if breakerCount != 32 and self._fullyCreated:
                     LOGGER.warning("\n\tBREAKER CHILD NODE TRACKING ERROR: Any Breaker Controller Node should be tracking exactly 32 child Breaker Nodes; as it stands right now, controller '" + self.address + "' is tracking " + str(breakerCount-1) + " child Breaker Nodes.\n")
 
-                if breakerCount == self.expectedNumberOfChildrenBreakers and self._initialized and self._fullyCreated:
+                if breakerCount == self.expectedNumberOfChildrenBreakers and self._initialized:
+                    self._fullyCreated = True
                     self.allExpectedChildrenCreated = True
                 
                 for i in range(0,32):
