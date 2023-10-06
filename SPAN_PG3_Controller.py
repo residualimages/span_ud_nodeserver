@@ -33,9 +33,9 @@ if __name__ == "__main__":
         # Create the controller node if not created
         if 'controller' not in nodes:
             SPAN_ctl.Controller(polyglot, 'controller', 'controller', 'SPAN Panel - Nodeserver')
-            LOGGER.debug("\n\tNodeServer's root 'controller' node does NOT exist. Creating...\n")
+            LOGGER.debug("\n\tNodeServer's root 'controller' node is not initialized. Initializing...\n")
         else:
-            LOGGER.debug("\n\tNodeServer's root 'controller' node DOES exist. Attempting to publish a 'GPV' NodeServer Message to IoX...\n")
+            LOGGER.debug("\n\tNodeServer's root 'controller' node is initialized. Attempting to publish a 'GPV' NodeServer Message to IoX...\n")
             nodes['controller'].pushTextToDriver('GPV','NodeServer STARTING')
 
         # Just sit and wait for events
