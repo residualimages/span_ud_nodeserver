@@ -325,7 +325,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                     try:
                         self.childCircuitNodes[i].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
                         LOGGER.debug("\n\t\tPOLL SUCCESS in Circuits Controller '" + self.address + "' for '" + self.childCircuitNodes[i].address + "'.\n")
-                    else:
+                    except:
                         LOGGER.warning("\n\tUPDATE CIRCUIT NODE error for '" + self.childCircuitNodes[i] + "'.\n")
                             
             else:
