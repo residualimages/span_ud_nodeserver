@@ -337,6 +337,11 @@ class PanelNodeForBreakers(udi_interface.Node):
                 LOGGER.debug("\n\tWill be looking for Breaker nodes with this as the prefix: '" + currentPanelBreakerPrefix + "'.\n")
                 recreateBreakers = False
                 problemChildren = ''
+
+                breakerCount = len(self.childBreakerNodes)
+                if breakerCount <> 32:
+                    LOGGER.warning("\n\tBREAKER CHILD NODE TRACKING ERROR: Any Breaker Controller Node should be tracking exactly 32 child Breaker Nodes; as it stands right now, controller '" + self.address + "' is tracking " + str(breakerCount) + " child Breaker Nodes.\n")
+                
                 for i in range(1,33):
                     node = currentPanelBreakerPrefix + str(i)
                     LOGGER.debug("\n\tUpdating " + node + " (which should be a Breaker node under this Breakers controller: " + self.address + ").\n")
