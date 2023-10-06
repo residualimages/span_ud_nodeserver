@@ -90,7 +90,7 @@ class CircuitNode(udi_interface.Node):
     until it is fully created before we try to use it.
     '''
     def node_queue(self, data):
-        if self.address == data['address'] and self._initialized:
+        if self.address == data['address']:
             LOGGER.debug("\n\tWAIT FOR NODE CREATION: Fully Complete for Circuit " + self.address + "\n")
             self.pushTextToDriver('GV0',self.circuitID)
             self.pushTextToDriver('GVP',"NodeServer RUNNING")
