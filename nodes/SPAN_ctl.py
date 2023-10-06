@@ -390,7 +390,7 @@ class Controller(udi_interface.Node):
                     LOGGER.debug("\n\tRESET NodeServer - SKIP deleting '" + controller + "'.\n")      
     
             # Iterate over polyglot's internal list of nodes to check for orphaned ones belonging to this NodeServer
-            for controllerIndex in range(1,2):
+            for controllerIndex in range(1,3):
                 for entityIndex in range(1,33):
                     address = 's' + str(controllerIndex) + '_breaker_' + str(entityIndex)
                     if address in self.poly.nodes_internal:
