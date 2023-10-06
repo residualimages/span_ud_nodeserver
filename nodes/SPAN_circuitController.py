@@ -129,7 +129,7 @@ class PanelNodeForCircuits(udi_interface.Node):
     until it is fully created before we try to use it.
     '''
     def node_queue(self, data):
-        if self.address == data['address'] and self._initialized:
+        if self.address == data['address']:
             LOGGER.debug("\n\t\t\tPanelForCircuits Controller Creation Completed; Queue Circuit child node(s) creation.\n")
             #lastOctet_array = self.ipAddress.split('.')
             #lastOctet = lastOctet_array[len(lastOctet_array)-1]
