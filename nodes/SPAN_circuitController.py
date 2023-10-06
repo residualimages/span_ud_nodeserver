@@ -376,7 +376,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             else:
                 try:
                     node = self.childCircuitNodes[self.childCircuitNodes.index(address)]
-                else:
+                except:
                     self.childCircuitNodes.append(checkNodes[address])
                     node = self.childCircuitNodes[self.childCircuitNodes.index(address)]
             
