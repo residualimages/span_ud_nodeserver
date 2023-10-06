@@ -303,6 +303,8 @@ class PanelNodeForCircuits(udi_interface.Node):
 
                 if circuitCount == self.expectedNumberOfChildrenCircuits and self._initialized and self._fullyCreated:
                     self.allExpectedChildrenCreated = True
+                else:
+                    LOGGER.warning("\n\tStill awaiting fully ready controller before querying child Circuit nodes...\n\t\tCircuitCount: " + str(circuitCount) + "|self._initialized: " + str(self._initialized) + "|self._fullyCreated: " + str(self._fullyCreated) + ".\n")
                 
                 if circuitCount < 1 and self._fullyCreated and self.allExpectedChildrenCreated:
                     LOGGER.warning("\n\tERROR in Circuit Controller Child Count for '" + self.address + "'; attempting to recover by searching for nodes with the name '" + currentPanelCircuitPrefix + "'...\n")
@@ -389,7 +391,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                     node = self.childCircuitNodes[self.childCircuitNodes.index(address)]
             
             self.poly.addNode(node)
-            node.wait_for_node_done()
+            #node.wait_for_node_done()
             
             LOGGER.debug('\n\tCreated a Circuit child node {} under Panel Circuit Controller {}\n'.format(title, panelNumberPrefix))
         
