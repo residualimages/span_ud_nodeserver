@@ -71,6 +71,11 @@ def getValidNodeName(s: str) -> str:
     name = s.translate({ 0x2018:0x27, 0x2019:0x27, 0x201C:0x22, 0x201D:0x22 }).encode("ascii", "ignore").decode("ascii")
 
     return name
+'''
+just for when nodes get silly
+'''
+class fakeNode( object ):
+    pass
 
 '''
 This is our Panel Breakers controller node. 
@@ -412,8 +417,10 @@ class PanelNodeForBreakers(udi_interface.Node):
                     node = self.childBreakerNodes[self.childBreakerNodes.index(address)]
                 except:
                     self.childBreakerNodes.append(checkNodes[address])
-                    #dictionary in format of {node.name, node.address, node.private}
-                    node = {'name': title, 'address': address, 'private': ''}
+                    node = fakeNode()
+                    node.name=title
+                    node.address=address
+                    node.private=''
             
             self.poly.addNode(node)
             node.wait_for_node_done()
