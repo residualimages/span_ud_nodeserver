@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Polyglot v3 node server SPAN Smart Panels
+Polyglot v3 NodeServer SPAN Smart Panels - Breakers Controller
 Copyright (C) 2023 Matt Burke
 
 MIT License
