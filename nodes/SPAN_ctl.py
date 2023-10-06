@@ -112,6 +112,14 @@ class Controller(udi_interface.Node):
         if 'shortPoll' in polltype and not(self.pg3ParameterErrors):
             nowEpoch = int(time.time())
             nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+
+            how_many = len(self.breakerControllers)
+            if self._fullyCreated:
+                for i in range(0,how_many):
+                    self.self.breakerControllers[i].pollBreakerController(polltype + "|poll passed to '" + self.self.breakerControllers[i] + "' from root controller in FOR loop of its own poll")
+                    self.pushTextToDriver('GPV',"Last Short Poll Date / Time: " + nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+
+            '''
             nodes = self.poly.getNodes()
             how_many = 0
             for node in nodes.copy():
@@ -121,6 +129,7 @@ class Controller(udi_interface.Node):
                     self.pushTextToDriver('GPV',"Last Short Poll Date / Time: " + nowDT.strftime("%m/%d/%Y %H:%M:%S"))
             
             self.setDriver('GV0', how_many, True, True)
+            '''
 
         elif self.pg3ParameterErrors:
             self.pushTextToDriver('GPV',"Please correct the NodeServer parameters in PG3(x)")
