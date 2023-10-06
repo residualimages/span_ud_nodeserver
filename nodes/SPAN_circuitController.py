@@ -388,7 +388,7 @@ class PanelNodeForCircuits(udi_interface.Node):
         #self.pushTextToDriver('GPV',"NodeServer RUNNING")
 
     '''
-    This is how we handle whenever our 'sister' Breaker controller updates its allBreakersData variable
+    This is how we handle whenever our sister Breaker controller updates its allBreakersData variable
     '''
     def updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(self, totalPowerPassed, dateTimeStringPassed, allBreakersDataPassed):
         LOGGER.info("\n\t Using Shared Data from sister Breaker Controller to update 'ST' and 'TIME' on '" + self.address + "'.\n")
