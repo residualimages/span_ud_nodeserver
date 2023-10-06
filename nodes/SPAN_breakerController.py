@@ -294,6 +294,8 @@ class PanelNodeForBreakers(udi_interface.Node):
     This is where the real work happens.  When we get a shortPoll, do some work. 
     '''
     def pollBreakerController(self, polltype):
+        if self.pollInProgress:
+            return
         LOGGER.debug("\n\tPOLL BREAKER CONTROLLER: " + polltype + " for '" + self.address + "'.\n")
         if 'shortPoll' in polltype:
             
