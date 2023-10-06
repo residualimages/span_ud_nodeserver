@@ -26,12 +26,11 @@ if __name__ == "__main__":
         allNodesString = ''
         for node in nodes:
             allNodesString = allNodesString + '\t\t' + node + '\n'
-            
+    
         #Should be empty at first, but might be worth trying to handle if it wasn't.
         #LOGGER.debug("\n\n\tAll Nodes under root polyglot object:\n" + allNodesString + "\n")
 
         # Create the controller node if not created
-        nodes = polyglot.getNodes()
         if 'controller' not in nodes:
             SPAN_ctl.Controller(polyglot, 'controller', 'controller', 'SPAN Panel - Nodeserver')
             LOGGER.debug("\n\tNodeServer's root 'controller' node does NOT exist. Creating...\n")
