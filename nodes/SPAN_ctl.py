@@ -81,6 +81,9 @@ class Controller(udi_interface.Node):
 
         self.Parameters = Custom(polyglot, 'customparams')
 
+        self.circuitControllers: SPAN_circuitController.PanelNodeForCircuits = []
+        self.breakerControllers: SPAN_breakerController.PanelNodeForBreakers = []
+
         self.ISY = ISY(self.poly)
         self.parent = parent
 
@@ -325,19 +328,36 @@ class Controller(udi_interface.Node):
             titleBreakers = 'SPAN Panel #{} - Breakers'.format(i+1)
             titleBreakers = getValidNodeName(titleBreakers)
             
-            self.pushTextToDriver('GPV','Traversing circuits in Circuit Controller #' + str(i+1))
+            #self.pushTextToDriver('GPV','Traversing circuits in Circuit Controller #' + str(i+1))
             try:
-                LOGGER.debug("\n\t\ADD circuitController = SPAN_circuitController.PanelNodeForCircuits(self.poly, " + addressCircuits + ", " + addressCircuits + ", " + titleCircuits + ", " + current_IPaddress + ", " + current_BearerToken + ")\n")
-                panelCircuitController = SPAN_circuitController.PanelNodeForCircuits(self.poly, addressCircuits, addressCircuits, titleCircuits, current_IPaddress, current_BearerToken)
-                self.poly.addNode(panelCircuitController)
-                panelCircuitController.wait_for_node_done()
+                checkNodes = self.poly.getNodes()
+                if addressCircuits not in checkNodes:    
+                    LOGGER.debug("\n\t\ADD circuitController = SPAN_circuitController.PanelNodeForCircuits(self.poly, " + addressCircuits + ", " + addressCircuits + ", " + titleCircuits + ", " + current_IPaddress + ", " + current_BearerToken + ")\n")
+                    panelCircuitController = SPAN_circuitController.PanelNodeForCircuits(self.poly, addressCircuits, addressCircuits, titleCircuits, current_IPaddress, current_BearerToken)
+                    self.poly.addNode(panelCircuitController)
+                    panelCircuitController.wait_for_node_done()
+                    self.circuitControllers.append(panelCircuitController)
+                else:
+                    try:
+                        panelCircuitController = self.circuitControllers[self.circuitControllers.index(addressCircuits)]
+                    except:
+                        self.circuitControllers.append(panelCircuitController)
+                        panelCircuitController = self.circuitControllers[self.circuitControllers.index(addressCircuits)]
                 
-                self.pushTextToDriver('GPV','Traversing breakers in Breaker Controller #' + str(i+1))
+                #self.pushTextToDriver('GPV','Traversing breakers in Breaker Controller #' + str(i+1))
                 try:
-                    LOGGER.debug("\n\t\ADD breakerController = SPAN_breakerController.PanelNodeForBreakers(self.poly, " + addressBreakers + ", " + addressBreakers + ", " + titleBreakers + ", " + current_IPaddress + ", " + current_BearerToken + ")\n")
-                    panelBreakerController = SPAN_breakerController.PanelNodeForBreakers(self.poly, addressBreakers, addressBreakers, titleBreakers, current_IPaddress, current_BearerToken, panelCircuitController)
-                    self.poly.addNode(panelBreakerController)
-                    panelBreakerController.wait_for_node_done()
+                    if addressBreakers not in checkNodes:
+                        LOGGER.debug("\n\t\ADD breakerController = SPAN_breakerController.PanelNodeForBreakers(self.poly, " + addressBreakers + ", " + addressBreakers + ", " + titleBreakers + ", " + current_IPaddress + ", " + current_BearerToken + ")\n")
+                        panelBreakerController = SPAN_breakerController.PanelNodeForBreakers(self.poly, addressBreakers, addressBreakers, titleBreakers, current_IPaddress, current_BearerToken, panelCircuitController)
+                        self.poly.addNode(panelBreakerController)
+                        panelBreakerController.wait_for_node_done()
+                        self.breakerControllers.append(panelBreakerController)
+                    else:
+                        try:
+                            panelBreakerController = self.breakerControllers[self.breakerControllers.index(addressBreakers)]
+                        except:
+                            self.breakerControllers.append(panelBreakerController)
+                            panelBreakerController = self.breakerControllers[self.breakerControllers.index(addressBreakers)]
                 except:
                     LOGGER.warning('Failed to create Panel Breakers Controller {}: {}'.format(titleBreakers))
             except:
