@@ -75,7 +75,8 @@ def getValidNodeName(s: str) -> str:
 just for when nodes get silly
 '''
 class fakeNode( object ):
-    pass
+    def wait_for_node_done(self):
+        return
 
 '''
 This is our Panel Breakers controller node. 
