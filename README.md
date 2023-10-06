@@ -100,8 +100,11 @@ The settings for this node are:
 
 # Release Notes
 - 1.0.5 10/06/2023
+
   º Initial non-production store release candidate
   
 - 1.0.0 09/16/2023
+
   º Initial version copied from Example 3 Node Server (https://github.com/UniversalDevicesInc/udi-example3-poly)
+
   º Assistance from Goose66 / iopool NodeServer
