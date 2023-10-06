@@ -336,6 +336,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                 currentPanelBreakerPrefix = "s" + self.address.replace('panelbreaker_','') + "_breaker_"
                 LOGGER.debug("\n\tWill be looking for Breaker nodes with this as the prefix: '" + currentPanelBreakerPrefix + "'.\n")
                 recreateBreakers = False
+                problemChildren = ''
                 for i in range(1,33):
                     node = currentPanelBreakerPrefix + str(i)
                     LOGGER.debug("\n\tUpdating " + node + " (which should be a Breaker node under this Breakers controller: " + self.address + ").\n")
@@ -344,10 +345,13 @@ class PanelNodeForBreakers(udi_interface.Node):
                     try:
                         nodes[node].updateBreakerNode(self.allBreakersData, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
                     except:
-                        LOGGER.warning("\n\tUnable to execute updateBreakerNode on '" + node + "' [" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "].\n\t\tWill try calling createBreakers() in case it is just missing.\n\t\tIf this persists repeatedly across multiple shortPolls, contact developer.")
+                        if len(problemChildren) > 0:
+                            problemChildren = problemChildren + ", "
+                        problemChildren = problemChildren + "'" + node "'"
                         recreateBreakers = True
                         
                 if recreateBreakers:
+                    LOGGER.warning("\n\tUnable to execute updateBreakerNode on (" + problemChildren + ") Breaker node(s) [" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "].\n\t\tWill try calling createBreakers() in case it is just missing.\n\t\tIf this persists repeatedly across multiple shortPolls, contact developer.")
                     self.createBreakers()
 
             else:
