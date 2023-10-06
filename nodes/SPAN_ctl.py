@@ -389,7 +389,9 @@ class Controller(udi_interface.Node):
         
         for node in nodes:
             LOGGER.warning("\n\tAWAITING STOP from '" + node + "'...\n")
-            while "-1" not in str(node.getDriver('ST')):
+            checkMe = 0
+            while "-1" not in str(checkMe):
+                checkMe = node.getDriver('ST')
                 time.sleep(0.1)
             LOGGER.warning("\n\\t\tSTOP of '" + node + "' COMPLETE.\n")
             self.childrenRunning -= 1
