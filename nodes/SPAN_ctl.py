@@ -100,15 +100,6 @@ class Controller(udi_interface.Node):
     #def nsInfo(self, data):
         #LOGGER.debug("\n\tHANDLE NSINFO.\n\t\t{}\n".format(data))
     
-    def node_queue(self, data):
-        if self.address == data['address'] and self._initialized:
-            LOGGER.debug("\n\tWAIT FOR NODE CREATION: Fully Complete for Breaker " + self.address + "\n")
-            nowEpoch = int(time.time())
-            nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-            self.pushTextToDriver('TIME',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
-
-            self._fullyCreated = True
-    
     def poll(self, polltype):
         if 'shortPoll' in polltype and not(self.pg3ParameterErrors):
             nowEpoch = int(time.time())
@@ -133,7 +124,7 @@ class Controller(udi_interface.Node):
     until it is fully created before we try to use it.
     '''
     def node_queue(self, data):
-        if data['address'] == self.address and self._initialized:
+        if data['address'] == self.address:
             LOGGER.debug("\n\tISY Object created under 'controller':\t" + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", which is itself NS #" + str(self.poly.profileNum) + ", and has self.address of '" + str(self.address) + "'.\n")   
             LOGGER.debug("\n\t\tUNAuthorized (expecting this to be false): " + str(self.ISY.unauthorized) + ".\n")
             
