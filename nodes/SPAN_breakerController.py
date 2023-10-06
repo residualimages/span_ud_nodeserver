@@ -422,6 +422,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                     node.address = address
                     node.name = title
                     node.node_def_id = self.poly.profileNum
+                    node.id = node.node_def_id
                     node.primary = self.address
                     node.private = ''
                     node.drivers = [
