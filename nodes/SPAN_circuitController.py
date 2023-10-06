@@ -114,8 +114,9 @@ class PanelNodeForCircuits(udi_interface.Node):
         tokenLastTen = self.token[-10:]
         LOGGER.debug("\n\tINIT Panel Circuit Controller's IP Address:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen)
 
-        self.allCircuitsData = ''
         self.allBreakersData = ''
+        self.allCircuitsData = ''
+        self.pollInProgress: bool = False
         
         # subscribe to the events we want
         #polyglot.subscribe(polyglot.POLL, self.pollCircuitController)
@@ -139,7 +140,8 @@ class PanelNodeForCircuits(udi_interface.Node):
             
             self.pushTextToDriver('FREQ',self.ipAddress.replace('.','-'))
 
-            self.updateAllCircuitsData()
+            if not(self.pollInProgress): 
+                self.updateAllCircuitsData()
             
             if "circuits" in self.allCircuitsData:
                 LOGGER.debug("\n\tINIT Panel Circuit Controller's Circuits Data: \n\t\t" + self.allCircuitsData + "\n\t\tCount of circuits: " + str(self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
@@ -290,7 +292,8 @@ class PanelNodeForCircuits(udi_interface.Node):
             tokenLastTen = self.token[-10:]
             LOGGER.debug("\n\tPOLL About to query Panel Circuits Controller '" + self.address + "' @ {}, using token ending in {}".format(self.ipAddress,tokenLastTen))
             
-            self.updateAllCircuitsData()
+            if not(self.pollInProgress):
+                self.updateAllCircuitsData()
             
             if "circuits" in self.allCircuitsData:
                 
@@ -420,6 +423,7 @@ class PanelNodeForCircuits(udi_interface.Node):
     This is how we update the allCircuitsData variable
     '''
     def updateAllCircuitsData(self):
+        self.pollInProgress = True
         LOGGER.debug("\n\tUPDATING ALLCIRCUITSDATA for '" + self.address + "'...\n")
         
         spanConnection = http.client.HTTPConnection(self.ipAddress)
@@ -433,6 +437,8 @@ class PanelNodeForCircuits(udi_interface.Node):
         self.allCircuitsData = self.allCircuitsData.decode("utf-8")
         
         LOGGER.debug("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data: \n\t\t " + self.allCircuitsData + "\n")
+
+        self.pollInProgress = False
             
     '''
     STOP Called
