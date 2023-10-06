@@ -312,6 +312,8 @@ class PanelNodeForCircuits(udi_interface.Node):
                     else:
                         LOGGER.warning("\n\t\tCORRECTED Circuit Controller Child Count ERROR - the Circuit Controller Child Count was 0, but now it is showing as " + str(circuitCount) + ".\n")
                         self.pushTextToDriver('GPV',"NodeServer RUNNING")
+                else:
+                    self.pushTextToDriver('GPV',"NodeServer RUNNING")
                     
                 for i in range(0, circuitCount):
                     self.childCircuitNodes[i].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
@@ -376,7 +378,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             
             LOGGER.debug('\n\tCreated a Circuit child node {} under Panel Circuit Controller {}\n'.format(title, panelNumberPrefix))
         
-        self.pushTextToDriver('GPV',"NodeServer RUNNING")
+        #self.pushTextToDriver('GPV',"NodeServer RUNNING")
 
     '''
     This is how we handle whenever our 'sister' Breaker controller updates its allBreakersData variable
