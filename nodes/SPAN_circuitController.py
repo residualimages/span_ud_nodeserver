@@ -369,12 +369,13 @@ class PanelNodeForCircuits(udi_interface.Node):
             title = current_circuitName
             title = getValidNodeName(title)
 
-            node = SPAN_circuit.CircuitNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken, current_circuitID, i)
-            self.poly.addNode(node)
+            checkNodes = self.poly.getNodes()
+            if address not in checkNodes:
+                node = SPAN_circuit.CircuitNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken, current_circuitID, i)
+                self.childCircuitNodes.append(node)
             
+            self.poly.addNode(node)
             node.wait_for_node_done()
-
-            self.childCircuitNodes.append(node)
             
             LOGGER.debug('\n\tCreated a Circuit child node {} under Panel Circuit Controller {}\n'.format(title, panelNumberPrefix))
         
