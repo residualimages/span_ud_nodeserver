@@ -74,6 +74,8 @@ class Controller(udi_interface.Node):
         
         self.poly = polyglot
         self.n_queue = []
+
+        self.childrenRunning = 0
         
         self.pg3ParameterErrors = True
 
@@ -130,6 +132,7 @@ class Controller(udi_interface.Node):
     until it is fully created before we try to use it.
     '''
     def node_queue(self, data):
+        self.childrenRunng += 1
         if data['address'] == self.address:
             LOGGER.debug("\n\tISY Object created under 'controller':\t" + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", which is itself NS #" + str(self.poly.profileNum) + ", and has self.address of '" + str(self.address) + "'.\n")   
             LOGGER.debug("\n\t\tUNAuthorized (expecting this to be false): " + str(self.ISY.unauthorized) + ".\n")
@@ -373,7 +376,18 @@ class Controller(udi_interface.Node):
         LOGGER.warning("\n\tSTOP COMMAND Received by '" + self.address + "'.\n")
         self.setDriver('ST', 0, True, True)
         self.pushTextToDriver('GPV','NodeServer STOPPED')
-        self.poly.stop()
+        nodes = self.poly.getNodes()
+        
+        for node in nodes:
+            LOGGER.warning("\n\tAWAITING STOP from '" + node + "'...\n")
+            while "-1" not in str(node.getDriver('ST')):
+                time.sleep(0.1)
+            LOGGER.warning("\n\\t\tSTOP of '" + node + "' COMPLETE.\n")
+            self.childrenRunning -= 1
+                
+        if self.childrenRunning:
+            LOGGER.warning("\n\tFINAL STOP - all children controllers and nodes appear to be stopped, so we can now stop the polyglot link.\n")
+            self.poly.stop()
         
     '''
     Delete and Reset Nodes:
