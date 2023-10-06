@@ -72,7 +72,7 @@ class BreakerNode(udi_interface.Node):
     until it is fully created before we try to use it.
     '''
     def node_queue(self, data):
-        if self.address == data['address']:
+        if self.address == data['address'] and self._initialized:
             LOGGER.debug("\n\tWAIT FOR NODE CREATION: Fully Complete for Breaker " + self.address + "\n")
             nowEpoch = int(time.time())
             nowDT = datetime.datetime.fromtimestamp(nowEpoch)
@@ -96,7 +96,7 @@ class BreakerNode(udi_interface.Node):
     # overload the setDriver() of the parent class to short circuit if 
     # node not initialized
     def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None, text: Optional[str]=None):
-        if self._initialized:
+        if self._initialized and self._fullyCreated:
             super().setDriver(driver, value, report, force, uom, text)
 
     def delete(self, address):
@@ -111,7 +111,7 @@ class BreakerNode(udi_interface.Node):
     -1 is reserved for initializing.
     '''
     def pushTextToDriver(self,driver,stringToPublish):
-        if not(self._fullyCreated):
+        if not(self._fullyCreated) or not(self._initialized):
             return
         stringToPublish = stringToPublish.replace('.',' ')
         if len(str(self.getDriver(driver))) <= 0:
