@@ -351,7 +351,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                         recreateBreakers = True
                         
                 if recreateBreakers:
-                    LOGGER.warning("\n\tUnable to execute updateBreakerNode on (" + problemChildren + ") Breaker node(s) [" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "].\n\t\tWill try calling createBreakers() in case it is just missing.\n\t\tIf this persists repeatedly across multiple shortPolls, contact developer.")
+                    LOGGER.warning("\n\tUnable to execute updateBreakerNode on (" + problemChildren + ") Breaker node(s) [" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "].\n\t\tWill try calling createBreakers() in case it is just missing.\n\t\tIf this persists repeatedly across multiple shortPolls with the same node ID(s), contact developer.")
                     self.createBreakers()
 
             else:
