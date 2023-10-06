@@ -448,7 +448,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             
             try:
                 self.poly.addNode(node)
-                node.wait_for_node_done()
+                #node.wait_for_node_done()
             except:
                 LOGGER.warning("\n\tUnable to create child Breaker node '" + node + "' for '" + self.address + "' at this time.\n")
             
