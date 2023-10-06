@@ -322,7 +322,7 @@ class PanelNodeForCircuits(udi_interface.Node):
 
         LOGGER.debug("\n\tHere is where we'll be creating Circuit children nodes for Panel Circuits controller " + self.address + ". It should be a total of " + str(how_many) + " child nodes, each with an address starting with s" + panelNumberPrefix + "_circuit_...\n")
 
-        for i in range(1, how_many+1):
+        for i in range(1, int(how_many)+1):
             LOGGER.debug("\n\tHere is the currentCircuitData:\n\t\t" + allCircuitsArray[i] + "\n")
             
             current_IPaddress = self.ipAddress
