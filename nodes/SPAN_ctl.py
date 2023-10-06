@@ -62,7 +62,13 @@ class Controller(udi_interface.Node):
 
     def __init__(self, polyglot, parent, address, name):
         super(Controller, self).__init__(polyglot, parent, address, name)
+        
+        # set a flag to short circuit setDriver() until the node has been fully
+        # setup in the Polyglot DB and the ISY (as indicated by START event)
+        self._initialized: bool = False
 
+        self._fullyCreated: bool = False
+        
         self.poly = polyglot
         self.n_queue = []
         
@@ -94,6 +100,15 @@ class Controller(udi_interface.Node):
     #def nsInfo(self, data):
         #LOGGER.debug("\n\tHANDLE NSINFO.\n\t\t{}\n".format(data))
     
+    def node_queue(self, data):
+        if self.address == data['address'] and self._initialized:
+            LOGGER.debug("\n\tWAIT FOR NODE CREATION: Fully Complete for Breaker " + self.address + "\n")
+            nowEpoch = int(time.time())
+            nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+            self.pushTextToDriver('TIME',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+
+            self._fullyCreated = True
+    
     def poll(self, polltype):
         if 'shortPoll' in polltype and not(self.pg3ParameterErrors):
             nowEpoch = int(time.time())
@@ -118,10 +133,13 @@ class Controller(udi_interface.Node):
     until it is fully created before we try to use it.
     '''
     def node_queue(self, data):
-        self.n_queue.append(data['address'])
-        if data['address'] == self.address:
+        if data['address'] == self.address and self._initialized:
             LOGGER.debug("\n\tISY Object created under 'controller':\t" + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", which is itself NS #" + str(self.poly.profileNum) + ", and has self.address of '" + str(self.address) + "'.\n")   
             LOGGER.debug("\n\t\tUNAuthorized (expecting this to be false): " + str(self.ISY.unauthorized) + ".\n")
+            
+            self._fullyCreated = True
+            
+            self.n_queue.append(data['address'])
 
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
@@ -190,16 +208,24 @@ class Controller(udi_interface.Node):
         self.poly.setCustomParamsDoc()
         # Not necessary to call this since profile_version is used from server.json
         # self.poly.updateProfile()
+        self._initialized = True
         
         if self.pg3ParameterErrors:
             self.pushTextToDriver('GPV',"Please correct the NodeServer parameters in PG3(x)")
-        
+    
+    # overload the setDriver() of the parent class to short circuit if 
+    # node not initialized
+    def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None, text: Optional[str]=None):
+        if self._initialized and self._fullyCreated:
+            super().setDriver(driver, value, report, force, uom, text)    
     '''
     Handling for <text /> attribute.
     Note that to be reported to IoX, the value has to change; this is why we flip from 0 to 1 or 1 to 0.
     -1 is reserved for initializing.
     '''
     def pushTextToDriver(self,driver,stringToPublish):
+        if not(self._fullyCreated) or not(self._initialized):
+            return
         stringToPublish = stringToPublish.replace('.','')
         if len(str(self.getDriver(driver))) <= 0:
             LOGGER.warning("\n\tPUSHING REPORT ERROR - a (correct) Driver was not passed for '" + self.address + "' trying to update driver " + driver + ".\n")
