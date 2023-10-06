@@ -311,7 +311,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                 elif circuitCount > self.expectedNumberOfChildrenCircuits and self._initialized and self._fullyCreated:
                     LOGGER.warning("\n\tController '" + self.address + "' is fully ready, but upon getting ready to query child Circuit nodes, it was noticed that there are MORE child Circuit nodes created (" + str(circuitCount) + ") than expected (" + str(self.expectedNumberOfChildrenCircuits) + ").\n")
                 else:
-                    LOGGER.warning("\n\tStill awaiting fully ready controller '" + self.address + " 'before querying child Circuit nodes...\n\t\tcircuitCount: " + str(circuitCount) + "|self.expectedNumberOfChildrenCircuits: " + str(self.expectedNumberOfChildrenCircuits) + "|self._initialized: " + str(self._initialized) + "|self._fullyCreated: " + str(self._fullyCreated) + ".\n")
+                    LOGGER.warning("\n\tStill awaiting fully ready controller '" + self.address + "' before querying child Circuit nodes...\n\t\tcircuitCount: " + str(circuitCount) + "|self.expectedNumberOfChildrenCircuits: " + str(self.expectedNumberOfChildrenCircuits) + "|self._initialized: " + str(self._initialized) + "|self._fullyCreated: " + str(self._fullyCreated) + ".\n")
                 
                 if circuitCount < 1 and self._fullyCreated and self.allExpectedChildrenCreated:
                     LOGGER.warning("\n\tERROR in Circuit Controller Child Count for '" + self.address + "'; attempting to recover by searching for nodes with the name '" + currentPanelCircuitPrefix + "'...\n")
