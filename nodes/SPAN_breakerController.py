@@ -339,8 +339,9 @@ class PanelNodeForBreakers(udi_interface.Node):
                 problemChildren = ''
 
                 breakerCount = len(self.childBreakerNodes)
-                if breakerCount != 32:
-                    LOGGER.warning("\n\tBREAKER CHILD NODE TRACKING ERROR: Any Breaker Controller Node should be tracking exactly 32 child Breaker Nodes; as it stands right now, controller '" + self.address + "' is tracking " + str(breakerCount) + " child Breaker Nodes.\n")
+                #we want 32 entities, but we append at all times, so we check for 33
+                if breakerCount != 33:
+                    LOGGER.warning("\n\tBREAKER CHILD NODE TRACKING ERROR: Any Breaker Controller Node should be tracking exactly 32 child Breaker Nodes; as it stands right now, controller '" + self.address + "' is tracking " + str(breakerCount-1) + " child Breaker Nodes.\n")
                 
                 for i in range(1,33):
                     node = currentPanelBreakerPrefix + str(i)
