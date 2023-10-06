@@ -347,7 +347,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                     except:
                         if len(problemChildren) > 0:
                             problemChildren = problemChildren + ", "
-                        problemChildren = problemChildren + "'" + node "'"
+                        problemChildren = problemChildren + "'" + node + "'"
                         recreateBreakers = True
                         
                 if recreateBreakers:
