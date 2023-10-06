@@ -406,7 +406,11 @@ class PanelNodeForBreakers(udi_interface.Node):
                 node = SPAN_breaker.BreakerNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken, i)                
                 self.childBreakerNodes.append(node)
             else:
-                node = self.childBreakerNodes[self.childBreakerNodes.index(address)]
+                try:
+                    node = self.childBreakerNodes[self.childBreakerNodes.index(address)]
+                else:
+                    self.childBreakerNodes.append(checkNodes[address])
+                    node = self.childBreakerNodes[self.childBreakerNodes.index(address)]
             
             self.poly.addNode(node)
             node.wait_for_node_done()
