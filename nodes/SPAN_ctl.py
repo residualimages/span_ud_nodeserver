@@ -116,7 +116,7 @@ class Controller(udi_interface.Node):
             how_many = len(self.breakerControllers)
             if self._fullyCreated:
                 for i in range(0,how_many):
-                    self.self.breakerControllers[i].pollBreakerController(polltype + "|poll passed to '" + self.self.breakerControllers[i] + "' from root controller in FOR loop of its own poll")
+                    self.breakerControllers[i].pollBreakerController(polltype + "|poll passed to '" + self.breakerControllers[i] + "' from root controller in FOR loop of its own poll")
                     self.pushTextToDriver('GPV',"Last Short Poll Date / Time: " + nowDT.strftime("%m/%d/%Y %H:%M:%S"))
 
             '''
