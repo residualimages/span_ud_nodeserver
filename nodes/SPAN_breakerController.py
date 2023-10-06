@@ -329,7 +329,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                 #otherwise, use the main directly
                 #self.setDriver('ST', (instantGridPowerW), True, True)
 
-                LOGGER.warning("\n\tNEW POLL OF DATA QUEUED; Total Power of Panel = " + str(round((instantGridPowerW-abs(feedthroughPowerW)),2)) + ", calculated via instantGridPowerW - feedthroughPowerW, where " + chr(34) + "instantGridPowerW" + chr(34) + " = " + str(instantGridPowerW) + " and " + chr(34) + "feedthroughPowerW" + chr(34) + " = " + str(feedthroughPowerW) + ".\n")
+                LOGGER.warning("\n\tNEW POLL OF DATA QUEUED; Total Power of Panel #" + self.address.replace('panelbreaker_','') + " @ " + self.ipAddress + " = " + str(round((instantGridPowerW-abs(feedthroughPowerW)),2)) + ", calculated via instantGridPowerW - feedthroughPowerW, where " + chr(34) + "instantGridPowerW" + chr(34) + " = " + str(instantGridPowerW) + " and " + chr(34) + "feedthroughPowerW" + chr(34) + " = " + str(feedthroughPowerW) + ".\n")
 
                 allBranchesData_tuple = self.allBreakersData.partition(chr(34) + "branches" + chr(34) + ":")
                 allBranchesData = allBranchesData_tuple[2]
