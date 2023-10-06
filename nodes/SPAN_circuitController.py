@@ -129,7 +129,7 @@ class PanelNodeForCircuits(udi_interface.Node):
     until it is fully created before we try to use it.
     '''
     def node_queue(self, data):
-        if self.address == data['address']:
+        if self.address == data['address'] and self._initialized:
             LOGGER.debug("\n\t\t\tPanelForCircuits Controller Creation Completed; Queue Circuit child node(s) creation.\n")
             #lastOctet_array = self.ipAddress.split('.')
             #lastOctet = lastOctet_array[len(lastOctet_array)-1]
@@ -172,7 +172,7 @@ class PanelNodeForCircuits(udi_interface.Node):
     # overload the setDriver() of the parent class to short circuit if 
     # node not initialized
     def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None, text: Optional[str]=None):
-        if self._initialized:
+        if self._initialized and self._fullyCreated:
             super().setDriver(driver, value, report, force, uom, text)
 
     '''
@@ -181,7 +181,7 @@ class PanelNodeForCircuits(udi_interface.Node):
     -1 is reserved for initializing.
     '''
     def pushTextToDriver(self,driver,stringToPublish):
-        if not(self._fullyCreated):
+        if not(self._fullyCreated) or not(self._initialized):
             return
         stringToPublish = stringToPublish.replace('.',' ')
         if len(str(self.getDriver(driver))) <= 0:
