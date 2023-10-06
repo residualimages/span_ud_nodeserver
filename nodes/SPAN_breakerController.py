@@ -152,9 +152,10 @@ class PanelNodeForBreakers(udi_interface.Node):
                 instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
 
                 #if it turns out we need to handle feedthroughPower separately, subtract it from the main
-                #self.setDriver('ST', round((instantGridPowerW-abs(feedthroughPowerW)),2), True, True)
+                #tracking from SPAN app generally seems to track more closely with what's show there by doing this subtraction... Shrug?
+                self.setDriver('ST', round((instantGridPowerW-abs(feedthroughPowerW)),2), True, True)
                 #otherwise, use the main directly
-                self.setDriver('ST', (instantGridPowerW), True, True)
+                #self.setDriver('ST', (instantGridPowerW), True, True)
 
                 allBranchesData_tuple = self.allBreakersData.partition(chr(34) + "branches" + chr(34) + ":")
                 allBranchesData = allBranchesData_tuple[2]
@@ -315,9 +316,10 @@ class PanelNodeForBreakers(udi_interface.Node):
                 instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
 
                 #if it turns out we need to handle feedthroughPower separately, subtract it from the main
-                #self.setDriver('ST', round((instantGridPowerW-abs(feedthroughPowerW)),2), True, True)
+                #tracking from SPAN app generally seems to track more closely with what's show there by doing this subtraction... Shrug?
+                self.setDriver('ST', round((instantGridPowerW-abs(feedthroughPowerW)),2), True, True)
                 #otherwise, use the main directly
-                self.setDriver('ST', (instantGridPowerW), True, True)
+                #self.setDriver('ST', (instantGridPowerW), True, True)
 
                 allBranchesData_tuple = self.allBreakersData.partition(chr(34) + "branches" + chr(34) + ":")
                 allBranchesData = allBranchesData_tuple[2]
@@ -421,9 +423,10 @@ class PanelNodeForBreakers(udi_interface.Node):
             nowDT = datetime.datetime.fromtimestamp(epoch)
 
             #if it turns out we need to handle feedthroughPower separately, subtract it from the main
-            #totalPower = round((instantGridPowerW-abs(feedthroughPowerW)),2)
+            #tracking from SPAN app generally seems to track more closely with what's show there by doing this subtraction... Shrug?            
+            totalPower = round((instantGridPowerW-abs(feedthroughPowerW)),2)
             #otherwise, use the main directly
-            totalPower = (instantGridPowerW)
+            #totalPower = (instantGridPowerW)
 
             self.sisterCircuitsController.updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
             LOGGER.info("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController, and tried to update its allBreakersData as well as its total power ('ST') and 'TIME' Status elements.\n")
