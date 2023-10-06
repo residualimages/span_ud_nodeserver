@@ -372,8 +372,10 @@ class PanelNodeForBreakers(udi_interface.Node):
                     LOGGER.warning("\n\tUnable to execute updateBreakerNode on (" + problemChildren + ") Breaker node(s) [" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "].\n\t\tIf this persists repeatedly across multiple shortPolls with the same node ID(s) and/or the list is not getting shorter each time, contact developer.")
                     self.pushTextToDriver('GPV',"Unexpected Child Breaker Node Update error " + str(breakerCount) + " != 32; attempting recovery")
                     #self.createBreakers()
+                elif recreateBreakers and not(self.allExpectedChildrenCreated) and (not(self._fullyCreated) or not(self._initialized)):
+                    LOGGER.warning("\n\tStill awaiting fully ready controller '" + self.address + "' before querying child Breaker nodes...\n")
                 elif recreateBreakers and not(self.allExpectedChildrenCreated):
-                    LOGGER.warning("\n\tStill awaiting fully ready controller '" + self.address + "'before querying child Breaker nodes...\n\t\tbreakerCount (expecting 32): " + str(breakerCount) + "|self._initialized: " + str(self._initialized) + "|self._fullyCreated: " + str(self._fullyCreated) + ".\n\t\tProblem children: " + problemChildren + "\n")
+                    LOGGER.warning("\n\tController '" + self.address + "' is fully ready, but upon getting ready to query child Breaker nodes, it was noticed that there are NOT 32 child Breaker nodes as expected...\n\t\tbreakerCount (expecting 32): " + str(breakerCount) + "|self._initialized: " + str(self._initialized) + "|self._fullyCreated: " + str(self._fullyCreated) + ".\n\t\tProblem children: " + problemChildren + "\n")
                 else:
                     self.pushTextToDriver('GPV',"NodeServer RUNNING")
 
