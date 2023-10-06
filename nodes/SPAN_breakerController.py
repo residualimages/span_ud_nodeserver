@@ -365,7 +365,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                         
                 if recreateBreakers:
                     LOGGER.warning("\n\tUnable to execute updateBreakerNode on (" + problemChildren + ") Breaker node(s) [" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "].\n\t\tWill try calling createBreakers() in case it is just missing.\n\t\tIf this persists repeatedly across multiple shortPolls with the same node ID(s) and/or the list is not getting shorter each time, contact developer.")
-                    self.pushTextToDriver('GPV',"Unexpected Child Breaker Node Update error; attempting recovery")
+                    self.pushTextToDriver('GPV',"Unexpected Child Breaker Node Update error " + str(breakerCount) + " <> 32; attempting recovery")
                     self.createBreakers()
                 else:
                     self.pushTextToDriver('GPV',"NodeServer RUNNING")
