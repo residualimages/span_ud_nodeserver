@@ -408,7 +408,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             else:
                 try:
                     node = self.childBreakerNodes[self.childBreakerNodes.index(address)]
-                else:
+                except:
                     self.childBreakerNodes.append(checkNodes[address])
                     node = self.childBreakerNodes[self.childBreakerNodes.index(address)]
             
