@@ -401,12 +401,13 @@ class PanelNodeForBreakers(udi_interface.Node):
             title = title + str(i)
             title = getValidNodeName(title)
 
-            node = SPAN_breaker.BreakerNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken, i)
+            checkNodes = self.poly.getNodes()
+            if address not in checkNodes:
+                node = SPAN_breaker.BreakerNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken, i)                
+                self.childBreakerNodes.append(node)
+            
             self.poly.addNode(node)
-            
             node.wait_for_node_done()
-            
-            self.childBreakerNodes.append(node)
             
             LOGGER.debug('\n\tCreated a Breaker child node {} under Panel Breaker controller {}\n'.format(title, panelNumberPrefix))
 
