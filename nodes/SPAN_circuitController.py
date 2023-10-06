@@ -307,7 +307,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                     circuitCount = len(self.childCircuitNodes)
                     if circuitCount < 1:
                         LOGGER.warning("\n\t\tERROR in Circuit Controller Child Count PERSISTS: Even after seeing a 0 count of child circuit nodes, and attempting to update the list of child circuit nodes, under controller '" + self.address + "', the NodeServer is still unable to find any child circuit nodes.\n\t\tWill try calling createCircuits() now.\n\t\tIf this persists repeatedly across multiple shortPolls, contact developer.")
-                        self.pushTextToDriver('GPV',"Unxpected Child Circuit Node Count error; attempting recovery")
+                        self.pushTextToDriver('GPV',"Unexpected Child Circuit Node Count error < 1; attempting recovery")
                         self.createCircuits()
                     else:
                         LOGGER.warning("\n\t\tCORRECTED Circuit Controller Child Count ERROR - the Circuit Controller Child Count was 0, but now it is showing as " + str(circuitCount) + ".\n")
