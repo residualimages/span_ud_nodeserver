@@ -343,7 +343,8 @@ class PanelNodeForBreakers(udi_interface.Node):
                     try:
                         nodes[node].updateBreakerNode(self.allBreakersData, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
                     except:
-                        LOGGER.warning("\n\tUnable to execute updateBreakerNode on '" + node + "' [" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "].\n\t\tIf this persists repeatedly with the same node across multiple shortPolls, contact developer.")
+                        LOGGER.warning("\n\tUnable to execute updateBreakerNode on '" + node + "' [" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "].\n\t\tWill try calling createBreakers() in case it is just missing.\n\t\tIf this persists repeatedly across multiple shortPolls, contact developer.")
+                        self.createBreakers()
 
             else:
                 tokenLastTen = self.token[-10:]
