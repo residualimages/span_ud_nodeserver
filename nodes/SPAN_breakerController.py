@@ -107,6 +107,8 @@ class PanelNodeForBreakers(udi_interface.Node):
         self.sisterCircuitsController: SPAN_circuitController.PanelNodeForCircuits = sisterCircuitsControllerPassed
 
         self.childBreakerNodes: SPAN_breaker.BreakerNode = []
+        self.expectedNumberOfChildrenBreakers = 32
+        self.allExpectedChildrenCreated: bool = False
 
         self.ISY = ISY(self.poly)
 
@@ -348,6 +350,9 @@ class PanelNodeForBreakers(udi_interface.Node):
                 #we want 32 entities; if we have too many, figure it out.
                 if breakerCount != 32 and self._fullyCreated:
                     LOGGER.warning("\n\tBREAKER CHILD NODE TRACKING ERROR: Any Breaker Controller Node should be tracking exactly 32 child Breaker Nodes; as it stands right now, controller '" + self.address + "' is tracking " + str(breakerCount-1) + " child Breaker Nodes.\n")
+
+                if breakerCount == self.expectedNumberOfChildrenBreakers and self._initialized and self._fullyCreated:
+                    self.allExpectedChildrenCreated = True
                 
                 for i in range(0,32):
                     node = currentPanelBreakerPrefix + str(i+1)
@@ -363,7 +368,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                         problemChildren = problemChildren + "'" + node + "'"
                         recreateBreakers = True
                         
-                if recreateBreakers:
+                if recreateBreakers and self.allExpectedChildrenCreated:
                     LOGGER.warning("\n\tUnable to execute updateBreakerNode on (" + problemChildren + ") Breaker node(s) [" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "].\n\t\tIf this persists repeatedly across multiple shortPolls with the same node ID(s) and/or the list is not getting shorter each time, contact developer.")
                     self.pushTextToDriver('GPV',"Unexpected Child Breaker Node Update error " + str(breakerCount) + " != 32; attempting recovery")
                     #self.createBreakers()
