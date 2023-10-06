@@ -299,7 +299,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                 currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
                 
                 if circuitCount < 1:
-                    nodes = polyglot.getNodes()
+                    nodes = self.poly.getNodes()
                     for node in nodes:
                         if currentPanelCircuitPrefix in node:
                             self.childCircuitNodes.append(node)
