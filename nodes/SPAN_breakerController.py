@@ -373,7 +373,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                     self.pushTextToDriver('GPV',"Unexpected Child Breaker Node Update error " + str(breakerCount) + " != 32; attempting recovery")
                     #self.createBreakers()
                 elif recreateBreakers and not(self.allExpectedChildrenCreated):
-                    LOGGER.warning("\n\tStill awaiting fully ready controller '" + self.address + "'before querying child Breaker nodes...\n\t\tbreakerCount: " + str(breakerCount) + "|self._initialized: " + str(self._initialized) + "|self._fullyCreated: " + str(self._fullyCreated) + ".\n")
+                    LOGGER.warning("\n\tStill awaiting fully ready controller '" + self.address + "'before querying child Breaker nodes...\n\t\tbreakerCount (expecting 32): " + str(breakerCount) + "|self._initialized: " + str(self._initialized) + "|self._fullyCreated: " + str(self._fullyCreated) + ".\n\t\tProblem children: " + problemChildren + "\n")
                 else:
                     self.pushTextToDriver('GPV',"NodeServer RUNNING")
 
