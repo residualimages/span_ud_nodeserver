@@ -387,12 +387,16 @@ class Controller(udi_interface.Node):
         self.pushTextToDriver('GPV','NodeServer STOPPED')
         nodes = self.poly.getNodes()
         
-        for node in nodes:
+        for node in nodes.copy():
             LOGGER.warning("\n\tAWAITING STOP from '" + node + "'...\n")
-            checkMe = 0
-            while "-1" not in str(checkMe):
+            try:
                 checkMe = node.getDriver('ST')
-                time.sleep(0.1)
+                while "-1" not in str(checkMe):
+                    checkMe = node.getDriver('ST')
+                    time.sleep(0.1)
+            except:
+                LOGGER.warning("\n\tTried to wait for '" + node + "' to fully STOP, but polyglot couldn't find that node.\n")
+
             LOGGER.warning("\n\\t\tSTOP of '" + node + "' COMPLETE.\n")
             self.childrenRunning -= 1
                 
