@@ -6,10 +6,10 @@
     "install": "install.sh",
     "description": "Integration for SPAN Smart Panels - Polyglot v3 NodeServer for Universal Devices Controllers",
     "notice": "",
-    "shortPoll": "10",
+    "shortPoll": "30",
     "longPoll": "600",
 	"logLevel": "WARNING",
-    "profile_version": "1.0.1",
+    "profile_version": "1.0.5",
 	"customParams": {
 		"IP_Addresses": "",
 		"Access_Tokens": ""
@@ -18,8 +18,8 @@
     	{
     		"title": "Integration for SPAN Smart Panels",
     		"author": "Matt Burke",
-    		"version": "1.0.1",
-    		"date": "September 16, 2023",
+    		"version": "1.0.5",
+    		"date": "October 6, 2023",
     		"source": "https://github.com/residualimages/span_ud_nodeserver/",
 			"license": "https://github.com/residualimages/span_ud_nodeserver/LICENSE"
 		}
