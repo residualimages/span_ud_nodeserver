@@ -349,8 +349,8 @@ class PanelNodeForBreakers(udi_interface.Node):
                 if breakerCount != 32 and self._fullyCreated:
                     LOGGER.warning("\n\tBREAKER CHILD NODE TRACKING ERROR: Any Breaker Controller Node should be tracking exactly 32 child Breaker Nodes; as it stands right now, controller '" + self.address + "' is tracking " + str(breakerCount-1) + " child Breaker Nodes.\n")
                 
-                for i in range(1,33):
-                    node = currentPanelBreakerPrefix + str(i)
+                for i in range(0,32):
+                    node = currentPanelBreakerPrefix + str(i+1)
                     LOGGER.debug("\n\tUpdating " + node + " (which should be a Breaker node under this Breakers controller: " + self.address + ").\n")
                     nowEpoch = int(time.time())
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
@@ -364,9 +364,9 @@ class PanelNodeForBreakers(udi_interface.Node):
                         recreateBreakers = True
                         
                 if recreateBreakers:
-                    LOGGER.warning("\n\tUnable to execute updateBreakerNode on (" + problemChildren + ") Breaker node(s) [" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "].\n\t\tWill try calling createBreakers() in case it is just missing.\n\t\tIf this persists repeatedly across multiple shortPolls with the same node ID(s) and/or the list is not getting shorter each time, contact developer.")
+                    LOGGER.warning("\n\tUnable to execute updateBreakerNode on (" + problemChildren + ") Breaker node(s) [" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "].\n\t\tIf this persists repeatedly across multiple shortPolls with the same node ID(s) and/or the list is not getting shorter each time, contact developer.")
                     self.pushTextToDriver('GPV',"Unexpected Child Breaker Node Update error " + str(breakerCount) + " != 32; attempting recovery")
-                    self.createBreakers()
+                    #self.createBreakers()
                 else:
                     self.pushTextToDriver('GPV',"NodeServer RUNNING")
 
