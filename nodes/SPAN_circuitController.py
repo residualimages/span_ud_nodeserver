@@ -299,13 +299,16 @@ class PanelNodeForCircuits(udi_interface.Node):
                 currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
                 
                 if circuitCount < 1:
+                    LOGGER.warning("\n\tERROR in Circuit Controller Child Count for '" + self.address + "'... attempting to recover.\n")
                     nodes = self.poly.getNodes()
                     for node in nodes:
                         if currentPanelCircuitPrefix in node:
                             self.childCircuitNodes.append(node)
                     circuitCount = len(self.childCircuitNodes)
                     if circuitCount < 1:
-                        LOGGER.warning("\n\tERROR in Circuit Controller Child Count: Even after seeing a 0 count of child circuit nodes, and attempting to update the list of child circuit nodes, under controller '" + self.address + "', the NodeServer is still unable to find any child circuit nodes.\n")
+                        LOGGER.warning("\n\t\tERROR in Circuit Controller Child Count PERSISTS: Even after seeing a 0 count of child circuit nodes, and attempting to update the list of child circuit nodes, under controller '" + self.address + "', the NodeServer is still unable to find any child circuit nodes.\n")
+                    else:
+                        LOGGER.warning("\n\t\tCORRECTED Circuit Controller Child Count ERROR - the Circuit Controller Child Count was 0, but now it is showing as " + str(circuitCount) + ".\n")
                     
                 for i in range(0, circuitCount):
                     self.childCircuitNodes[i].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
