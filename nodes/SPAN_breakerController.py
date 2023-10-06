@@ -128,7 +128,7 @@ class PanelNodeForBreakers(udi_interface.Node):
     until it is fully created before we try to use it.
     '''
     def node_queue(self, data):
-        if self.address == data['address'] and self._initialized:
+        if self.address == data['address']:
             LOGGER.debug("\n\t\t\tPanelForBreakers Controller Creation Completed; Queue Breaker child node(s) creation.\n")
             
             #lastOctet_array = self.ipAddress.split('.')
