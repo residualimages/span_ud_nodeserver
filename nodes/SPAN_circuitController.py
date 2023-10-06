@@ -100,6 +100,8 @@ class PanelNodeForCircuits(udi_interface.Node):
         self.parent = parent
 
         self.childCircuitNodes: SPAN_circuit.CircuitNode = []
+        self.expectedNumberOfChildrenCircuits = 0
+        self.allExpectedChildrenCreated: bool = False
         
         self.ISY = ISY(self.poly)
 
@@ -141,7 +143,8 @@ class PanelNodeForCircuits(udi_interface.Node):
             
             if "circuits" in self.allCircuitsData:
                 LOGGER.debug("\n\tINIT Panel Circuit Controller's Circuits Data: \n\t\t" + self.allCircuitsData + "\n\t\tCount of circuits: " + str(self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
-                self.setDriver('PULSCNT', self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':'), True, True)
+                self.expectedNumberOfChildrenCircuits = self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')
+                self.setDriver('PULSCNT', self.expectedNumberOfChildrenCircuits, True, True)
                 self.setDriver('CLIEMD', 1, True, True)
                 
                 self.createCircuits()
@@ -297,8 +300,11 @@ class PanelNodeForCircuits(udi_interface.Node):
 
                 circuitCount = len(self.childCircuitNodes)
                 currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
+
+                if circuitCount == self.expectedNumberOfChildrenCircuits and self._initialized and self._fullyCreated:
+                    self.allExpectedChildrenCreated = True
                 
-                if circuitCount < 1 and self._fullyCreated:
+                if circuitCount < 1 and self._fullyCreated and self.allExpectedChildrenCreated:
                     LOGGER.warning("\n\tERROR in Circuit Controller Child Count for '" + self.address + "'; attempting to recover by searching for nodes with the name '" + currentPanelCircuitPrefix + "'...\n")
                     nodes = self.poly.getNodes()
                     for node in nodes:
@@ -316,8 +322,11 @@ class PanelNodeForCircuits(udi_interface.Node):
                     self.pushTextToDriver('GPV',"NodeServer RUNNING")
                     
                 for i in range(0, circuitCount):
-                    self.childCircuitNodes[i].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
-                    LOGGER.debug("\n\t\tPOLL SUCCESS in Circuits Controller '" + self.address + "' for '" + self.childCircuitNodes[i].address + "'.\n")
+                    try:
+                        self.childCircuitNodes[i].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
+                        LOGGER.debug("\n\t\tPOLL SUCCESS in Circuits Controller '" + self.address + "' for '" + self.childCircuitNodes[i].address + "'.\n")
+                    else:
+                        LOGGER.warning("\n\tUPDATE CIRCUIT NODE error for '" + self.childCircuitNodes[i] + "'.\n")
                             
             else:
                 tokenLastTen = self.token[-10:]
@@ -328,15 +337,14 @@ class PanelNodeForCircuits(udi_interface.Node):
     TODO: Handle fewer circuit nodes by deleting (currently commented out)
     '''
     def createCircuits(self):
-        '''
+        
         # delete any existing nodes but only under this panel
         currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
         nodes = self.poly.getNodes()
-        for node in nodes:
+        for node in nodes.copy():
              if currentPanelCircuitPrefix in node:
-                LOGGER.debug("\n\tDeleting " + node + " when creating child Circuit nodes for Panel Circuits controller at " + self.address + ".\n")
+                LOGGER.warning("\n\tDeleting " + node + " when creating child Circuit nodes for Panel Circuits controller at " + self.address + ".\n")
                 self.poly.delNode(node)
-        '''
 
         how_many = self.getDriver('PULSCNT')
         
