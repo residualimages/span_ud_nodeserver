@@ -121,6 +121,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         LOGGER.debug("\n\tINIT Panel Breaker Controller's IP Address:" + self.ipAddress + "; Bearer Token (last 10 characters): " + tokenLastTen)
 
         self.allBreakersData = ''
+        self.pollInProgress: bool = False
         
         # subscribe to the events we want
         #polyglot.subscribe(polyglot.POLL, self.pollBreakerController)
@@ -144,7 +145,8 @@ class PanelNodeForBreakers(udi_interface.Node):
             #self.setDriver('FREQ', lastOctet, True, True, None, self.ipAddress)
             self.pushTextToDriver('FREQ', self.ipAddress.replace('.','-'))
 
-            self.updateAllBreakersData()
+            if not(self.pollInProgress):
+                self.updateAllBreakersData()
         
             if "branches" in self.allBreakersData:
                 feedthroughPowerW_tuple = self.allBreakersData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
@@ -307,7 +309,8 @@ class PanelNodeForBreakers(udi_interface.Node):
             tokenLastTen = self.token[-10:]
             LOGGER.debug("\n\tPOLL About to query Panel Breaker Controller '" + self.address + "' @ {}, using token ending in {}".format(self.ipAddress,tokenLastTen))
 
-            self.updateAllBreakersData()
+            if not(self.pollInProgress):
+                self.updateAllBreakersData()
            
             if "branches" in self.allBreakersData:
                 
@@ -465,6 +468,7 @@ class PanelNodeForBreakers(udi_interface.Node):
     This is how we update the allBreakersData variable
     '''
     def updateAllBreakersData(self):
+        self.pollInProgress = True
         spanConnection = http.client.HTTPConnection(self.ipAddress)
         payload = ''
         headers = {
@@ -501,7 +505,8 @@ class PanelNodeForBreakers(udi_interface.Node):
 
             self.sisterCircuitsController.updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
             LOGGER.info("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController, and tried to update its allBreakersData as well as its total power ('ST') and 'TIME' Status elements.\n")
-            
+
+        self.pollInProgress = False
     
     '''
     STOP Received
