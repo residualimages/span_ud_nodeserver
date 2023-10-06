@@ -417,12 +417,13 @@ class PanelNodeForBreakers(udi_interface.Node):
                     node = self.childBreakerNodes[self.childBreakerNodes.index(address)]
                 except:
                     self.childBreakerNodes.append(checkNodes[address])
-                    #address, name, node_def_id, primary, and drivers are required
+                    #address, name, node_def_id, primary, and drivers are required (looks like private is also required)
                     node = fakeNode()
                     node.address = address
                     node.name = title
                     node.node_def_id = self.poly.profileNum
                     node.primary = self.address
+                    node.private = ''
                     node.drivers = [
                                 {'driver': 'ST', 'value': -1, 'uom': 73},
                                 {'driver': 'PULSCNT', 'value': -1, 'uom': 56},
