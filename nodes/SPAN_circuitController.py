@@ -298,7 +298,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                 circuitCount = len(self.childCircuitNodes)
                 currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
                 
-                if circuitCount < 1:
+                if circuitCount < 1 and self._fullyCreated:
                     LOGGER.warning("\n\tERROR in Circuit Controller Child Count for '" + self.address + "'; attempting to recover by searching for nodes with the name '" + currentPanelCircuitPrefix + "'...\n")
                     nodes = self.poly.getNodes()
                     for node in nodes:
