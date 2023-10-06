@@ -150,7 +150,11 @@ class PanelNodeForBreakers(udi_interface.Node):
                 instantGridPowerW_tuple = instantGridPowerW.partition(",")
                 instantGridPowerW = instantGridPowerW_tuple[0]
                 instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
-                self.setDriver('ST', round((instantGridPowerW-abs(feedthroughPowerW)),2), True, True)
+
+                #if it turns out we need to handle feedthroughPower separately, subtract it from the main
+                #self.setDriver('ST', round((instantGridPowerW-abs(feedthroughPowerW)),2), True, True)
+                #otherwise, use the main directly
+                self.setDriver('ST', (instantGridPowerW), True, True)
 
                 allBranchesData_tuple = self.allBreakersData.partition(chr(34) + "branches" + chr(34) + ":")
                 allBranchesData = allBranchesData_tuple[2]
@@ -309,7 +313,11 @@ class PanelNodeForBreakers(udi_interface.Node):
                 instantGridPowerW_tuple = instantGridPowerW.partition(",")
                 instantGridPowerW = instantGridPowerW_tuple[0]
                 instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
-                self.setDriver('ST', round((instantGridPowerW-abs(feedthroughPowerW)),2), True, True)
+
+                #if it turns out we need to handle feedthroughPower separately, subtract it from the main
+                #self.setDriver('ST', round((instantGridPowerW-abs(feedthroughPowerW)),2), True, True)
+                #otherwise, use the main directly
+                self.setDriver('ST', (instantGridPowerW), True, True)
 
                 allBranchesData_tuple = self.allBreakersData.partition(chr(34) + "branches" + chr(34) + ":")
                 allBranchesData = allBranchesData_tuple[2]
@@ -411,8 +419,11 @@ class PanelNodeForBreakers(udi_interface.Node):
 
             epoch = int(time.time())
             nowDT = datetime.datetime.fromtimestamp(epoch)
-            
-            totalPower = round((instantGridPowerW-abs(feedthroughPowerW)),2)
+
+            #if it turns out we need to handle feedthroughPower separately, subtract it from the main
+            #totalPower = round((instantGridPowerW-abs(feedthroughPowerW)),2)
+            #otherwise, use the main directly
+            totalPower = (instantGridPowerW)
 
             self.sisterCircuitsController.updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
             LOGGER.info("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController, and tried to update its allBreakersData as well as its total power ('ST') and 'TIME' Status elements.\n")
