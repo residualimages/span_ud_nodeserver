@@ -412,7 +412,8 @@ class PanelNodeForBreakers(udi_interface.Node):
                     node = self.childBreakerNodes[self.childBreakerNodes.index(address)]
                 except:
                     self.childBreakerNodes.append(checkNodes[address])
-                    node = address
+                    #dictionary in format of {node.name, node.address, node.private}
+                    node = {'name': title, 'address': address, 'private': ''}
             
             self.poly.addNode(node)
             node.wait_for_node_done()
