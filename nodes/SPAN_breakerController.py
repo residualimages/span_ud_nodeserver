@@ -405,6 +405,8 @@ class PanelNodeForBreakers(udi_interface.Node):
             if address not in checkNodes:
                 node = SPAN_breaker.BreakerNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken, i)                
                 self.childBreakerNodes.append(node)
+            else:
+                node = self.childBreakerNodes[self.childBreakerNodes.index(address)]
             
             self.poly.addNode(node)
             node.wait_for_node_done()
