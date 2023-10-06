@@ -340,7 +340,10 @@ class PanelNodeForBreakers(udi_interface.Node):
                     LOGGER.debug("\n\tUpdating " + node + " (which should be a Breaker node under this Breakers controller: " + self.address + ").\n")
                     nowEpoch = int(time.time())
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-                    nodes[node].updateBreakerNode(self.allBreakersData, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                    try:
+                        nodes[node].updateBreakerNode(self.allBreakersData, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                    except:
+                        LOGGER.warning("\n\tUnable to execute updateBreakerNode on '" + node + "' [" + nowDT.strftime("%m/%d/%Y %H:%M:%S") + "].\n\t\tIf this persists, contact developer.")
 
             else:
                 tokenLastTen = self.token[-10:]
