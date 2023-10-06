@@ -277,6 +277,12 @@ class PanelNodeForCircuits(udi_interface.Node):
 
             if "-1" in str(self.getDriver('GPV')):
                 self.pushTextToDriver('GPV','NodeServer RUNNING')
+
+            if "-1" in str(self.getDriver('CLIEMD')):
+                self.setDriver('CLIEMD', 1, True, True)
+
+            if "-1" in str(self.getDriver('PULSCNT')):
+                self.setDriver('PULSCNT', self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':'), True, True)
         
             tokenLastTen = self.token[-10:]
             LOGGER.debug("\n\tPOLL About to query Panel Circuits Controller '" + self.address + "' @ {}, using token ending in {}".format(self.ipAddress,tokenLastTen))
@@ -291,6 +297,16 @@ class PanelNodeForCircuits(udi_interface.Node):
 
                 circuitCount = len(self.childCircuitNodes)
                 currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
+                
+                if circuitCount < 1:
+                    nodes = polyglot.getNodes()
+                    for node in nodes:
+                        if currentPanelCircuitPrefix in node:
+                            self.childCircuitNodes.append(node)
+                    circuitCount = len(self.childCircuitNodes)
+                    if circuitCount < 1:
+                        LOGGER.warning("\n\tERROR in Circuit Controller Child Count: Even after seeing a 0 count of child circuit nodes, and attempting to update the list of child circuit nodes, under controller '" + self.address + "', the NodeServer is still unable to find any child circuit nodes.\n")
+                    
                 for i in range(0, circuitCount):
                     self.childCircuitNodes[i].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
                     LOGGER.debug("\n\t\tPOLL SUCCESS in Circuits Controller '" + self.address + "' for '" + self.childCircuitNodes[i].address + "'.\n")
