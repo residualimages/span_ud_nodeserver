@@ -208,18 +208,30 @@ class CircuitNode(udi_interface.Node):
         LOGGER.debug("\n\tUPDATE CIRCUIT NODE called for '" + self.address + "'.\n")
         self.allCircuitsData = passedAllCircuitsData
         self.allBreakersData = passedAllBreakersData
+        
+        repopulateTheCircuitsBreakerStatusDrivers = False
+        
+        if "-1" in str(self.getDriver('TIME')) or "-1" in str(self.getDriver('PULSCNT')) or "-1" in str(self.getDriver('GV1')) or "-1" in str(self.getDriver('GV2')) or "-1" in str(self.getDriver('GV3')) or "-1" in str(self.getDriver('GV4')):
+            repopulateTheCircuitsBreakerStatusDrivers = True
 
-        if self.getDriver('TIME') == -1 or self.getDriver('PULSCNT') == -1 or self.getDriver('GV0') == -1 or self.getDriver('GV1') == -1 or self.getDriver('GV2') == -1 or self.getDriver('GV3') == -1 or self.getDriver('GV4') == -1:
+        if "-1" in str(self.getDriver('GPV')):
+            self.pushTextToDriver('GPV','NodeServer RUNNING')
+            repopulateTheCircuitsBreakerStatusDrivers = True
+
+        if "-1" in str(self.getDriver('GV0')):
+            self.pushTextToDriver('GV0',self.circuitID)
+            repopulateTheCircuitsBreakerStatusDrivers = True
+        
+        if "name" in self.allCircuitsData:
+            self.pushTextToDriver('TIME', dateTimeString)
+
+        if repopulateTheCircuitsBreakerStatusDrivers:
             designatedCircuitData_tuple = self.allCircuitsData.partition(chr(34) + self.circuitID + chr(34) + ':')
             designatedCircuitData = designatedCircuitData_tuple[2]
             designatedCircuitData_tuple = designatedCircuitData.partition('},')
             designatedCircuitData = designatedCircuitData_tuple[0] + '}'
     
-            LOGGER.debug("\n\tUPDATE CIRCUIT NODE proceeding for '" + self.address + "'; about to search for 'name' in:\n\t\t" + designatedCircuitData + "\n")
-
-            #if len(string(self.getDriver('GV0'))) == 0 or str(self.getDriver('GV0')) == '0' or str(self.getDriver('GV0')) == '-1':
-            #    LOGGER.debug("\n\tSetting SPAN Circuit ID (GV0) for '" + self.address + ", because it is currently not set.\n")
-            self.pushTextToDriver('GV0',self.circuitID)
+            LOGGER.debug("\n\tUPDATE CIRCUIT NODE proceeding to set the physical breaker details [count and location(s)] for '" + self.address + "'; will search for the details in:\n\t\t" + designatedCircuitData + "\n")
     
             if "name" in designatedCircuitData:
                 designatedCircuitTabs_tuple = designatedCircuitData.partition(chr(34) + "tabs" + chr(34) + ":")
@@ -242,19 +254,9 @@ class CircuitNode(udi_interface.Node):
                 for i in range(designatedCircuitTabsCount+1,5):
                     self.pushTextToDriver('GV' + str(i), '--')
             else:
-                LOGGER.warning("\n\tINIT Issue getting data for circuit '" + self.address + "'.\n")
-                #self.setDriver('TIME', -1, True, True)
+                LOGGER.warning("\n\t\tERROR getting designatedCircuitData for circuit '" + self.address + "'.\n")
         
         self.poll('shortPoll|passing from updateCircuitNode')
-
-        if "-1" in str(self.getDriver('GPV')):
-            self.pushTextToDriver('GPV','NodeServer RUNNING')
-
-        if "-1" in str(self.getDriver('GV0')):
-            self.pushTextToDriver('GV0',self.circuitID)
-        
-        if "name" in self.allCircuitsData:
-            self.pushTextToDriver('TIME', dateTimeString)
         
     def poll(self, polltype):
         LOGGER.debug("\n\tPOLL CIRCUIT NODE: " + polltype + " for '" + self.address + "'.\n")
