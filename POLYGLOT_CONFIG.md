@@ -1,6 +1,7 @@
 ## Configuration
 
 shortPoll = how often to begin the SPAN circuit value query
+            Strongly suggest not any more frequently than 15 seconds, default is 30.
 longPoll  = not currently used
 
 Custom Parameters:
