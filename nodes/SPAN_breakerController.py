@@ -345,8 +345,8 @@ class PanelNodeForBreakers(udi_interface.Node):
                 problemChildren = ''
 
                 breakerCount = len(self.childBreakerNodes)
-                #we want 32 entities, but we append at all times, so we check for 33
-                if breakerCount != 33 and self._fullyCreated:
+                #we want 32 entities; if we have too many, figure it out.
+                if breakerCount != 32 and self._fullyCreated:
                     LOGGER.warning("\n\tBREAKER CHILD NODE TRACKING ERROR: Any Breaker Controller Node should be tracking exactly 32 child Breaker Nodes; as it stands right now, controller '" + self.address + "' is tracking " + str(breakerCount-1) + " child Breaker Nodes.\n")
                 
                 for i in range(1,33):
@@ -417,7 +417,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                 try:
                     node = self.childBreakerNodes[self.childBreakerNodes.index(address)]
                 except:
-                    self.childBreakerNodes.append(checkNodes[address])
+                    #self.childBreakerNodes.append(checkNodes[address])
                     #Documentation says: address, name, [node_def_]id, primary, and drivers are required 
                     #  In reality, it looks like hint and private are also required
                     node = fakeNode()
