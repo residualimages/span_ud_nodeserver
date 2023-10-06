@@ -2,7 +2,9 @@
 #             (c) 2023 Matt Burke
 
 A simple node server that polls SPAN Smart Panels for circuit loads.
+
 It also allows for turning on / off SPAN Circuits. 
+
 (As SPAN and their app already warn you, relying on the software level 'off' for a Circuit before working on electric circuits is not officially appropriate.)
 It may allow setting Priority on SPAN Circuits, but this is unverified.
 
