@@ -441,8 +441,11 @@ class PanelNodeForBreakers(udi_interface.Node):
                                 {'driver': 'GPV', 'value': -1, 'uom': 56}
                                 ]
             
-            self.poly.addNode(node)
-            node.wait_for_node_done()
+            try:
+                self.poly.addNode(node)
+                node.wait_for_node_done()
+            except:
+                LOGGER.warning("\n\tUnable to create child Breaker node '" + node + "' for '" + self.address + "' at this time.\n")
             
             LOGGER.debug('\n\tCreated a Breaker child node {} under Panel Breaker controller {}\n'.format(title, panelNumberPrefix))
 
