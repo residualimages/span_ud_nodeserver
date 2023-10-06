@@ -348,7 +348,8 @@ class PanelNodeForBreakers(udi_interface.Node):
                     nowEpoch = int(time.time())
                     nowDT = datetime.datetime.fromtimestamp(nowEpoch)
                     try:
-                        nodes[node].updateBreakerNode(self.allBreakersData, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                        #nodes[node].updateBreakerNode(self.allBreakersData, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                        self.childBreakerNodes[i].updateBreakerNode(self.allBreakersData, nowDT.strftime("%m/%d/%Y %H:%M:%S"))
                     except:
                         if len(problemChildren) > 0:
                             problemChildren = problemChildren + ", "
@@ -410,7 +411,7 @@ class PanelNodeForBreakers(udi_interface.Node):
                     node = self.childBreakerNodes[self.childBreakerNodes.index(address)]
                 except:
                     self.childBreakerNodes.append(checkNodes[address])
-                    node = self.childBreakerNodes[self.childBreakerNodes.index(address)]
+                    node = address
             
             self.poly.addNode(node)
             node.wait_for_node_done()
