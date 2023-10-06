@@ -303,12 +303,12 @@ class PanelNodeForCircuits(udi_interface.Node):
 
                 if circuitCount == self.expectedNumberOfChildrenCircuits and self._initialized and self._fullyCreated:
                     self.allExpectedChildrenCreated = True
-                elif circuitCount == 0 and self._initialized and self._fullyCreated
+                elif circuitCount == 0 and self._initialized and self._fullyCreated:
                     LOGGER.warning("\n\tController '" + self.address + "' is fully ready, but upon getting ready to query child Circuit nodes, it was noticed that there are 0 child Circuit nodes created. Will call createCircuits() now.\n")
                     self.createCircuits()
-                elif circuitCount < self.expectedNumberOfChildrenCircuits and self._initialized and self._fullyCreated
+                elif circuitCount < self.expectedNumberOfChildrenCircuits and self._initialized and self._fullyCreated:
                     LOGGER.warning("\n\tController '" + self.address + "' is fully ready, but upon getting ready to query child Circuit nodes, it was noticed that there are FEWER child Circuit nodes created (" + str(circuitCount) + ") than expected (" + str(self.expectedNumberOfChildrenCircuits) + ").\n")
-                elif circuitCount > self.expectedNumberOfChildrenCircuits and self._initialized and self._fullyCreated
+                elif circuitCount > self.expectedNumberOfChildrenCircuits and self._initialized and self._fullyCreated:
                     LOGGER.warning("\n\tController '" + self.address + "' is fully ready, but upon getting ready to query child Circuit nodes, it was noticed that there are MORE child Circuit nodes created (" + str(circuitCount) + ") than expected (" + str(self.expectedNumberOfChildrenCircuits) + ").\n")
                 else:
                     LOGGER.warning("\n\tStill awaiting fully ready controller '" + self.address + "'before querying child Circuit nodes...\n\t\tcircuitCount: " + str(circuitCount) + "|self.expectedNumberOfChildrenCircuits: " + str(self.expectedNumberOfChildrenCircuits) + "|self._initialized: " + str(self._initialized) + "|self._fullyCreated: " + str(self._fullyCreated) + ".\n")
