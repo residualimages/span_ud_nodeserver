@@ -373,6 +373,8 @@ class PanelNodeForCircuits(udi_interface.Node):
             if address not in checkNodes:
                 node = SPAN_circuit.CircuitNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken, current_circuitID, i)
                 self.childCircuitNodes.append(node)
+            else:
+                node = self.childCircuitNodes[self.childCircuitNodes.index(address)]
             
             self.poly.addNode(node)
             node.wait_for_node_done()
