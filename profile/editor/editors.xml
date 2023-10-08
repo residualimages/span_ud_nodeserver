@@ -32,5 +32,8 @@
 	</editor>
 	<editor id="SPAN_DOORSTATUS">
 		<range uom="25" subset="0-2" nls="IX_SPAN_DOORSTATUS" />
+	</editor>	
+	<editor id="SPAN_AUTHUNLOCK_BUTTONPRESSES_REMAINING">
+		<range uom="25" subset="0-3" nls="IX_SPAN_AUTHUNLOCK_BUTTONPRESSES_REMAINING" />
 	</editor>
 </editors>
