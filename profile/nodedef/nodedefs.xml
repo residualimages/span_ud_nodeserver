@@ -22,8 +22,8 @@
       <st id="TIME" editor="dateTimeStamp" />
       <st id="FREQ" editor="ipAddress" />
       <st id="GV1" editor="SPAN_DOORSTATUS" />
-      <st id="GV2" editor="SPAN_DOORSTATUS" />
-      <st id="GPV" editor="SPAN_AUTHUNLOCK_BUTTONPRESSES_REMAINING" />
+      <st id="GV2" editor="SPAN_AUTHUNLOCK_BUTTONPRESSES_REMAINING" />
+      <st id="GPV" editor="rawStringToIoX" />
 	  </sts>
   </nodeDef>
 	
