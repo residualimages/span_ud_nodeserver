@@ -584,7 +584,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             uptimeStringSplit = uptimeString.split(':')
             uptimeString = uptimeStringSplit[0] + ' Hours, ' + uptimeStringSplit[1] + ' Minutes, ' + uptimeStringSplit[2] + ' Seconds'
 
-        LOGGER.warning("\n\tDOOR STATUS UPDATE: doorStatus = " + str(doorStatus) + "; unlockButtonPressesRemaining = " + str(unlockButtonPressesRemaining) + ".\n")
+        LOGGER.warning("\n\tDOOR STATUS, ETC UPDATE: doorStatus = " + str(doorStatus) + "; unlockButtonPressesRemaining = " + str(unlockButtonPressesRemaining) + "; serialString = " + serialString + "; firmwareVersionString = " + firmwareVersionString + "; uptimeString = " + uptimeString + ".\n")
         self.updateDriver('GV1', doorStatus)
         self.updateDriver('GV2', unlockButtonPressesRemaining)
         self.pushTextToDriver('GV3', serialString)
