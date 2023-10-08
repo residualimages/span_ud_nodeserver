@@ -89,6 +89,8 @@ class PanelNodeForBreakers(udi_interface.Node):
             {'driver': 'PULSCNT', 'value': 0, 'uom': 56},
             {'driver': 'GV0', 'value': 0, 'uom': 56},
             {'driver': 'TIME', 'value': -1, 'uom': 56},
+            {'driver': 'GV1', 'value': -1, 'uom': 25},
+            {'driver': 'GV2', 'value': -1, 'uom': 25},
             {'driver': 'GPV', 'value': -1, 'uom': 56}
             ]
 
@@ -509,6 +511,11 @@ class PanelNodeForBreakers(udi_interface.Node):
             LOGGER.info("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController, and tried to update its allBreakersData as well as its total power ('ST') and 'TIME' Status elements.\n")
 
         self.pollInProgress = False
+
+    def updateDoorStatusAndUnlockButtonPressesRemaining(self, doorStatus, unlockButtonPressesRemaining):
+        self.updateDriver('GV1', doorStatus)
+        self.updateDriver('GV2', unlockButtonPressesRemaining)
+        self.sisterCircuitsController.updateDoorStatusAndUnlockButtonPressesRemaining(doorStatus, unlockButtonPressesRemaining)
     
     '''
     STOP Received
@@ -520,4 +527,6 @@ class PanelNodeForBreakers(udi_interface.Node):
         self.setDriver('PULSCNT', 0, True, True)
         self.setDriver('GV0', 0, True, True)
         self.setDriver('TIME', -1, True, True)
+        self.setDriver('GV1', -1, True, True)
+        self.setDriver('GV2', -1, True, True)
         self.pushTextToDriver('GPV','NodeServer STOPPED')
