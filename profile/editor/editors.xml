@@ -30,4 +30,7 @@
 	<editor id="SPAN_BREAKERSTATUS">
 		<range uom="25" subset="0-2" nls="IX_SPAN_BREAKERSTATUS" />
 	</editor>
+	<editor id="SPAN_DOORSTATUS">
+		<range uom="25" subset="0-2" nls="IX_SPAN_DOORSTATUS" />
+	</editor>
 </editors>
