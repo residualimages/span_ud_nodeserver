@@ -446,8 +446,8 @@ class PanelNodeForCircuits(udi_interface.Node):
         self.pollInProgress = False
 
     def updateDoorStatusEtc(self, doorStatus, unlockButtonPressesRemaining, serialString, firmwareVersionString, uptimeString):
-        self.updateDriver('GV1', doorStatus)
-        self.updateDriver('GV2', unlockButtonPressesRemaining)
+        self.setDriver('GV1', doorStatus, True, True)
+        self.setDriver('GV2', unlockButtonPressesRemaining, True, True)
         self.pushTextToDriver('GV3', serialString)
         self.pushTextToDriver('GV4', firmwareVersionString)
         self.pushTextToDriver('GV5', uptimeString)
