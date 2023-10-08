@@ -524,7 +524,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         self.statusPollInProgress = True
         
         doorStatus = 0
-        unlockButtonPressesRemaining = 0
+        unlockButtonPressesRemaining = -1
         serialString = 'Unknown'
         firmwareVersionString = 'Unknown'
         uptimeString = 'Unknown'
@@ -547,9 +547,9 @@ class PanelNodeForBreakers(udi_interface.Node):
             doorState_tuple = doorState.partition(",")
             doorState = doorState_tuple[0]
             if "CLOSED" in doorState:
-                doorStatus = 2
-            elif "OPEN" in doorState:
                 doorStatus = 1
+            elif "OPEN" in doorState:
+                doorStatus = 2
         
         if "AuthUnlock" in statusData:
             authRemaining_tuple = statusData.partition(chr(34) + "remainingAuthUnlockButtonPresses" + chr(34) + ":")
@@ -567,13 +567,13 @@ class PanelNodeForBreakers(udi_interface.Node):
             serial_tuple = statusData.partition(chr(34) + "serial" + chr(34) + ":")
             serial = serial_tuple[2]
             serial_tuple = serial.partition(",")
-            serialString = serial_tuple[0]
+            serialString = serial_tuple[0].replace(chr(34),'')
             
         if "firmwareVersion" in statusData:
             firmwareVersion_tuple = statusData.partition(chr(34) + "firmwareVersion" + chr(34) + ":")
             firmwareVersion = firmwareVersion_tuple[2]
             firmwareVersion_tuple = firmwareVersion.partition(",")
-            firmwareVersionString = firmwareVersion_tuple[0]
+            firmwareVersionString = firmwareVersion_tuple[0].replace(chr(34),'')
         
         if "uptime" in statusData:
             uptime_tuple = statusData.partition(chr(34) + "uptime" + chr(34) + ":")
