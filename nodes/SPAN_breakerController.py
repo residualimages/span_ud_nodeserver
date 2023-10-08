@@ -580,7 +580,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             uptime = uptime_tuple[2]
             uptime_tuple = uptime.partition(",")
             uptime = uptime_tuple[0]
-            (days, remainder) = divmod(seconds, 86400)
+            (days, remainder) = divmod(uptime, 86400)
             (hours, remainder) = divmod(remainder, 3600)
             (minutes, seconds) = divmod(remainder, 60)
             uptimeString = str(days) + " Days, " + str(hours) + " Hours, " + str(minutes) + " Minutes, " + str(seconds) + " Seconds"
