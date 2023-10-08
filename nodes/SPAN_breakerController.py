@@ -124,6 +124,8 @@ class PanelNodeForBreakers(udi_interface.Node):
 
         self.allBreakersData = ''
         self.pollInProgress: bool = False
+
+        self.doorPollInProgress: bool = False
         
         # subscribe to the events we want
         #polyglot.subscribe(polyglot.POLL, self.pollBreakerController)
@@ -511,11 +513,57 @@ class PanelNodeForBreakers(udi_interface.Node):
             LOGGER.info("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController, and tried to update its allBreakersData as well as its total power ('ST') and 'TIME' Status elements.\n")
 
         self.pollInProgress = False
+        
+        if not(self.doorPollInProgress):
+                self.updateDoorStatusAndUnlockButtonPressesRemaining()
 
-    def updateDoorStatusAndUnlockButtonPressesRemaining(self, doorStatus, unlockButtonPressesRemaining):
+    def updateDoorStatusAndUnlockButtonPressesRemaining(self):
+        self.doorPollInProgress = True
+        
+        doorStatus = 0
+        unlockButtonPressesRemaining = 0
+  
+        spanConnection = http.client.HTTPConnection(self.ipAddress)
+        payload = ''
+        headers = {
+            "Authorization": "Bearer " + self.token
+        }
+
+        spanConnection.request("GET", "/api/v1/status", payload, headers)
+        statusResponse = spanConnection.getresponse()
+        statusData = statusResponse.read()
+        statusData = statusData.decode("utf-8")
+        LOGGER.debug("\n\tUPDATING PANEL STATUS for Panel Breaker Controller '" + self.address + "' (and its sister). Status Data: \n\t\t" + statusData + "\n")
+            
+        if "doorState" in statusData:
+            doorState_tuple = statusData.partition(chr(34) + "doorState" + chr(34) + ":")
+            doorState = doorState_tuple[2]
+            doorState_tuple = doorState.partition(",")
+            doorState = doorState_tuple[0]
+            if "CLOSED" in doorState:
+                doorStatus = 2
+            elif "OPEN" in doorState:
+                doorStatus = 1
+        
+        if "AuthUnlock" in statusData:
+            authRemaining_tuple = statusData.partition(chr(34) + "remainingAuthUnlockButtonPresses" + chr(34) + ":")
+            authRemaining = authRemaining_tuple[2]
+            authRemaining_tuple = authRemaining.partition(",")
+            authRemaining = authRemaining_tuple[0]
+            if "3" in str(authRemaining):
+                unlockButtonPressesRemaining = 3
+            elif "2" in str(authRemaining):
+                unlockButtonPressesRemaining = 2
+            elif "1" in str(authRemaining):
+                unlockButtonPressesRemaining = 1
+
+        LOGGER.warning("\n\tDOOR STATUS UPDATE: doorStatus = " + str(doorStatus) + "; unlockButtonPressesRemaining = " + str(unlockButtonPressesRemaining) + ".\n")
         self.updateDriver('GV1', doorStatus)
         self.updateDriver('GV2', unlockButtonPressesRemaining)
+        
         self.sisterCircuitsController.updateDoorStatusAndUnlockButtonPressesRemaining(doorStatus, unlockButtonPressesRemaining)
+        
+        self.doorPollInProgress = False
     
     '''
     STOP Received
