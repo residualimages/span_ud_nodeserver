@@ -91,6 +91,9 @@ class PanelNodeForBreakers(udi_interface.Node):
             {'driver': 'TIME', 'value': -1, 'uom': 56},
             {'driver': 'GV1', 'value': -1, 'uom': 25},
             {'driver': 'GV2', 'value': -1, 'uom': 25},
+            {'driver': 'GV3', 'value': -1, 'uom': 25},
+            {'driver': 'GV4', 'value': -1, 'uom': 25},
+            {'driver': 'GV5', 'value': -1, 'uom': 25},
             {'driver': 'GPV', 'value': -1, 'uom': 56}
             ]
 
@@ -125,7 +128,7 @@ class PanelNodeForBreakers(udi_interface.Node):
         self.allBreakersData = ''
         self.pollInProgress: bool = False
 
-        self.doorPollInProgress: bool = False
+        self.statusPollInProgress: bool = False
         
         # subscribe to the events we want
         #polyglot.subscribe(polyglot.POLL, self.pollBreakerController)
@@ -514,14 +517,17 @@ class PanelNodeForBreakers(udi_interface.Node):
 
         self.pollInProgress = False
         
-        if not(self.doorPollInProgress):
-                self.updateDoorStatusAndUnlockButtonPressesRemaining()
+        if not(self.statusPollInProgress):
+                self.updateDoorStatusEtc()
 
-    def updateDoorStatusAndUnlockButtonPressesRemaining(self):
-        self.doorPollInProgress = True
+    def updateDoorStatusEtc(self):
+        self.statusPollInProgress = True
         
         doorStatus = 0
         unlockButtonPressesRemaining = 0
+        serialString = 'Unknown'
+        firmwareVersionString = 'Unknown'
+        uptimeString = 'Unknown'
   
         spanConnection = http.client.HTTPConnection(self.ipAddress)
         payload = ''
@@ -556,14 +562,38 @@ class PanelNodeForBreakers(udi_interface.Node):
                 unlockButtonPressesRemaining = 2
             elif "1" in str(authRemaining):
                 unlockButtonPressesRemaining = 1
+        
+        if "serial" in statusData:
+            serial_tuple = statusData.partition(chr(34) + "serial" + chr(34) + ":")
+            serial = serial_tuple[2]
+            serial_tuple = serial.partition(",")
+            serialString = serial_tuple[0]
+            
+        if "firmwareVersion" in statusData:
+            firmwareVersion_tuple = statusData.partition(chr(34) + "firmwareVersion" + chr(34) + ":")
+            firmwareVersion = firmwareVersion_tuple[2]
+            firmwareVersion_tuple = firmwareVersion.partition(",")
+            firmwareVersionString = firmwareVersion_tuple[0]
+        
+        if "uptime" in statusData:
+            uptime_tuple = statusData.partition(chr(34) + "uptime" + chr(34) + ":")
+            uptime = uptime_tuple[2]
+            uptime_tuple = uptime.partition(",")
+            uptime = uptime_tuple[0]
+            uptimeString = str(datetime.timedelta(seconds=uptime))
+            uptimeStringSplit = uptimeString.split(':')
+            uptimeString = uptimeStringSplit[0] + ' Hours, ' + uptimeStringSplit[1] + ' Minutes, ' + uptimeStringSplit[2] + ' Seconds'
 
         LOGGER.warning("\n\tDOOR STATUS UPDATE: doorStatus = " + str(doorStatus) + "; unlockButtonPressesRemaining = " + str(unlockButtonPressesRemaining) + ".\n")
         self.updateDriver('GV1', doorStatus)
         self.updateDriver('GV2', unlockButtonPressesRemaining)
+        self.pushTextToDriver('GV3', serialString)
+        self.pushTextToDriver('GV4', firmwareVersionString)
+        self.pushTextToDriver('GV5', uptimeString)
         
-        self.sisterCircuitsController.updateDoorStatusAndUnlockButtonPressesRemaining(doorStatus, unlockButtonPressesRemaining)
+        self.sisterCircuitsController.updateDoorStatusEtc(doorStatus, unlockButtonPressesRemaining, serialString, firmwareVersionString, uptimeString)
         
-        self.doorPollInProgress = False
+        self.statusPollInProgress = False
     
     '''
     STOP Received
