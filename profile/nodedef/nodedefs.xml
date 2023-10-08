@@ -23,6 +23,9 @@
       <st id="FREQ" editor="ipAddress" />
       <st id="GV1" editor="SPAN_DOORSTATUS" />
       <st id="GV2" editor="SPAN_AUTHUNLOCK_BUTTONPRESSES_REMAINING" />
+      <st id="GV3" editor="rawStringToIoX" />
+      <st id="GV4" editor="rawStringToIoX" />
+      <st id="GV5" editor="rawStringToIoX" />
       <st id="GPV" editor="rawStringToIoX" />
 	  </sts>
   </nodeDef>
@@ -63,6 +66,9 @@
       <st id="FREQ" editor="ipAddress" />
       <st id="GV1" editor="SPAN_DOORSTATUS" />
       <st id="GV2" editor="SPAN_AUTHUNLOCK_BUTTONPRESSES_REMAINING" />
+      <st id="GV3" editor="rawStringToIoX" />
+      <st id="GV4" editor="rawStringToIoX" />
+      <st id="GV5" editor="rawStringToIoX" />
       <st id="GPV" editor="rawStringToIoX" />
 	  </sts>
   </nodeDef>
