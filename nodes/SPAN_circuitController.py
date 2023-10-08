@@ -85,6 +85,9 @@ class PanelNodeForCircuits(udi_interface.Node):
             {'driver': 'TIME', 'value': -1, 'uom': 56},
             {'driver': 'GV1', 'value': -1, 'uom': 25},
             {'driver': 'GV2', 'value': -1, 'uom': 25},
+            {'driver': 'GV3', 'value': -1, 'uom': 25},
+            {'driver': 'GV4', 'value': -1, 'uom': 25},
+            {'driver': 'GV5', 'value': -1, 'uom': 25},
             {'driver': 'GPV', 'value': -1, 'uom': 56}
             ]
 
@@ -442,9 +445,12 @@ class PanelNodeForCircuits(udi_interface.Node):
 
         self.pollInProgress = False
 
-    def updateDoorStatusAndUnlockButtonPressesRemaining(self, doorStatus, unlockButtonPressesRemaining):
+    def updateDoorStatusEtc(self, doorStatus, unlockButtonPressesRemaining, serialString, firmwareVersionString, uptimeString):
         self.updateDriver('GV1', doorStatus)
         self.updateDriver('GV2', unlockButtonPressesRemaining)
+        self.pushTextToDriver('GV3', serialString)
+        self.pushTextToDriver('GV4', firmwareVersionString)
+        self.pushTextToDriver('GV5', uptimeString)
             
     '''
     STOP Called
@@ -456,4 +462,9 @@ class PanelNodeForCircuits(udi_interface.Node):
         self.setDriver('PULSCNT', -1, True, True)
         self.setDriver('CLIEMD', -1, True, True)
         self.setDriver('TIME', -1, True, True)
+        self.setDriver('GV1', -1, True, True)
+        self.setDriver('GV2', -1, True, True)
+        #self.setDriver('GV3', -1, True, True)
+        #self.setDriver('GV4', -1, True, True)
+        self.setDriver('GV5', -1, True, True)
         self.pushTextToDriver('GPV',"NodeServer STOPPED")
