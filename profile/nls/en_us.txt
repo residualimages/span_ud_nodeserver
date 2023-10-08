@@ -15,6 +15,9 @@ ST-panelForCircuits-TIME-NAME = Last Successful Query
 ST-panelForCircuits-GPV-NAME = Message from NodeServer
 IX_SPAN_PANELGRIDSTATUS-1 = Panel on Grid
 IX_SPAN_PANELGRIDSTATUS-2 = UNKNOWN
+IX_SPAN_DOORSTATUS-0 = Unknown
+IX_SPAN_DOORSTATUS-1 = Closed
+IX_SPAN_DOORSTATUS-2 = Open
 
 ND-panelForBreakers-NAME = SPAN Panel - BREAKERS Controller
 ND-panelForBreakers-ICON = Electricity
@@ -24,6 +27,9 @@ ST-panelForBreakers-PULSCNT-NAME = Closed (Power FLOWING) Breaker Count
 ST-panelForBreakers-GV0-NAME = Open / Tripped (Power INTERRUPTED) Breaker Count
 ST-panelForBreakers-TIME-NAME = Last Successful Query
 ST-panelForBreakers-GPV-NAME = Message from NodeServer
+IX_SPAN_DOORSTATUS-0 = Unknown
+IX_SPAN_DOORSTATUS-1 = Closed
+IX_SPAN_DOORSTATUS-2 = Open
 
 ND-circuit-NAME = SPAN Circuit
 ND-circuit-ICON = EnergyMonitor
