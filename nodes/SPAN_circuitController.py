@@ -466,5 +466,5 @@ class PanelNodeForCircuits(udi_interface.Node):
         self.setDriver('GV2', -1, True, True)
         #self.setDriver('GV3', -1, True, True)
         #self.setDriver('GV4', -1, True, True)
-        self.setDriver('GV5', -1, True, True)
+        self.pushTextToDriver('GV5','--')
         self.pushTextToDriver('GPV',"NodeServer STOPPED")
