@@ -21,6 +21,7 @@
       <st id="CLIEMD" editor="SPAN_PANELGRIDSTATUS" />
       <st id="TIME" editor="dateTimeStamp" />
       <st id="FREQ" editor="ipAddress" />
+      <st id="GV1" editor="SPAN_DOORSTATUS" />
       <st id="GPV" editor="rawStringToIoX" />
 	  </sts>
   </nodeDef>
@@ -59,6 +60,7 @@
       <st id="GV0" editor="raw" />
       <st id="TIME" editor="dateTimeStamp" />
       <st id="FREQ" editor="ipAddress" />
+      <st id="GV1" editor="SPAN_DOORSTATUS" />
       <st id="GPV" editor="rawStringToIoX" />
 	  </sts>
   </nodeDef>
