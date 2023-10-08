@@ -83,6 +83,8 @@ class PanelNodeForCircuits(udi_interface.Node):
             {'driver': 'PULSCNT', 'value': -1, 'uom': 56},
             {'driver': 'CLIEMD', 'value': -1, 'uom': 25},
             {'driver': 'TIME', 'value': -1, 'uom': 56},
+            {'driver': 'GV1', 'value': -1, 'uom': 25},
+            {'driver': 'GV2', 'value': -1, 'uom': 25},
             {'driver': 'GPV', 'value': -1, 'uom': 56}
             ]
 
@@ -439,6 +441,10 @@ class PanelNodeForCircuits(udi_interface.Node):
         LOGGER.debug("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data: \n\t\t " + self.allCircuitsData + "\n")
 
         self.pollInProgress = False
+
+    def updateDoorStatusAndUnlockButtonPressesRemaining(self, doorStatus, unlockButtonPressesRemaining):
+        self.updateDriver('GV1', doorStatus)
+        self.updateDriver('GV2', unlockButtonPressesRemaining)
             
     '''
     STOP Called
