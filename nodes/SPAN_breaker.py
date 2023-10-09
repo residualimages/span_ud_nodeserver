@@ -76,7 +76,7 @@ class BreakerNode(udi_interface.Node):
             LOGGER.debug("\n\tWAIT FOR NODE CREATION: Fully Complete for Breaker " + self.address + "\n")
             nowEpoch = int(time.time())
             nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-            self.pushTextToDriver('TIME',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+            self.pushTextToDriver('TIME',nowDT.strftime("%m/%d/%Y %I:%M:%S %p"))
 
             self._fullyCreated = True
             
