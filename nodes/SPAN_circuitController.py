@@ -304,7 +304,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                 
                 nowEpoch = int(time.time())
                 nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-                self.pushTextToDriver('TIME',nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                self.pushTextToDriver('TIME',nowDT.strftime("%m/%d/%Y %I:%M:%S %p"))
 
                 circuitCount = len(self.childCircuitNodes)
                 currentPanelCircuitPrefix = "s" + self.address.replace('panelcircuit_','') + "_circuit_"
@@ -340,7 +340,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                     
                 for i in range(0, circuitCount):
                     try:
-                        self.childCircuitNodes[i].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %H:%M:%S"), self.allBreakersData)
+                        self.childCircuitNodes[i].updateCircuitNode(self.allCircuitsData, nowDT.strftime("%m/%d/%Y %I:%M:%S %p"), self.allBreakersData)
                         LOGGER.debug("\n\t\tPOLL SUCCESS in Circuits Controller '" + self.address + "' for '" + self.childCircuitNodes[i].address + "'.\n")
                     except:
                         LOGGER.warning("\n\tUPDATE CIRCUIT NODE error for '" + self.childCircuitNodes[i] + "'.\n")
