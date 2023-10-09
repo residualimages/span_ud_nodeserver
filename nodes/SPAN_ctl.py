@@ -117,7 +117,7 @@ class Controller(udi_interface.Node):
             if self._fullyCreated:
                 for i in range(0,how_many):
                     self.breakerControllers[i].pollBreakerController(polltype + "|poll passed to '" + self.breakerControllers[i].address + "' from root controller in FOR loop of its own poll")
-                    self.pushTextToDriver('GPV',"Last Short Poll Date / Time: " + nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                    self.pushTextToDriver('GPV',"Last Short Poll Date / Time: " + nowDT.strftime("%m/%d/%Y %I:%M:%S %p"))
 
             '''
             nodes = self.poly.getNodes()
@@ -126,7 +126,7 @@ class Controller(udi_interface.Node):
                 if 'panelbreaker_' in node:   # count number of Breaker Controller nodes; 'GV0' should have been set at createPanelControllers but it seems to lose track of itself.
                     how_many += 1
                     nodes[node].pollBreakerController(polltype + "|poll passed from root controller")
-                    self.pushTextToDriver('GPV',"Last Short Poll Date / Time: " + nowDT.strftime("%m/%d/%Y %H:%M:%S"))
+                    self.pushTextToDriver('GPV',"Last Short Poll Date / Time: " + nowDT.strftime("%m/%d/%Y %I:%M:%S %p"))
             
             self.setDriver('GV0', how_many, True, True)
             '''
