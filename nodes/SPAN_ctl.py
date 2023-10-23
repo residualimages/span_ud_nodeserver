@@ -397,7 +397,7 @@ class Controller(udi_interface.Node):
             except:
                 LOGGER.warning("\n\tTried to wait for '" + node + "' to fully STOP, but polyglot couldn't find that node.\n")
 
-            LOGGER.warning("\n\\t\tSTOP of '" + node + "' COMPLETE.\n")
+            LOGGER.warning("\n\t\tSTOP of '" + node + "' COMPLETE.\n")
             self.childrenRunning -= 1
                 
         if self.childrenRunning:
