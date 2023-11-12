@@ -284,9 +284,10 @@ class PanelNodeForBreakers(udi_interface.Node):
                 
                 suffixURL = '/rest/ns/' + str(self.poly.profileNum) + '/nodes/' + prefixN + self.address + '/report/status/' + driver + '/' + str(newValue) + '/56/text/' + encodedStringToPublish
         
-                localConnection.request("GET", suffixURL, payload, headers)
-                localResponse = localConnection.getresponse()
                 try:
+                    localConnection.request("GET", suffixURL, payload, headers)
+                    localResponse = localConnection.getresponse()
+    
                     localResponseData = localResponse.read()
                     localResponseData = localResponseData.decode("utf-8")
                     
@@ -487,9 +488,10 @@ class PanelNodeForBreakers(udi_interface.Node):
             "Authorization": "Bearer " + self.token
         }
 
-        spanConnection.request("GET", "/api/v1/panel", payload, headers)
-        panelResponse = spanConnection.getresponse()
         try:
+            spanConnection.request("GET", "/api/v1/panel", payload, headers)
+            panelResponse = spanConnection.getresponse()
+        
             self.allBreakersData = panelResponse.read()
             self.allBreakersData = self.allBreakersData.decode("utf-8")
             LOGGER.debug("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.address + "' Panel Data: \n\t\t" + self.allBreakersData + "\n")
@@ -541,9 +543,10 @@ class PanelNodeForBreakers(udi_interface.Node):
             "Authorization": "Bearer " + self.token
         }
 
-        spanConnection.request("GET", "/api/v1/status", payload, headers)
-        statusResponse = spanConnection.getresponse()
         try:
+            spanConnection.request("GET", "/api/v1/status", payload, headers)
+            statusResponse = spanConnection.getresponse()
+        
             statusData = statusResponse.read()
             statusData = statusData.decode("utf-8")
             LOGGER.debug("\n\tUPDATING PANEL STATUS for Panel Breaker Controller '" + self.address + "' (and its sister). Status Data: \n\t\t" + statusData + "\n")
