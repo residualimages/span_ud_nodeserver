@@ -257,11 +257,14 @@ class PanelNodeForCircuits(udi_interface.Node):
         
                 localConnection.request("GET", suffixURL, payload, headers)
                 localResponse = localConnection.getresponse()
-                localResponseData = localResponse.read()
-                localResponseData = localResponseData.decode("utf-8")
-                
-                if '<status>200</status>' not in localResponseData:
-                    LOGGER.warning("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for " + driver + ": RESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
+                try:
+                    localResponseData = localResponse.read()
+                    localResponseData = localResponseData.decode("utf-8")
+                    
+                    if '<status>200</status>' not in localResponseData:
+                        LOGGER.warning("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for " + driver + ": RESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
+                except:
+                    LOGGER.error("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for " + driver + " had an ERROR.\n")
         else:
             LOGGER.warning("\n\t\PUSHING REPORT ERROR on '" + self.address + "' for " + driver + ": looks like this is a PG3 install but the ISY authorization state seems to currently be 'Unauthorized': 'True'.\n")
     
@@ -438,12 +441,15 @@ class PanelNodeForCircuits(udi_interface.Node):
         }
         spanConnection.request("GET", "/api/v1/circuits", payload, headers)
         circuitsResponse = spanConnection.getresponse()
-        self.allCircuitsData = circuitsResponse.read()
-        self.allCircuitsData = self.allCircuitsData.decode("utf-8")
-        
-        LOGGER.debug("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data: \n\t\t " + self.allCircuitsData + "\n")
-
-        self.pollInProgress = False
+        try:
+            self.allCircuitsData = circuitsResponse.read()
+            self.allCircuitsData = self.allCircuitsData.decode("utf-8")
+            
+            LOGGER.debug("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data: \n\t\t " + self.allCircuitsData + "\n")
+    
+            self.pollInProgress = False
+        except:
+            LOGGER.error("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data FAILED.\n")
 
     def updateDoorStatusEtc(self, doorStatus, unlockButtonPressesRemaining, serialString, firmwareVersionString, uptimeString):
         self.setDriver('GV1', doorStatus, True, True)
