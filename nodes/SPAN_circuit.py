@@ -193,11 +193,14 @@ class CircuitNode(udi_interface.Node):
         
                 localConnection.request("GET", suffixURL, payload, headers)
                 localResponse = localConnection.getresponse()
-                localResponseData = localResponse.read()
-                localResponseData = localResponseData.decode("utf-8")
-                
-                if '<status>200</status>' not in localResponseData:
-                    LOGGER.warning("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + ": RESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
+                try:
+                    localResponseData = localResponse.read()
+                    localResponseData = localResponseData.decode("utf-8")
+                    
+                    if '<status>200</status>' not in localResponseData:
+                        LOGGER.warning("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + ": RESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
+                except:
+                    LOGGER.error("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + " had an ERROR.\n")
         else:
             LOGGER.warning("\n\t\PUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + ": looks like this is a PG3 install but the ISY authorization state seems to currently be 'Unauthorized': 'True'.\n")
     
@@ -337,10 +340,14 @@ class CircuitNode(udi_interface.Node):
         spanConnection.request("POST", "/api/v1/circuits/" + self.circuitID, payload, headers)
 
         updateCircuitResponse = spanConnection.getresponse()
-        updateCircuitData = updateCircuitResponse.read()
-        updateCircuitData = updateCircuitData.decode("utf-8")
-
-        LOGGER.warning("\n\tCOMMAND POST Update Circuit Status Data: \n\t\t" + format(updateCircuitData) + "\n")
+        try:
+            updateCircuitData = updateCircuitResponse.read()
+            updateCircuitData = updateCircuitData.decode("utf-8")
+    
+            LOGGER.warning("\n\tCOMMAND POST Update Circuit Status Data: \n\t\t" + format(updateCircuitData) + "\n")
+        except:
+            LOGGER.error("\n\tCOMMAND POST Update Circuit Status Data had an ERROR.\n")
+            
         if "200" in updateCircuitData:
             self.setDriver('CLIEMD', int(value), True, True)
 
@@ -351,8 +358,11 @@ class CircuitNode(udi_interface.Node):
         }
         spanConnection.request("GET", "/api/v1/circuits", payload, headers)
         circuitsResponse = spanConnection.getresponse()
-        self.allCircuitsData = circuitsResponse.read()
-        self.allCircuitsData = self.allCircuitsData.decode("utf-8")
+        try:
+            self.allCircuitsData = circuitsResponse.read()
+            self.allCircuitsData = self.allCircuitsData.decode("utf-8")
+        except:
+            LOGGER.error("\n\tCOMMAND GET Circuit Status Data had an ERROR.\n")
 
     def cmd_update_circuit_priority(self,commandDetails):
         LOGGER.debug(f'\n\t{self.address} being set via cmd_update_circuit_priority to commandDetails={commandDetails}\n')
@@ -380,10 +390,14 @@ class CircuitNode(udi_interface.Node):
         spanConnection.request("POST", "/api/v1/circuits/" + self.circuitID, payload, headers)
 
         updateCircuitResponse = spanConnection.getresponse()
-        updateCircuitData = updateCircuitResponse.read()
-        updateCircuitData = updateCircuitData.decode("utf-8")
-
-        LOGGER.warning("\n\tCOMMAND POST Update Circuit Priority Data: \n\t\t" + format(updateCircuitData) + "\n")
+        try:
+            updateCircuitData = updateCircuitResponse.read()
+            updateCircuitData = updateCircuitData.decode("utf-8")
+    
+            LOGGER.warning("\n\tCOMMAND POST Update Circuit Priority Data: \n\t\t" + format(updateCircuitData) + "\n")
+        except:
+            LOGGER.error("\n\tCOMMAND POST Update Circuit Status Data had an ERROR.\n")
+            
         if "200" in updateCircuitData:
             self.setDriver('AWAKE', int(value), True, True)
 
@@ -394,9 +408,11 @@ class CircuitNode(udi_interface.Node):
         }
         spanConnection.request("GET", "/api/v1/circuits", payload, headers)
         circuitsResponse = spanConnection.getresponse()
-        self.allCircuitsData = circuitsResponse.read()
-        self.allCircuitsData = self.allCircuitsData.decode("utf-8")
-
+        try:
+            self.allCircuitsData = circuitsResponse.read()
+            self.allCircuitsData = self.allCircuitsData.decode("utf-8")
+        except:
+            LOGGER.error("\n\tCOMMAND GET Circuit Status Data had an ERROR.\n")
     '''
     Change self status driver to 0 W
     '''
