@@ -298,10 +298,11 @@ class Controller(udi_interface.Node):
                 suffixURL = '/rest/ns/' + str(self.poly.profileNum) + '/nodes/' + prefixN + self.address + '/report/status/' + driver + '/' + str(newValue) + '/56/text/' + encodedStringToPublish
                 
                 LOGGER.debug("\n\t\tPUSHING REPORT Details - this is the 'suffixURL':\n\t\t\t" + suffixURL + "\n")
-        
-                localConnection.request("GET", suffixURL, payload, headers)
-                localResponse = localConnection.getresponse()
+
                 try:
+                    localConnection.request("GET", suffixURL, payload, headers)
+                    localResponse = localConnection.getresponse()
+
                     localResponseData = localResponse.read()
                     localResponseData = localResponseData.decode("utf-8")
                 
