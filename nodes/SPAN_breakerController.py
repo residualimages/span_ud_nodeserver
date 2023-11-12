@@ -286,11 +286,14 @@ class PanelNodeForBreakers(udi_interface.Node):
         
                 localConnection.request("GET", suffixURL, payload, headers)
                 localResponse = localConnection.getresponse()
-                localResponseData = localResponse.read()
-                localResponseData = localResponseData.decode("utf-8")
-                
-                if '<status>200</status>' not in localResponseData:
-                    LOGGER.warning("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + ": RESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
+                try:
+                    localResponseData = localResponse.read()
+                    localResponseData = localResponseData.decode("utf-8")
+                    
+                    if '<status>200</status>' not in localResponseData:
+                        LOGGER.warning("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + ": RESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
+                except:
+                    LOGGER.error("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for " + driver + " had an ERROR.\n")
         else:
             LOGGER.warning("\n\t\PUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + ": looks like this is a PG3 install but the ISY authorization state seems to currently be 'Unauthorized': 'True'.\n")
 
@@ -486,9 +489,12 @@ class PanelNodeForBreakers(udi_interface.Node):
 
         spanConnection.request("GET", "/api/v1/panel", payload, headers)
         panelResponse = spanConnection.getresponse()
-        self.allBreakersData = panelResponse.read()
-        self.allBreakersData = self.allBreakersData.decode("utf-8")
-        LOGGER.debug("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.address + "' Panel Data: \n\t\t" + self.allBreakersData + "\n")
+        try:
+            self.allBreakersData = panelResponse.read()
+            self.allBreakersData = self.allBreakersData.decode("utf-8")
+            LOGGER.debug("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.address + "' Panel Data: \n\t\t" + self.allBreakersData + "\n")
+        except:
+            LOGGER.error("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.address + "' Panel Data had an ERROR.\n")
             
         if "branches" in self.allBreakersData:
             feedthroughPowerW_tuple = self.allBreakersData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
@@ -537,9 +543,12 @@ class PanelNodeForBreakers(udi_interface.Node):
 
         spanConnection.request("GET", "/api/v1/status", payload, headers)
         statusResponse = spanConnection.getresponse()
-        statusData = statusResponse.read()
-        statusData = statusData.decode("utf-8")
-        LOGGER.debug("\n\tUPDATING PANEL STATUS for Panel Breaker Controller '" + self.address + "' (and its sister). Status Data: \n\t\t" + statusData + "\n")
+        try:
+            statusData = statusResponse.read()
+            statusData = statusData.decode("utf-8")
+            LOGGER.debug("\n\tUPDATING PANEL STATUS for Panel Breaker Controller '" + self.address + "' (and its sister). Status Data: \n\t\t" + statusData + "\n")
+        except:
+            LOGGER.error("\n\tUPDATING PANEL STATUS for Panel Breaker Controller '" + self.address + "' (and its sister) had an ERROR.\n")
             
         if "doorState" in statusData:
             doorState_tuple = statusData.partition(chr(34) + "doorState" + chr(34) + ":")
