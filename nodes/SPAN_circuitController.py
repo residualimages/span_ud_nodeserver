@@ -254,10 +254,11 @@ class PanelNodeForCircuits(udi_interface.Node):
                     prefixN = 'n0' + prefixN + '_'
                 
                 suffixURL = '/rest/ns/' + str(self.poly.profileNum) + '/nodes/' + prefixN + self.address + '/report/status/' + driver + '/' + str(newValue) + '/56/text/' + encodedStringToPublish
-        
-                localConnection.request("GET", suffixURL, payload, headers)
-                localResponse = localConnection.getresponse()
+
                 try:
+                    localConnection.request("GET", suffixURL, payload, headers)
+                    localResponse = localConnection.getresponse()
+                    
                     localResponseData = localResponse.read()
                     localResponseData = localResponseData.decode("utf-8")
                     
@@ -439,9 +440,11 @@ class PanelNodeForCircuits(udi_interface.Node):
         headers = {
             "Authorization": "Bearer " + self.token
         }
-        spanConnection.request("GET", "/api/v1/circuits", payload, headers)
-        circuitsResponse = spanConnection.getresponse()
+
         try:
+            spanConnection.request("GET", "/api/v1/circuits", payload, headers)
+            circuitsResponse = spanConnection.getresponse()
+
             self.allCircuitsData = circuitsResponse.read()
             self.allCircuitsData = self.allCircuitsData.decode("utf-8")
             
