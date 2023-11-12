@@ -191,9 +191,10 @@ class CircuitNode(udi_interface.Node):
                 
                 suffixURL = '/rest/ns/' + str(self.poly.profileNum) + '/nodes/' + prefixN + self.address + '/report/status/' + driver + '/' + str(newValue) + '/56/text/' + encodedStringToPublish
         
-                localConnection.request("GET", suffixURL, payload, headers)
-                localResponse = localConnection.getresponse()
                 try:
+                    localConnection.request("GET", suffixURL, payload, headers)
+                    localResponse = localConnection.getresponse()
+                
                     localResponseData = localResponse.read()
                     localResponseData = localResponseData.decode("utf-8")
                     
@@ -337,10 +338,11 @@ class CircuitNode(udi_interface.Node):
             return
      
         LOGGER.debug("\n\tCOMMAND About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
-        spanConnection.request("POST", "/api/v1/circuits/" + self.circuitID, payload, headers)
 
-        updateCircuitResponse = spanConnection.getresponse()
         try:
+            spanConnection.request("POST", "/api/v1/circuits/" + self.circuitID, payload, headers)
+            updateCircuitResponse = spanConnection.getresponse()
+
             updateCircuitData = updateCircuitResponse.read()
             updateCircuitData = updateCircuitData.decode("utf-8")
     
@@ -356,9 +358,11 @@ class CircuitNode(udi_interface.Node):
         headers = {
             "Authorization": "Bearer " + self.token
         }
-        spanConnection.request("GET", "/api/v1/circuits", payload, headers)
-        circuitsResponse = spanConnection.getresponse()
+        
         try:
+            spanConnection.request("GET", "/api/v1/circuits", payload, headers)
+            circuitsResponse = spanConnection.getresponse()
+            
             self.allCircuitsData = circuitsResponse.read()
             self.allCircuitsData = self.allCircuitsData.decode("utf-8")
         except:
@@ -387,10 +391,11 @@ class CircuitNode(udi_interface.Node):
             return
     
         LOGGER.debug("\n\tCOMMAND About to POST a Circuit Status update of '" + payload + "' to " + self.ipAddress + "/api/v1/circuits/" + self.circuitID + "\n")
-        spanConnection.request("POST", "/api/v1/circuits/" + self.circuitID, payload, headers)
-
-        updateCircuitResponse = spanConnection.getresponse()
+        
         try:
+            spanConnection.request("POST", "/api/v1/circuits/" + self.circuitID, payload, headers)
+            updateCircuitResponse = spanConnection.getresponse()
+            
             updateCircuitData = updateCircuitResponse.read()
             updateCircuitData = updateCircuitData.decode("utf-8")
     
@@ -406,9 +411,11 @@ class CircuitNode(udi_interface.Node):
         headers = {
             "Authorization": "Bearer " + self.token
         }
-        spanConnection.request("GET", "/api/v1/circuits", payload, headers)
-        circuitsResponse = spanConnection.getresponse()
+        
         try:
+            spanConnection.request("GET", "/api/v1/circuits", payload, headers)
+            circuitsResponse = spanConnection.getresponse()
+
             self.allCircuitsData = circuitsResponse.read()
             self.allCircuitsData = self.allCircuitsData.decode("utf-8")
         except:
