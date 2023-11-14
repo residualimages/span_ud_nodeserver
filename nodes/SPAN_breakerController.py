@@ -452,6 +452,8 @@ class PanelNodeForBreakers(udi_interface.Node):
             if address not in checkNodes:
                 node = SPAN_breaker.BreakerNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken, i)                
                 self.childBreakerNodes.append(node)
+
+                node.setDriver('GPV', -1, True, True)
             else:
                 try:
                     node = self.childBreakerNodes[self.childBreakerNodes.index(address)]
@@ -483,6 +485,7 @@ class PanelNodeForBreakers(udi_interface.Node):
             try:
                 self.poly.addNode(node)
                 #node.wait_for_node_done()
+                node.setDriver('GPV', -1, True, True)
             except:
                 LOGGER.warning("\n\tUnable to create child Breaker node '" + node + "' for '" + self.address + "' at this time.\n")
             
