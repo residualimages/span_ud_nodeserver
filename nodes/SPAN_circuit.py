@@ -123,6 +123,7 @@ class CircuitNode(udi_interface.Node):
     def start(self):
         # set the initlized flag to allow setDriver to work
         self._initialized = True
+        self.setDriver('GPV', -1, True, True)
     
     # overload the setDriver() of the parent class to short circuit if 
     # node not initialized
