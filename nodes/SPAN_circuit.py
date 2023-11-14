@@ -104,6 +104,8 @@ class CircuitNode(udi_interface.Node):
             self.setDriver('GV3', -1, True, True)
             self.setDriver('GV4', -1, True, True)
             
+            self.setDriver('GPV', -1, True, True)
+            
             self.pushTextToDriver('GV0',self.circuitID)
             self.pushTextToDriver('GVP',"NodeServer RUNNING")
             
