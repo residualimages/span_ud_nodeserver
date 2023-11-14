@@ -150,6 +150,8 @@ class PanelNodeForCircuits(udi_interface.Node):
             self.setDriver('TIME', -1, True, True)
             self.setDriver('GV1', -1, True, True)
             self.setDriver('GV2', -1, True, True)            
+
+            self.setDriver('GPV', -1, True, True)
             
             self.pushTextToDriver('FREQ',self.ipAddress.replace('.','-'))
 
