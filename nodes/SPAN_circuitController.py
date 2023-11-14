@@ -157,20 +157,23 @@ class PanelNodeForCircuits(udi_interface.Node):
 
             if not(self.pollInProgress): 
                 self.updateAllCircuitsData()
-            
-            if "circuits" in self.allCircuitsData:
-                LOGGER.debug("\n\tINIT Panel Circuit Controller's Circuits Data: \n\t\t" + self.allCircuitsData + "\n\t\tCount of circuits: " + str(self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
-                self.expectedNumberOfChildrenCircuits = self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')
-                self.setDriver('PULSCNT', self.expectedNumberOfChildrenCircuits, True, True)
-                self.setDriver('CLIEMD', 1, True, True)
+
+            try:
+                if "circuits" in self.allCircuitsData:
+                    LOGGER.debug("\n\tINIT Panel Circuit Controller's Circuits Data: \n\t\t" + self.allCircuitsData + "\n\t\tCount of circuits: " + str(self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')) + "\n")
+                    self.expectedNumberOfChildrenCircuits = self.allCircuitsData.count(chr(34) + 'id' + chr(34) + ':')
+                    self.setDriver('PULSCNT', self.expectedNumberOfChildrenCircuits, True, True)
+                    self.setDriver('CLIEMD', 1, True, True)
+                    
+                    self.createCircuits()
+                else:
+                    LOGGER.warning("\n\tINIT Issue getting Circuits Data for Panel Circuits Controller '" + self.address + "' @ " + self.ipAddress + ".\n")
+                    
+                self._fullyCreated = True
+                self.n_queue.append(data['address'])
                 
-                self.createCircuits()
-            else:
-                LOGGER.warning("\n\tINIT Issue getting Circuits Data for Panel Circuits Controller '" + self.address + "' @ " + self.ipAddress + ".\n")
-                
-            self._fullyCreated = True
-            self.n_queue.append(data['address'])
-    
+            except:
+                    LOGGER.error("\n\tINIT Issue after returning from self.updateAllCircuitsData().\n")
 
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
@@ -462,11 +465,11 @@ class PanelNodeForCircuits(udi_interface.Node):
             self.allCircuitsData = self.allCircuitsData.decode("utf-8")
             
             LOGGER.debug("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data: \n\t\t " + self.allCircuitsData + "\n")
-    
-            self.pollInProgress = False
         except:
             LOGGER.error("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data FAILED.\n")
-
+        
+        self.pollInProgress = False
+    
     def updateDoorStatusEtc(self, doorStatus, unlockButtonPressesRemaining, serialString, firmwareVersionString, uptimeString):
         self.setDriver('GV1', doorStatus, True, True)
         self.setDriver('GV2', unlockButtonPressesRemaining, True, True)
