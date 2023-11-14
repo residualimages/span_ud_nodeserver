@@ -212,6 +212,7 @@ class PanelNodeForBreakers(udi_interface.Node):
     def start(self):
         # set the initlized flag to allow setDriver to work
         self._initialized = True
+        self.setDriver('GPV', -1, True, True)
         
     def delete(self, address):
         if address == self.address:
