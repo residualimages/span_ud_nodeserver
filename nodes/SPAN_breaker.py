@@ -81,6 +81,8 @@ class BreakerNode(udi_interface.Node):
             self.setDriver('PULSCNT', -1, True, True)
             self.setDriver('CLIEMD', -1, True, True)
             self.setDriver('TIME', -1, True, True)
+
+            self.setDriver('GPV', -1, True, True)
             
             self.pushTextToDriver('TIME',nowDT.strftime("%m/%d/%Y %I:%M:%S %p"))
 
