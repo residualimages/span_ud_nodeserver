@@ -265,3 +265,4 @@ class BreakerNode(udi_interface.Node):
         self.setDriver('CLIEMD', -1, True, True)
         self.setDriver('TIME', -1, True, True)
         self.pushTextToDriver('GPV',"NodeServer STOPPED")
+        self.setDriver('GPV', -1, True, True)
