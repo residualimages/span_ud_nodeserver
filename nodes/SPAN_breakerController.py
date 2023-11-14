@@ -618,7 +618,8 @@ class PanelNodeForBreakers(udi_interface.Node):
             self.pushTextToDriver('GV5', uptimeString)
             
             self.sisterCircuitsController.updateDoorStatusEtc(doorStatus, unlockButtonPressesRemaining, serialString, firmwareVersionString, uptimeString)
-      except:
+            
+        except:
             LOGGER.error("\n\tUPDATING PANEL STATUS for Panel Breaker Controller '" + self.address + "' (and its sister) had an ERROR.\n")
           
         self.statusPollInProgress = False
