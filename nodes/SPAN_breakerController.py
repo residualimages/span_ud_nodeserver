@@ -565,62 +565,62 @@ class PanelNodeForBreakers(udi_interface.Node):
             statusData = statusResponse.read()
             statusData = statusData.decode("utf-8")
             LOGGER.debug("\n\tUPDATING PANEL STATUS for Panel Breaker Controller '" + self.address + "' (and its sister). Status Data: \n\t\t" + statusData + "\n")
-        except:
+            
+            if "doorState" in statusData:
+                doorState_tuple = statusData.partition(chr(34) + "doorState" + chr(34) + ":")
+                doorState = doorState_tuple[2]
+                doorState_tuple = doorState.partition(",")
+                doorState = doorState_tuple[0]
+                if "CLOSED" in doorState:
+                    doorStatus = 1
+                elif "OPEN" in doorState:
+                    doorStatus = 2
+            
+            if "AuthUnlock" in statusData:
+                authRemaining_tuple = statusData.partition(chr(34) + "remainingAuthUnlockButtonPresses" + chr(34) + ":")
+                authRemaining = authRemaining_tuple[2]
+                authRemaining_tuple = authRemaining.partition(",")
+                authRemaining = authRemaining_tuple[0]
+                if "3" in str(authRemaining):
+                    unlockButtonPressesRemaining = 3
+                elif "2" in str(authRemaining):
+                    unlockButtonPressesRemaining = 2
+                elif "1" in str(authRemaining):
+                    unlockButtonPressesRemaining = 1
+            
+            if "serial" in statusData:
+                serial_tuple = statusData.partition(chr(34) + "serial" + chr(34) + ":")
+                serial = serial_tuple[2]
+                serial_tuple = serial.partition(",")
+                serialString = serial_tuple[0].replace(chr(34),'')
+                
+            if "firmwareVersion" in statusData:
+                firmwareVersion_tuple = statusData.partition(chr(34) + "firmwareVersion" + chr(34) + ":")
+                firmwareVersion = firmwareVersion_tuple[2]
+                firmwareVersion_tuple = firmwareVersion.partition(",")
+                firmwareVersionString = firmwareVersion_tuple[0].replace(chr(34),'')
+            
+            if "uptime" in statusData:
+                uptime_tuple = statusData.partition(chr(34) + "uptime" + chr(34) + ":")
+                uptime = uptime_tuple[2]
+                uptime_tuple = uptime.partition(",")
+                uptime = int(uptime_tuple[0].replace('}',''))
+                (days, remainder) = divmod(uptime, 86400)
+                (hours, remainder) = divmod(remainder, 3600)
+                (minutes, seconds) = divmod(remainder, 60)
+                uptimeString = str(days) + " Days, " + str(hours) + " Hours, " + str(minutes) + " Minutes, " + str(seconds) + " Seconds"
+    
+            LOGGER.warning("\n\tDOOR STATUS, ETC UPDATE for '" + self.address + "': doorStatus = " + str(doorStatus) + "; unlockButtonPressesRemaining = " + str(unlockButtonPressesRemaining) + "; serialString = " + serialString + "; firmwareVersionString = " + firmwareVersionString + "; uptimeString = " + uptimeString + ".\n")
+            self.setDriver('GV1', doorStatus, True, True)
+            self.setDriver('GV2', unlockButtonPressesRemaining, True, True)
+            self.pushTextToDriver('GV3', serialString)
+            self.pushTextToDriver('GV4', firmwareVersionString)
+            self.pushTextToDriver('GV5', uptimeString)
+            
+            self.sisterCircuitsController.updateDoorStatusEtc(doorStatus, unlockButtonPressesRemaining, serialString, firmwareVersionString, uptimeString)
+      except:
             LOGGER.error("\n\tUPDATING PANEL STATUS for Panel Breaker Controller '" + self.address + "' (and its sister) had an ERROR.\n")
-            
-        if "doorState" in statusData:
-            doorState_tuple = statusData.partition(chr(34) + "doorState" + chr(34) + ":")
-            doorState = doorState_tuple[2]
-            doorState_tuple = doorState.partition(",")
-            doorState = doorState_tuple[0]
-            if "CLOSED" in doorState:
-                doorStatus = 1
-            elif "OPEN" in doorState:
-                doorStatus = 2
-        
-        if "AuthUnlock" in statusData:
-            authRemaining_tuple = statusData.partition(chr(34) + "remainingAuthUnlockButtonPresses" + chr(34) + ":")
-            authRemaining = authRemaining_tuple[2]
-            authRemaining_tuple = authRemaining.partition(",")
-            authRemaining = authRemaining_tuple[0]
-            if "3" in str(authRemaining):
-                unlockButtonPressesRemaining = 3
-            elif "2" in str(authRemaining):
-                unlockButtonPressesRemaining = 2
-            elif "1" in str(authRemaining):
-                unlockButtonPressesRemaining = 1
-        
-        if "serial" in statusData:
-            serial_tuple = statusData.partition(chr(34) + "serial" + chr(34) + ":")
-            serial = serial_tuple[2]
-            serial_tuple = serial.partition(",")
-            serialString = serial_tuple[0].replace(chr(34),'')
-            
-        if "firmwareVersion" in statusData:
-            firmwareVersion_tuple = statusData.partition(chr(34) + "firmwareVersion" + chr(34) + ":")
-            firmwareVersion = firmwareVersion_tuple[2]
-            firmwareVersion_tuple = firmwareVersion.partition(",")
-            firmwareVersionString = firmwareVersion_tuple[0].replace(chr(34),'')
-        
-        if "uptime" in statusData:
-            uptime_tuple = statusData.partition(chr(34) + "uptime" + chr(34) + ":")
-            uptime = uptime_tuple[2]
-            uptime_tuple = uptime.partition(",")
-            uptime = int(uptime_tuple[0].replace('}',''))
-            (days, remainder) = divmod(uptime, 86400)
-            (hours, remainder) = divmod(remainder, 3600)
-            (minutes, seconds) = divmod(remainder, 60)
-            uptimeString = str(days) + " Days, " + str(hours) + " Hours, " + str(minutes) + " Minutes, " + str(seconds) + " Seconds"
-
-        LOGGER.warning("\n\tDOOR STATUS, ETC UPDATE for '" + self.address + "': doorStatus = " + str(doorStatus) + "; unlockButtonPressesRemaining = " + str(unlockButtonPressesRemaining) + "; serialString = " + serialString + "; firmwareVersionString = " + firmwareVersionString + "; uptimeString = " + uptimeString + ".\n")
-        self.setDriver('GV1', doorStatus, True, True)
-        self.setDriver('GV2', unlockButtonPressesRemaining, True, True)
-        self.pushTextToDriver('GV3', serialString)
-        self.pushTextToDriver('GV4', firmwareVersionString)
-        self.pushTextToDriver('GV5', uptimeString)
-        
-        self.sisterCircuitsController.updateDoorStatusEtc(doorStatus, unlockButtonPressesRemaining, serialString, firmwareVersionString, uptimeString)
-        
+          
         self.statusPollInProgress = False
     
     '''
