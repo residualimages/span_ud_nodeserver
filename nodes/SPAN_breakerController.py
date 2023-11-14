@@ -394,6 +394,11 @@ class PanelNodeForBreakers(udi_interface.Node):
                         #nodes[node].updateBreakerNode(self.allBreakersData, nowDT.strftime("%m/%d/%Y %I:%M:%S %p"))
                         self.childBreakerNodes[i].updateBreakerNode(self.allBreakersData, nowDT.strftime("%m/%d/%Y %I:%M:%S %p"))
                     except:
+                        LOGGER.warning("\n\tERROR When Attempting to Update " + node + " (which should be a Breaker node under this Breakers controller: " + self.address + ").\n")
+                        try:
+                            self.childBreakerNodes[i] = node
+                        except:
+                            LOGGER.warning("\n\t\tERROR When Attempting to Set self.childBreakerNodes[" + i.string + "] to " + node + ".\n") 
                         if len(problemChildren) > 0:
                             problemChildren = problemChildren + ", "
                         problemChildren = problemChildren + "'" + node + "'"
