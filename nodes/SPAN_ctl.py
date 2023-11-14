@@ -392,6 +392,7 @@ class Controller(udi_interface.Node):
         LOGGER.warning("\n\tSTOP COMMAND Received by '" + self.address + "'.\n")
         self.setDriver('ST', 0, True, True)
         self.pushTextToDriver('GPV','NodeServer STOPPED')
+        self.setDriver('GPV', -1, True, True)
         nodes = self.poly.getNodes()
         
         for node in nodes.copy():
