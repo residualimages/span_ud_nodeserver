@@ -220,6 +220,7 @@ class Controller(udi_interface.Node):
         # Not necessary to call this since profile_version is used from server.json
         # self.poly.updateProfile()
         self._initialized = True
+        self.setDriver('GPV', -1, True, True)
         
         if self.pg3ParameterErrors:
             self.pushTextToDriver('GPV',"Please correct the NodeServer parameters in PG3(x)")
