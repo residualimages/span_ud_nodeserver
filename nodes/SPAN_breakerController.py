@@ -520,38 +520,38 @@ class PanelNodeForBreakers(udi_interface.Node):
             self.allBreakersData = panelResponse.read()
             self.allBreakersData = self.allBreakersData.decode("utf-8")
             LOGGER.debug("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.address + "' Panel Data: \n\t\t" + self.allBreakersData + "\n")
+            
+            if "branches" in self.allBreakersData:
+                feedthroughPowerW_tuple = self.allBreakersData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
+                feedthroughPowerW = feedthroughPowerW_tuple[2]
+                feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
+                feedthroughPowerW = feedthroughPowerW_tuple[0]           
+                feedthroughPowerW = math.ceil(float(feedthroughPowerW)*100)/100
+    
+                instantGridPowerW_tuple = self.allBreakersData.partition(chr(34) + "instantGridPowerW" + chr(34) + ":")
+                instantGridPowerW = instantGridPowerW_tuple[2]
+                instantGridPowerW_tuple = instantGridPowerW.partition(",")
+                instantGridPowerW = instantGridPowerW_tuple[0]             
+                instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
+    
+                epoch = int(time.time())
+                nowDT = datetime.datetime.fromtimestamp(epoch)
+    
+                #if it turns out we need to handle feedthroughPower separately, subtract it from the main
+                #tracking from SPAN app generally seems to track more closely with what's show there by doing this subtraction... Shrug?            
+                totalPower = round((instantGridPowerW-abs(feedthroughPowerW)),2)
+                #otherwise, use the main directly
+                #totalPower = (instantGridPowerW)
+    
+                self.sisterCircuitsController.updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, nowDT.strftime("%m/%d/%Y %I:%M:%S %p"), self.allBreakersData)
+                LOGGER.info("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController, and tried to update its allBreakersData as well as its total power ('ST') and 'TIME' Status elements.\n")
+                
+            self.pollInProgress = False
+            
+            if not(self.statusPollInProgress):
+                    self.updateDoorStatusEtc()
         except:
             LOGGER.error("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.address + "' Panel Data had an ERROR.\n")
-            
-        if "branches" in self.allBreakersData:
-            feedthroughPowerW_tuple = self.allBreakersData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
-            feedthroughPowerW = feedthroughPowerW_tuple[2]
-            feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
-            feedthroughPowerW = feedthroughPowerW_tuple[0]           
-            feedthroughPowerW = math.ceil(float(feedthroughPowerW)*100)/100
-
-            instantGridPowerW_tuple = self.allBreakersData.partition(chr(34) + "instantGridPowerW" + chr(34) + ":")
-            instantGridPowerW = instantGridPowerW_tuple[2]
-            instantGridPowerW_tuple = instantGridPowerW.partition(",")
-            instantGridPowerW = instantGridPowerW_tuple[0]             
-            instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
-
-            epoch = int(time.time())
-            nowDT = datetime.datetime.fromtimestamp(epoch)
-
-            #if it turns out we need to handle feedthroughPower separately, subtract it from the main
-            #tracking from SPAN app generally seems to track more closely with what's show there by doing this subtraction... Shrug?            
-            totalPower = round((instantGridPowerW-abs(feedthroughPowerW)),2)
-            #otherwise, use the main directly
-            #totalPower = (instantGridPowerW)
-
-            self.sisterCircuitsController.updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, nowDT.strftime("%m/%d/%Y %I:%M:%S %p"), self.allBreakersData)
-            LOGGER.info("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController, and tried to update its allBreakersData as well as its total power ('ST') and 'TIME' Status elements.\n")
-
-        self.pollInProgress = False
-        
-        if not(self.statusPollInProgress):
-                self.updateDoorStatusEtc()
 
     def updateDoorStatusEtc(self):
         self.statusPollInProgress = True
