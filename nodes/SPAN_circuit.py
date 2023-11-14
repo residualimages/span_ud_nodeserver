@@ -92,6 +92,18 @@ class CircuitNode(udi_interface.Node):
     def node_queue(self, data):
         if self.address == data['address']:
             LOGGER.debug("\n\tWAIT FOR NODE CREATION: Fully Complete for Circuit " + self.address + "\n")
+            
+            self.setDriver('ST', -1, True, True)
+            self.setDriver('PULSCNT', -1, True, True)
+            self.setDriver('CLIEMD', 0, True, True)
+            self.setDriver('AWAKE', 0, True, True)
+            self.setDriver('TIME', -1, True, True)
+            self.setDriver('GV0', -1, True, True)
+            self.setDriver('GV1', -1, True, True)
+            self.setDriver('GV2', -1, True, True)
+            self.setDriver('GV3', -1, True, True)
+            self.setDriver('GV4', -1, True, True)
+            
             self.pushTextToDriver('GV0',self.circuitID)
             self.pushTextToDriver('GVP',"NodeServer RUNNING")
             
