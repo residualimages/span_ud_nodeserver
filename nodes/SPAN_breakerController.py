@@ -165,43 +165,46 @@ class PanelNodeForBreakers(udi_interface.Node):
 
             if not(self.pollInProgress):
                 self.updateAllBreakersData()
-        
-            if "branches" in self.allBreakersData:
-                feedthroughPowerW_tuple = self.allBreakersData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
-                feedthroughPowerW = feedthroughPowerW_tuple[2]
-                feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
-                feedthroughPowerW = feedthroughPowerW_tuple[0]
-                feedthroughPowerW = math.ceil(float(feedthroughPowerW)*100)/100
 
-                instantGridPowerW_tuple = self.allBreakersData.partition(chr(34) + "instantGridPowerW" + chr(34) + ":")
-                instantGridPowerW = instantGridPowerW_tuple[2]
-                instantGridPowerW_tuple = instantGridPowerW.partition(",")
-                instantGridPowerW = instantGridPowerW_tuple[0]
-                instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
-
-                #if it turns out we need to handle feedthroughPower separately, subtract it from the main
-                #tracking from SPAN app generally seems to track more closely with what's show there by doing this subtraction... Shrug?
-                self.setDriver('ST', round((instantGridPowerW-abs(feedthroughPowerW)),2), True, True)
-                #otherwise, use the main directly
-                #self.setDriver('ST', (instantGridPowerW), True, True)
-
-                allBranchesData_tuple = self.allBreakersData.partition(chr(34) + "branches" + chr(34) + ":")
-                allBranchesData = allBranchesData_tuple[2]
-                LOGGER.debug("\n\tINIT Panel Breaker Controller's Branches Data: \n\t\t" + allBranchesData + "\n\t\tCount of OPEN Breakers: " + str(allBranchesData.count(chr(34) + 'OPEN' + chr(34) + ',')) + "\n\t\tCount of CLOSED Breakers: " + str(allBranchesData.count(chr(34) + 'CLOSED' + chr(34) + ',')) + "\n")
-                self.setDriver('PULSCNT', allBranchesData.count(chr(34) + 'CLOSED' + chr(34) + ','), True, True)
-                self.setDriver('GV0', allBranchesData.count(chr(34) + 'OPEN' + chr(34) + ','), True, True)
-
-                nowEpoch = int(time.time())
-                nowDT = datetime.datetime.fromtimestamp(nowEpoch)
-                self.pushTextToDriver('TIME',nowDT.strftime("%m/%d/%Y %I:%M:%S %p"))
-                
-                self.createBreakers()
-            else:
-                LOGGER.warning("\n\tINIT Issue getting first-time Breakers Data for Panel Breaker Controller '" + self.address + "' @ " + self.ipAddress + ".\n")
-
-            self._fullyCreated = True
-            self.n_queue.append(data['address'])
-
+            try:
+                if "branches" in self.allBreakersData:
+                    feedthroughPowerW_tuple = self.allBreakersData.partition(chr(34) + "feedthroughPowerW" + chr(34) + ":")
+                    feedthroughPowerW = feedthroughPowerW_tuple[2]
+                    feedthroughPowerW_tuple = feedthroughPowerW.partition(",")
+                    feedthroughPowerW = feedthroughPowerW_tuple[0]
+                    feedthroughPowerW = math.ceil(float(feedthroughPowerW)*100)/100
+    
+                    instantGridPowerW_tuple = self.allBreakersData.partition(chr(34) + "instantGridPowerW" + chr(34) + ":")
+                    instantGridPowerW = instantGridPowerW_tuple[2]
+                    instantGridPowerW_tuple = instantGridPowerW.partition(",")
+                    instantGridPowerW = instantGridPowerW_tuple[0]
+                    instantGridPowerW = math.ceil(float(instantGridPowerW)*100)/100
+    
+                    #if it turns out we need to handle feedthroughPower separately, subtract it from the main
+                    #tracking from SPAN app generally seems to track more closely with what's show there by doing this subtraction... Shrug?
+                    self.setDriver('ST', round((instantGridPowerW-abs(feedthroughPowerW)),2), True, True)
+                    #otherwise, use the main directly
+                    #self.setDriver('ST', (instantGridPowerW), True, True)
+    
+                    allBranchesData_tuple = self.allBreakersData.partition(chr(34) + "branches" + chr(34) + ":")
+                    allBranchesData = allBranchesData_tuple[2]
+                    LOGGER.debug("\n\tINIT Panel Breaker Controller's Branches Data: \n\t\t" + allBranchesData + "\n\t\tCount of OPEN Breakers: " + str(allBranchesData.count(chr(34) + 'OPEN' + chr(34) + ',')) + "\n\t\tCount of CLOSED Breakers: " + str(allBranchesData.count(chr(34) + 'CLOSED' + chr(34) + ',')) + "\n")
+                    self.setDriver('PULSCNT', allBranchesData.count(chr(34) + 'CLOSED' + chr(34) + ','), True, True)
+                    self.setDriver('GV0', allBranchesData.count(chr(34) + 'OPEN' + chr(34) + ','), True, True)
+    
+                    nowEpoch = int(time.time())
+                    nowDT = datetime.datetime.fromtimestamp(nowEpoch)
+                    self.pushTextToDriver('TIME',nowDT.strftime("%m/%d/%Y %I:%M:%S %p"))
+                    
+                    self.createBreakers()
+                    
+                    self._fullyCreated = True
+                    self.n_queue.append(data['address'])
+                else:
+                    LOGGER.warning("\n\tINIT Issue getting first-time Breakers Data for Panel Breaker Controller '" + self.address + "' @ " + self.ipAddress + ".\n")
+            except:
+                LOGGER.warning("\n\tINIT Issue after returning from self.updateAllBreakersData().\n")
+          
     def wait_for_node_done(self):
         while len(self.n_queue) == 0:
             time.sleep(0.1)
