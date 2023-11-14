@@ -145,6 +145,8 @@ class Controller(udi_interface.Node):
         if data['address'] == self.address:
             LOGGER.debug("\n\tISY Object created under 'controller':\t" + self.ISY._isy_ip + ":" + str(self.ISY._isy_port) + ", which is itself NS #" + str(self.poly.profileNum) + ", and has self.address of '" + str(self.address) + "'.\n")   
             LOGGER.debug("\n\t\tUNAuthorized (expecting this to be false): " + str(self.ISY.unauthorized) + ".\n")
+
+            self.setDriver('GPV', -1, True, True)
             
             self._fullyCreated = True
             
