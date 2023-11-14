@@ -637,3 +637,4 @@ class PanelNodeForBreakers(udi_interface.Node):
         self.setDriver('GV2', -1, True, True)
         self.pushTextToDriver('GV5','--')
         self.pushTextToDriver('GPV','NodeServer STOPPED')
+        self.setDriver('GPV', -1, True, True)
