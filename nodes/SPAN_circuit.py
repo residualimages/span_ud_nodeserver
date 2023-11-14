@@ -452,6 +452,7 @@ class CircuitNode(udi_interface.Node):
         self.setDriver('GV4', -1, True, True)
         
         self.pushTextToDriver('GPV',"NodeServer STOPPED")
+        self.setDriver('GPV', -1, True, True)
 
     commands = {
         "UPDATE_CIRCUIT_STATUS": cmd_update_circuit_status,
