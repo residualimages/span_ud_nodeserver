@@ -142,6 +142,14 @@ class PanelNodeForCircuits(udi_interface.Node):
             #lastOctet_array = self.ipAddress.split('.')
             #lastOctet = lastOctet_array[len(lastOctet_array)-1]
             #self.setDriver('FREQ', lastOctet, True, True, None, self.ipAddress)
+        
+            self.setDriver('ST', -1, True, True)
+            self.setDriver('FREQ', -1, True, True)
+            self.setDriver('PULSCNT', -1, True, True)
+            self.setDriver('CLIEMD', -1, True, True)
+            self.setDriver('TIME', -1, True, True)
+            self.setDriver('GV1', -1, True, True)
+            self.setDriver('GV2', -1, True, True)            
             
             self.pushTextToDriver('FREQ',self.ipAddress.replace('.','-'))
 
