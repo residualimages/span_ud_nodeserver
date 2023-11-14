@@ -396,14 +396,19 @@ class PanelNodeForBreakers(udi_interface.Node):
                     except:
                         LOGGER.warning("\n\tERROR When Attempting to Update " + node + " (which should be a Breaker node under this Breakers controller: " + self.address + ").\n")
                         try:
-                            self.childBreakerNodes[i] = node
+                            nodes = self.poly.getNodes()
+                            for node in nodes:
+                                if currentPanelBreakerPrefix in node:
+                                    self.childBreakerNodes.append(node)
+                            breakerCount = len(self.childBreakerNodes)
+                            LOGGER.warning("\n\t\tInitially there was an error handling the childBreakerNodes, but now we have " + breakerCount.string + " childBreakerNodes.\n")
                         except:
                             LOGGER.warning("\n\t\tERROR When Attempting to Set self.childBreakerNodes[" + i.string + "] to " + node + ".\n") 
-                        if len(problemChildren) > 0:
-                            problemChildren = problemChildren + ", "
-                        problemChildren = problemChildren + "'" + node + "'"
-                        recreateBreakers = True
-                        
+                            if len(problemChildren) > 0:
+                                problemChildren = problemChildren + ", "
+                            problemChildren = problemChildren + "'" + node + "'"
+                            recreateBreakers = True
+                            
                 if recreateBreakers and self.allExpectedChildrenCreated:
                     LOGGER.warning("\n\tUnable to execute updateBreakerNode on (" + problemChildren + ") Breaker node(s) [" + nowDT.strftime("%m/%d/%Y %I:%M:%S %p") + "].\n\t\tIf this persists repeatedly across multiple shortPolls with the same node ID(s) and/or the list is not getting shorter each time, contact developer.")
                     self.pushTextToDriver('GPV',"Unexpected Child Breaker Node Update error " + str(breakerCount) + " != 32; attempting recovery")
