@@ -412,6 +412,7 @@ class PanelNodeForCircuits(udi_interface.Node):
             if address not in checkNodes:
                 node = SPAN_circuit.CircuitNode(self.poly, self.address, address, title, current_IPaddress, current_BearerToken, current_circuitID, i)
                 self.childCircuitNodes.append(node)
+                node.setDriver('GPV', -1, True, True)
             else:
                 try:
                     node = self.childCircuitNodes[self.childCircuitNodes.index(address)]
@@ -420,6 +421,7 @@ class PanelNodeForCircuits(udi_interface.Node):
                     node = self.childCircuitNodes[self.childCircuitNodes.index(address)]
             
             self.poly.addNode(node)
+            node.setDriver('GPV', -1, True, True)
             #node.wait_for_node_done()
             
             LOGGER.debug('\n\tCreated a Circuit child node {} under Panel Circuit Controller {}\n'.format(title, panelNumberPrefix))
