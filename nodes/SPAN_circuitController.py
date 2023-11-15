@@ -447,7 +447,7 @@ class PanelNodeForCircuits(udi_interface.Node):
     This is how we update the allCircuitsData variable
     '''
     def updateAllCircuitsData(self):
-        if not(self.fullyCeated):
+        if not(self.fullyCreated):
             LOGGER.warning("\n\tUPDATING ALLCIRCUITSDATA for '" + self.address + "' but noticed it wasn't set to fullyCreated = True.\n")
             self.fullyCreated = True
             
