@@ -166,12 +166,11 @@ class PanelNodeForCircuits(udi_interface.Node):
                     self.setDriver('CLIEMD', 1, True, True)
                     
                     self.createCircuits()
+                        
+                    self._fullyCreated = True
+                    self.n_queue.append(data['address'])
                 else:
                     LOGGER.warning("\n\tINIT Issue getting Circuits Data for Panel Circuits Controller '" + self.address + "' @ " + self.ipAddress + ".\n")
-                    
-                self._fullyCreated = True
-                self.n_queue.append(data['address'])
-                
             except:
                     LOGGER.error("\n\tINIT Issue after returning from self.updateAllCircuitsData().\n")
 
@@ -448,6 +447,10 @@ class PanelNodeForCircuits(udi_interface.Node):
     This is how we update the allCircuitsData variable
     '''
     def updateAllCircuitsData(self):
+        if not(self.fullyCeated):
+            LOGGER.warning("\n\tUPDATING ALLCIRCUITSDATA for '" + self.address + "' but noticed it wasn't set to fullyCreated = True.\n")
+            self.fullyCreated = True
+            
         self.pollInProgress = True
         LOGGER.debug("\n\tUPDATING ALLCIRCUITSDATA for '" + self.address + "'...\n")
         
