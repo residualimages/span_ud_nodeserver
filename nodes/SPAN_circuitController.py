@@ -277,8 +277,10 @@ class PanelNodeForCircuits(udi_interface.Node):
                     
                     if '<status>200</status>' not in localResponseData:
                         LOGGER.warning("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for " + driver + ": RESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
-                except:
+                except http.client.HTTPException:
                     LOGGER.error("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for " + driver + " had an ERROR.\n")
+                finally:
+                    localConnection.close()  
         else:
             LOGGER.warning("\n\t\PUSHING REPORT ERROR on '" + self.address + "' for " + driver + ": looks like this is a PG3 install but the ISY authorization state seems to currently be 'Unauthorized': 'True'.\n")
     
@@ -468,8 +470,10 @@ class PanelNodeForCircuits(udi_interface.Node):
             self.allCircuitsData = self.allCircuitsData.decode("utf-8")
             
             LOGGER.debug("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data: \n\t\t " + self.allCircuitsData + "\n")
-        except:
+        except http.client.HTTPException:
             LOGGER.error("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data FAILED.\n")
+        finally:
+            spanConnection.close()  
         
         self.pollInProgress = False
     
