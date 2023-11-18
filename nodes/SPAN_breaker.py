@@ -193,8 +193,10 @@ class BreakerNode(udi_interface.Node):
                     
                     if '<status>200</status>' not in localResponseData:
                         LOGGER.warning("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + ": RESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
-                except:
+                except http.client.HTTPException:
                     LOGGER.error("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + " had an error.\n")
+                finally:
+                    spanConnection.close()  
         else:
             LOGGER.warning("\n\t\PUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + ": looks like this is a PG3 install but the ISY authorization state seems to currently be 'Unauthorized': 'True'.\n")
 
