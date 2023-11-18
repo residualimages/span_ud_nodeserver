@@ -308,8 +308,10 @@ class PanelNodeForBreakers(udi_interface.Node):
                     
                     if '<status>200</status>' not in localResponseData:
                         LOGGER.warning("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + ": RESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
-                except:
+                except http.client.HTTPException:
                     LOGGER.error("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for " + driver + " had an ERROR.\n")
+                finally:
+                    localConnection.close()
         else:
             LOGGER.warning("\n\t\PUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + ": looks like this is a PG3 install but the ISY authorization state seems to currently be 'Unauthorized': 'True'.\n")
 
@@ -553,8 +555,10 @@ class PanelNodeForBreakers(udi_interface.Node):
             
             if not(self.statusPollInProgress):
                     self.updateDoorStatusEtc()
-        except:
+        except http.client.HTTPException:
             LOGGER.error("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.address + "' Panel Data had an ERROR.\n")
+        finally:
+            spanConnection.close()
 
     def updateDoorStatusEtc(self):
         self.statusPollInProgress = True
@@ -631,9 +635,10 @@ class PanelNodeForBreakers(udi_interface.Node):
             self.pushTextToDriver('GV5', uptimeString)
             
             self.sisterCircuitsController.updateDoorStatusEtc(doorStatus, unlockButtonPressesRemaining, serialString, firmwareVersionString, uptimeString)
-            
-        except:
+        except http.client.HTTPException:
             LOGGER.error("\n\tUPDATING PANEL STATUS for Panel Breaker Controller '" + self.address + "' (and its sister) had an ERROR.\n")
+        finally:
+            spanConnection.close()            
           
         self.statusPollInProgress = False
     
