@@ -196,7 +196,7 @@ class BreakerNode(udi_interface.Node):
                 except http.client.HTTPException:
                     LOGGER.error("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + " had an error.\n")
                 finally:
-                    spanConnection.close()  
+                    localConnection.close()  
         else:
             LOGGER.warning("\n\t\PUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + ": looks like this is a PG3 install but the ISY authorization state seems to currently be 'Unauthorized': 'True'.\n")
 
