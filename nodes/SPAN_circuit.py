@@ -124,6 +124,16 @@ class CircuitNode(udi_interface.Node):
         # set the initlized flag to allow setDriver to work
         self._initialized = True
         self.setDriver('GPV', -1, True, True)
+        self.setDriver('ST', -1, True, True)
+        self.setDriver('PULSCNT', -1, True, True)
+        self.setDriver('CLIEMD', 0, True, True)
+        self.setDriver('AWAKE', 0, True, True)
+        self.setDriver('TIME', -1, True, True)
+        self.setDriver('GV0', -1, True, True)
+        self.setDriver('GV1', -1, True, True)
+        self.setDriver('GV2', -1, True, True)
+        self.setDriver('GV3', -1, True, True)
+        self.setDriver('GV4', -1, True, True)
     
     # overload the setDriver() of the parent class to short circuit if 
     # node not initialized
