@@ -116,8 +116,11 @@ class Controller(udi_interface.Node):
             how_many = len(self.breakerControllers)
             if self._fullyCreated:
                 for i in range(0,how_many):
-                    self.breakerControllers[i].pollBreakerController(polltype + "|poll passed to '" + self.breakerControllers[i].address + "' from root controller in FOR loop of its own poll")
-                    self.pushTextToDriver('GPV',"Last Short Poll Date / Time: " + nowDT.strftime("%m/%d/%Y %I:%M:%S %p"))
+                    try:
+                        self.breakerControllers[i].pollBreakerController(polltype + "|poll passed to '" + self.breakerControllers[i].address + "' from root controller in FOR loop of its own poll")
+                        self.pushTextToDriver('GPV',"Last Short Poll Date / Time: " + nowDT.strftime("%m/%d/%Y %I:%M:%S %p"))
+                    except:
+                        LOGGER.error("\n\tERROR Handling Breaker Controller #" + i.string + ".\n")
 
             '''
             nodes = self.poly.getNodes()
@@ -314,6 +317,8 @@ class Controller(udi_interface.Node):
                     else:
                         LOGGER.debug("\n\t\tPUSHING REPORT on '" + self.address + "' for driver " + driver + ": RESPONSE from report:\n\t\t\t" + localResponseData + "\n")
                 except http.client.HTTPException:
+                    LOGGER.error("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + " had an ERROR.\n")
+                except:
                     LOGGER.error("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + " had an ERROR.\n")
                 finally:
                     localConnection.close()  
