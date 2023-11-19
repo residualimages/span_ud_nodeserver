@@ -101,7 +101,11 @@ class BreakerNode(udi_interface.Node):
         # set the initlized flag to allow setDriver to work
         self._initialized = True
         self.setDriver('GPV', -1, True, True)
-    
+        self.setDriver('ST', -1, True, True)
+        self.setDriver('PULSCNT', -1, True, True)
+        self.setDriver('CLIEMD', -1, True, True)
+        self.setDriver('TIME', -1, True, True)
+        
     # overload the setDriver() of the parent class to short circuit if 
     # node not initialized
     def setDriver(self, driver: str, value: Any, report: bool=True, force: bool=False, uom: Optional[int]=None, text: Optional[str]=None):
