@@ -199,6 +199,8 @@ class BreakerNode(udi_interface.Node):
                         LOGGER.warning("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + ": RESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
                 except http.client.HTTPException:
                     LOGGER.error("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + " had an error.\n")
+                except:
+                    LOGGER.error("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + " had an error.\n")
                 finally:
                     localConnection.close()  
         else:
