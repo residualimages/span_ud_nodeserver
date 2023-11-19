@@ -310,6 +310,8 @@ class PanelNodeForBreakers(udi_interface.Node):
                         LOGGER.warning("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for driver " + driver + ": RESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
                 except http.client.HTTPException:
                     LOGGER.error("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for " + driver + " had an ERROR.\n")
+                except:
+                    LOGGER.error("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for " + driver + " had an ERROR.\n")
                 finally:
                     localConnection.close()
         else:
@@ -557,6 +559,8 @@ class PanelNodeForBreakers(udi_interface.Node):
                     self.updateDoorStatusEtc()
         except http.client.HTTPException:
             LOGGER.error("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.address + "' Panel Data had an ERROR.\n")
+        except:
+            LOGGER.error("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.address + "' Panel Data had an ERROR.\n")
         finally:
             spanConnection.close()
 
@@ -636,6 +640,8 @@ class PanelNodeForBreakers(udi_interface.Node):
             
             self.sisterCircuitsController.updateDoorStatusEtc(doorStatus, unlockButtonPressesRemaining, serialString, firmwareVersionString, uptimeString)
         except http.client.HTTPException:
+            LOGGER.error("\n\tUPDATING PANEL STATUS for Panel Breaker Controller '" + self.address + "' (and its sister) had an ERROR.\n")
+        except:
             LOGGER.error("\n\tUPDATING PANEL STATUS for Panel Breaker Controller '" + self.address + "' (and its sister) had an ERROR.\n")
         finally:
             spanConnection.close()            
