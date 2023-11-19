@@ -279,6 +279,8 @@ class PanelNodeForCircuits(udi_interface.Node):
                         LOGGER.warning("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for " + driver + ": RESPONSE from report was not '<status>200</status>' as expected:\n\t\t\t" + localResponseData + "\n")
                 except http.client.HTTPException:
                     LOGGER.error("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for " + driver + " had an ERROR.\n")
+                except:
+                    LOGGER.error("\n\t\tPUSHING REPORT ERROR on '" + self.address + "' for " + driver + " had an ERROR.\n")
                 finally:
                     localConnection.close()  
         else:
@@ -471,6 +473,8 @@ class PanelNodeForCircuits(udi_interface.Node):
             
             LOGGER.debug("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data: \n\t\t " + self.allCircuitsData + "\n")
         except http.client.HTTPException:
+            LOGGER.error("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data FAILED.\n")
+        except:
             LOGGER.error("\n\tUPDATE ALLCIRCUITSDATA: SPAN API GET request for Panel Circuits Controller '" + self.address + "' Circuits Data FAILED.\n")
         finally:
             spanConnection.close()  
