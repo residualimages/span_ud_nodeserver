@@ -26,7 +26,8 @@ The settings for this node are:
    * ;-delimited list of IP address(es) of the SPAN Panel(s)
 
 #### Access Token(s)
-   * ;-delimited list of Access Token(s) for the corresponding SPAN Panel IP Address(es) 
+   * ;-delimited list of Access Token(s) for the corresponding SPAN Panel IP Address(es)
+     
         For background on how to get an Access Token, refer to https://github.com/galak/span-hacs/issues/11 ; also summarized here:
            a) Disable authentication on the panel using the door switch (press x 3)
            b) While authentication is disabled, create an authorization token for the integration.
