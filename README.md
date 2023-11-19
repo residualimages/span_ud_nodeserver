@@ -27,7 +27,18 @@ The settings for this node are:
 
 #### Access Token(s)
    * ;-delimited list of Access Token(s) for the corresponding SPAN Panel IP Address(es) 
-
+        For background on how to get an Access Token, refer to https://github.com/galak/span-hacs/issues/11 ; also summarized here:
+           a) Disable authentication on the panel using the door switch (press x 3)
+           b) While authentication is disabled, create an authorization token for the integration.
+           c) Use that token to authenticate and authorize all subsequent calls, which will no longer require the panel to be in an "unlocked" insecure state.
+         In more detail, the recommended auth flow which will create a secure, durable, 100% local connection to the panel is as follows:
+           i) POST to /api/v1/auth/register with JSON body {"name": "home-assistant-UNIQUEID", "description": "Home Assistant Local Span Integration"}.
+           ii) Use some unique value for UNIQUEID. Six random alphanumeric characters would be one reasonable choice. If the name conflicts with one that's already been created the request will fail.
+           iii) If the panel is currently "unlocked", you will get a 2xx response containing the "accessToken". If not, then open and close the door of the panel three times, once every two seconds, and then retry.
+           iv) Store the value from the "accessToken" property of the response object. It will be a long string. This is the token which should be included with all future requests.
+           v) Send all future requests with the HTTP header "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+             (this is just a dummy example token)
+           Note: If you have multiple span panels, you will need to repeat this process for each panel, as tokens are only accepted by the panel that generated them.
 
 ## Requirements
 
