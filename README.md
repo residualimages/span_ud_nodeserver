@@ -38,7 +38,7 @@ The settings for this node are:
 
        In more detail, the recommended auth flow which will create a secure, durable, 100% local connection to the panel is as follows:
 
-         i) POST to /api/v1/auth/register with JSON body {"name": "home-assistant-UNIQUEID", "description": "PG3 Local Span Integration"}.
+         i) POST to /api/v1/auth/register with JSON body {"name": "ud-pg3-UNIQUEID", "description": "PG3 Local Span Integration"}.
 
          ii) Use some unique value for UNIQUEID. Six random alphanumeric characters would be one reasonable choice. If the name conflicts with one that's already been created the request will fail.
 
