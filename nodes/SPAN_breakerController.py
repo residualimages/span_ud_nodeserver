@@ -550,9 +550,11 @@ class PanelNodeForBreakers(udi_interface.Node):
                 #otherwise, use the main directly
                 #totalPower = (instantGridPowerW)
     
-                self.sisterCircuitsController.updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, nowDT.strftime("%m/%d/%Y %I:%M:%S %p"), self.allBreakersData)
-                LOGGER.info("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController, and tried to update its allBreakersData as well as its total power ('ST') and 'TIME' Status elements.\n")
-                
+                try:
+                    self.sisterCircuitsController.updateCircuitControllerStatusValuesFromPanelQueryInBreakerController(totalPower, nowDT.strftime("%m/%d/%Y %I:%M:%S %p"), self.allBreakersData)
+                    LOGGER.info("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController, and tried to update its allBreakersData as well as its total power ('ST') and 'TIME' Status elements.\n")
+                except:
+                    LOGGER.error("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' encountered an error when, with its sisterCircuitsController, it tried to update its allBreakersData as well as its total power ('ST') and 'TIME' Status elements.\n")
             self.pollInProgress = False
             
             if not(self.statusPollInProgress):
@@ -640,9 +642,9 @@ class PanelNodeForBreakers(udi_interface.Node):
             
             self.sisterCircuitsController.updateDoorStatusEtc(doorStatus, unlockButtonPressesRemaining, serialString, firmwareVersionString, uptimeString)
         except http.client.HTTPException:
-            LOGGER.error("\n\tUPDATING PANEL STATUS for Panel Breaker Controller '" + self.address + "' (and its sister) had an ERROR.\n")
+            LOGGER.error("\n\tUPDATING PANEL STATUS for Panel Breaker Controller '" + self.address + "' (and its sister) had an HTTPException ERROR.\n")
         except:
-            LOGGER.error("\n\tUPDATING PANEL STATUS for Panel Breaker Controller '" + self.address + "' (and its sister) had an ERROR.\n")
+            LOGGER.error("\n\tUPDATING PANEL STATUS for Panel Breaker Controller '" + self.address + "' (and its sister) had an unknown ERROR.\n")
         finally:
             spanConnection.close()            
           
