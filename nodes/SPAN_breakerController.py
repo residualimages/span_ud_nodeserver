@@ -558,9 +558,9 @@ class PanelNodeForBreakers(udi_interface.Node):
             if not(self.statusPollInProgress):
                     self.updateDoorStatusEtc()
         except http.client.HTTPException:
-            LOGGER.error("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.address + "' Panel Data had an ERROR.\n")
+            LOGGER.error("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.address + "' Panel Data had an HTTPException ERROR.\n")
         except:
-            LOGGER.error("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.address + "' Panel Data had an ERROR.\n")
+            LOGGER.error("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.address + "' Panel Data had an unknown ERROR.\n")
         finally:
             spanConnection.close()
 
