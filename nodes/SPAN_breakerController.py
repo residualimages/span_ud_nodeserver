@@ -342,7 +342,10 @@ class PanelNodeForBreakers(udi_interface.Node):
             LOGGER.debug("\n\tPOLL About to query Panel Breaker Controller '" + self.address + "' @ {}, using token ending in {}".format(self.ipAddress,tokenLastTen))
 
             if not(self.pollInProgress):
-                self.updateAllBreakersData()
+                try:
+                    self.updateAllBreakersData()
+                except:
+                    LOGGER.error("\n\tPOLL ERROR when querying Panel Breaker Controler '" + self.address +"' @ {}, using token ending in {}".format(self.ipaddress,tokenLastTen))
            
             if "branches" in self.allBreakersData:
                 
