@@ -558,7 +558,6 @@ class PanelNodeForBreakers(udi_interface.Node):
                     LOGGER.info("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' successfully found its sisterCircuitsController, and tried to update its allBreakersData as well as its total power ('ST') and 'TIME' Status elements.\n")
                 except:
                     LOGGER.error("\n\tUPDATE ALLBREAKERSDATA under '" + self.address + "' encountered an error when, with its sisterCircuitsController, it tried to update its allBreakersData as well as its total power ('ST') and 'TIME' Status elements.\n")
-            self.pollInProgress = False
             
             if not(self.statusPollInProgress):
                     self.updateDoorStatusEtc()
@@ -568,7 +567,9 @@ class PanelNodeForBreakers(udi_interface.Node):
             LOGGER.error("\n\tUPDATE ALLBREAKERSDATA Panel Breaker Controller '" + self.address + "' Panel Data had an unknown ERROR.\n")
         finally:
             spanConnection.close()
-
+            
+        self.pollInProgress = False
+        
     def updateDoorStatusEtc(self):
         self.statusPollInProgress = True
         
