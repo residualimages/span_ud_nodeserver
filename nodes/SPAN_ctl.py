@@ -118,9 +118,10 @@ class Controller(udi_interface.Node):
                 for i in range(0,how_many):
                     try:
                         self.breakerControllers[i].pollBreakerController(polltype + "|poll passed to '" + self.breakerControllers[i].address + "' from root controller in FOR loop of its own poll")
-                        self.pushTextToDriver('GPV',"Last Short Poll Date / Time: " + nowDT.strftime("%m/%d/%Y %I:%M:%S %p"))
                     except:
                         LOGGER.error("\n\tERROR Handling Breaker Controller #" + format(i) + ".\n")
+                    finally:
+                        self.pushTextToDriver('GPV',"Last Short Poll Date / Time: " + nowDT.strftime("%m/%d/%Y %I:%M:%S %p"))
 
             '''
             nodes = self.poly.getNodes()
