@@ -115,7 +115,7 @@ class Controller(udi_interface.Node):
 
             how_many = len(self.breakerControllers)
             if self._fullyCreated:
-                for i in range(1,how_many+1):
+                for i in range(0,how_many):
                     try:
                         self.breakerControllers[i].pollBreakerController(polltype + "|poll passed to '" + self.breakerControllers[i].address + "' from root controller in FOR loop of its own poll")
                     except:
