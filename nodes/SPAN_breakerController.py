@@ -458,8 +458,11 @@ class PanelNodeForBreakers(udi_interface.Node):
             
             current_IPaddress = self.ipAddress
             current_BearerToken = self.token
+            stringI = str(i)
+            if i<10:
+                stringI = '0' + str(i)
             
-            address = 'S' + panelNumberPrefix + '_Breaker_' + str(i)
+            address = 'S' + panelNumberPrefix + '_Breaker_' + stringI
             address = getValidNodeAddress(address)
             
             title = "Breaker #"
