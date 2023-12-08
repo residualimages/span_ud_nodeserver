@@ -252,35 +252,34 @@ class Controller(udi_interface.Node):
 
         if currentValue != 1:
             newValue = 1
-            message = {
-                'set': [{
-                    'address': self.address,
-                    'driver': driver,
-                    'value': 1,
-                    'uom': 56,
-                    'text': encodedStringToPublish
-                }]
-            }
-            
         else:
             newValue = 0
-            message = {
-                'set': [{
-                    'address': self.address,
-                    'driver': driver,
-                    'value': 0,
-                    'uom': 56,
-                    'text': encodedStringToPublish
-                }]
-            }
 
         self.setDriver(driver, newValue, False)
 
         if 'isPG3x' in self.poly.pg3init and self.poly.pg3init['isPG3x'] is True:
             #PG3x can use this, but PG3 doesn't have the necessary 'text' handling within message, set above, so we have the 'else' below
-            LOGGER.debug("\n\tPUSHING REPORT TO '" + self.address + "' for driver " + driver + ", with PG3x via self.poly.send('" + encodedStringToPublish + "','status') with a value of '" + str(newValue) + "'.\n")
+            message = {
+                'set': [{
+                    'address': self.address,
+                    'driver': driver,
+                    'value': newValue,
+                    'uom': 56,
+                    'text': stringToPublish
+                }]
+            }
+            LOGGER.debug("\n\tPUSHING REPORT TO '" + self.address + "' for driver " + driver + ", with PG3x via self.poly.send('" + stringToPublish + "','status') with a value of '" + str(newValue) + "'.\n")
             self.poly.send(message, 'status')
         elif not(self.ISY.unauthorized):
+            message = {
+                'set': [{
+                    'address': self.address,
+                    'driver': driver,
+                    'value': newValue,
+                    'uom': 56,
+                    'text': encodedStringToPublish
+                }]
+            }
             userpassword = self.ISY._isy_user + ":" + self.ISY._isy_pass
             userpasswordAsBytes = userpassword.encode("ascii")
             userpasswordAsBase64Bytes = base64.b64encode(userpasswordAsBytes)
