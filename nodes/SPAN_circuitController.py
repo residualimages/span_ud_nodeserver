@@ -397,8 +397,11 @@ class PanelNodeForCircuits(udi_interface.Node):
             
             current_IPaddress = self.ipAddress
             current_BearerToken = self.token
+            stringI=str(i)
+            if i<10:
+                stringI = '0' + str(i)
             
-            address = 'S' + panelNumberPrefix + '_Circuit_' + str(i)
+            address = 'S' + panelNumberPrefix + '_Circuit_' + stringI
             address = getValidNodeAddress(address)
             
             current_circuitID_tuple = allCircuitsArray[i].partition(',')
